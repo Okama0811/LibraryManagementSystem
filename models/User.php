@@ -2,7 +2,7 @@
 include_once 'Model.php';
 class User extends Model
 {
-    protected $table_name = 'users';
+    protected $table_name = 'user';
 
     public $user_id;
     public $role_id;
@@ -21,6 +21,7 @@ class User extends Model
     public $note;
     public $created_at;
     public $updated_at;
+    private $role;
     public function __construct(){
         parent::__construct();
     }
@@ -28,20 +29,31 @@ class User extends Model
     {
         $this->status = 'inactive';
         $this->role_id= 1;
-        $this->password = password_hash($this->password, PASSWORD_DEFAULT);
-        // var_dump($this);
-        // exit();
         return parent::create();
     }
 
-    public function read()
-    {
-        return parent::read();
+    public function read() {
+        $query = "SELECT u.*, r.name as role_name, r.description as role_description 
+                 FROM {$this->table_name} u 
+                 LEFT JOIN role r ON u.role_id = r.role_id";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function readById($id)
-    {
-        return parent::readById($id);
+    public function readById($id) {
+        $query = "SELECT u.*, r.name as role_name, r.description as role_description 
+                 FROM {$this->table_name} u 
+                 LEFT JOIN role r ON u.role_id = r.role_id 
+                 WHERE u.user_id = :id";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function update($id)
@@ -54,7 +66,6 @@ class User extends Model
         return parent::delete($id);
     }
 
-    //Các phương thức xác thực User
     public function authenticate($email, $password)
     {
         $user = $this->readByEmail($email);
@@ -76,8 +87,6 @@ class User extends Model
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
-        // $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-        // var_dump($userData);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

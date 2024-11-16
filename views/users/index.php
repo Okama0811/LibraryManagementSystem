@@ -1,3 +1,4 @@
+<!-- breadcrum -->
 <div class="container-fluid">
     <div class="row mt-3">
         <div class="col">
@@ -11,6 +12,7 @@
 </div>
 
 <div class="container-fluid">
+    <!-- Thông báo lỗi -->
     <?php if (isset($_SESSION['message'])): ?>
         <div id="alert-message" class="alert alert-<?= $_SESSION['message_type']; ?> alert-dismissible fade show" role="alert">
             <?= $_SESSION['message']; ?>
@@ -32,7 +34,7 @@
             }, 2000);
         </script>
     <?php endif; ?>
-
+    <!-- Phần content -->
     <div class="card shadow mb-4">
         <div class="card-header py-2">
             <div class="d-flex justify-content-between align-items-center">
@@ -40,11 +42,11 @@
                 <div>
                     <a id="toggleSearch" class="btn btn-secondary">Tìm kiếm</a>
                     <a href="index.php?model=user&action=create" class="btn btn-primary">Thêm mới</a>
-                    <!-- <a href="index.php?model=user&action=export" class="btn btn-success">Xuất Excel</a> -->
                 </div>
             </div>
         </div>
         <div class="card-body">
+            <!-- Tìm kiếm -->
             <form id="searchForm" class="mb-3" style="display: none;">
                 <div class="row">
                     <div class="col-md-4 mb-2">
@@ -72,33 +74,33 @@
                     </div>
                 </div>
             </form>
+            <!-- Bảng -->
             <div class="table-responsive">
                 <table id="dataTable" class="table table-bordered" width="100%" cellspacing="0">
                     <thead class="bg-light text-black text-center">
                         <tr>
                             <th>ID</th>
+                            <th>Họ tên</th>
                             <th>Email</th>
-                            <th>Tên</th>
                             <th>Vai Trò</th>
-                            <th>Thao Tác</th>
+                            <th class="text-center"><i class="fas fa-cog"></i></th> 
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($users as $user): ?>
-                            <?php if ($user['role'] !== 'QuanLy'): ?>
-                                <tr>
-                                    <td class="text-center"><?= $user['user_id'] ?></td>
-                                    <td><?= htmlspecialchars($user['email']) ?></td>
-                                    <td><?= htmlspecialchars($user['ten']) ?></td>
-                                    <td><?= $user['role'] === 'NhanVien' ? 'Cán bộ nhân viên nhà trường' : ($user['role'] === 'KyThuat' ? 'Kỹ thuật viên' : ($user['role'] === 'NhanVienQuanLy' ? 'Nhân viên quản lý tài sản' : 'Quản lý')) ?></td>
-                                    <td class="d-flex justify-content-center">
-                                        <a href="index.php?model=user&action=edit&id=<?= $user['user_id'] ?>" class="btn btn-warning btn-sm mx-2">Sửa</a>
-                                        <form action="index.php?model=user&action=delete&id=<?= $user['user_id'] ?>" method="POST" style="display: inline-block;" onsubmit="return confirmDelete();">
-                                            <button type="submit" class="btn btn-danger btn-sm mx-2">Xóa</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
+                            <tr>
+                                <td class="text-center"><?= $user['user_id'] ?></td>
+                                <td><?= htmlspecialchars($user['full_name']) ?></td>
+                                <td><?= htmlspecialchars($user['email']) ?></td>
+                                <td><?= htmlspecialchars($user['role_name']) ?></td>
+                                <td class="text-center">
+                                    <form action="index.php?model=user&action=delete&id=<?= $user['user_id'] ?>" method="POST" style="display: inline-block;" onsubmit="return confirmDelete();">
+                                        <button type="submit" class="btn p-0 text-danger" style="background: none; border: none;" title="Xóa">
+                                            <i class="fas fa-times" style="font-size: 1.3rem;"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -107,14 +109,30 @@
     </div>
 </div>
 
-<script>
-    
+
+<script>    
 $(document).ready(function() {
     var table = $('#dataTable').DataTable({
-        dom: 'rtip',
-        language: {
-            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Vietnamese.json"
+    dom: 'rtip',
+    language: {
+        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Vietnamese.json"
+    },
+    columnDefs: [
+        {
+            targets: -1, 
+            orderable: false, 
+            searchable: false 
         }
+    ]
+});
+
+    $('#dataTable tbody').on('click', 'tr', function(e) {
+        if ($(e.target).closest('button').length || $(e.target).closest('form').length) {
+            return;
+        }
+        
+        var userId = $(this).data('user-id');
+        window.location.href = 'index.php?model=user&action=edit&id=' + userId;
     });
 
     function filterTable() {

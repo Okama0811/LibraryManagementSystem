@@ -27,6 +27,13 @@
             display: block;
             margin: 0 auto;
         }
+        #dataTable tbody tr {
+            cursor: pointer;
+        }
+        #dataTable tbody tr:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
     </style>
 </head>
 

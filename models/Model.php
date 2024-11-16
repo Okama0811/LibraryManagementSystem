@@ -45,28 +45,36 @@ abstract class Model
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function update($id)
-    {
-        $query = "UPDATE " . $this->table_name . " SET ";
-        $set = [];
-        foreach ($this->getAttributes() as $key => $value) {
-            $set[] = $key . " = :" . $key;
-        }
-        $query .= implode(', ', $set) . " WHERE id = :id";
+    public function update($id)     
+{         
+    $attributes = $this->getAttributes();
+    unset(
+        $attributes['conn'], 
+        $attributes['table_name'],
+        $attributes['id'],
+        $attributes[$this->table_name . '_id'] 
+    );          
 
-        $stmt = $this->conn->prepare($query);
-
-        foreach ($this->getAttributes() as $key => $value) {
-            $stmt->bindParam(':' . $key, $this->$key);
-        }
-        $stmt->bindParam(':id', $id);
-
-        return $stmt->execute();
-    }
+    $set = [];         
+    foreach ($attributes as $key => $value) {             
+        $set[] = "`$key` = ?";         
+    }         
+    $query = "UPDATE `" . $this->table_name . "` SET " . implode(', ', $set) . " WHERE " . $this->table_name . "_id = ?";
+    
+    $stmt = $this->conn->prepare($query);                  
+    
+    $i = 1;         
+    foreach ($attributes as $value) {             
+        $stmt->bindValue($i++, $value);         
+    }         
+    $stmt->bindValue($i, $id);                  
+    
+    return $stmt->execute();     
+}
 
     public function delete($id)
     {
-        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+        $query = "DELETE FROM " . $this->table_name . " WHERE ".$this->table_name ."_id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         return $stmt->execute();

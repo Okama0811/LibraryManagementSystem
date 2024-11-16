@@ -16,7 +16,7 @@ class AuthController extends Controller {
             // exit();
             $this->authModel->email = $_POST['email'];
             $this->authModel->username= $_POST['username'];
-            $this->authModel->password= $_POST['password'];
+            $this->authModel->password= password_hash($_POST['password'], PASSWORD_DEFAULT);
             $this->authModel->full_name= $_POST['full_name'];
             $this->authModel->date_of_birth= $_POST['date_of_birth'];
             $this->authModel->gender= $_POST['gender'];
@@ -42,7 +42,7 @@ class AuthController extends Controller {
                 session_start();
                 $_SESSION['user_id'] = $this->authModel->user_id;
                 $_SESSION['email'] = $this->authModel->email;
-                $_SESSION['role'] = $this->authModel->role_id;
+                $_SESSION['role_id'] = $this->authModel->role_id;
                 $_SESSION['full_name'] = $this->authModel->full_name;
                 // $_SESSION['avatar'] = $this->authModel->;
                 header('Location: dashboard.php');

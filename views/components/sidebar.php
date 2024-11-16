@@ -32,10 +32,10 @@ $current_action = isset($_GET['action']) ? $_GET['action'] : '';
     </div>
 
     <?php
-    if (isset($_SESSION['role'])) {
-        switch ($_SESSION['role']) {
-            case 'QuanLy':
-                include 'views/components/quanly-side.php';
+    if (isset($_SESSION['role_id'])) {
+        switch ($_SESSION['role_id']) {
+            case '1':
+                include 'views/components/user_management_sidebar.php';
                 break;
             case 'NhanVien':
                 include 'views/components/nhanvien-side.php';

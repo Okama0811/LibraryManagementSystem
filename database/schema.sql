@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS roles (
+CREATE TABLE IF NOT EXISTS role (
     role_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS roles (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS permissions (
+CREATE TABLE IF NOT EXISTS permission (
     permission_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -14,16 +14,16 @@ CREATE TABLE IF NOT EXISTS permissions (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS role_permissions (
+CREATE TABLE IF NOT EXISTS role_permission (
     role_id INT,
     permission_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (role_id, permission_id),
-    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE,
-    FOREIGN KEY (permission_id) REFERENCES permissions(permission_id) ON DELETE CASCADE
+    FOREIGN KEY (role_id) REFERENCES role(role_id) ON DELETE CASCADE,
+    FOREIGN KEY (permission_id) REFERENCES permission(permission_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS user (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     role_id INT,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS users (
     full_name VARCHAR(100) NOT NULL,
     date_of_birth DATE,
     gender ENUM('male', 'female', 'other'),
-    phone VARCHAR(20),
+    phone VARCHAR(20) UNIQUE,
     address TEXT,
     member_type VARCHAR(50),
     expiry_date DATE,
@@ -41,10 +41,10 @@ CREATE TABLE IF NOT EXISTS users (
     note TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (role_id) REFERENCES roles(role_id)
+    FOREIGN KEY (role_id) REFERENCES role(role_id)
 );
 
-CREATE TABLE IF NOT EXISTS publishers (
+CREATE TABLE IF NOT EXISTS publisher (
     publisher_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     address TEXT,
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS publishers (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS authors (
+CREATE TABLE IF NOT EXISTS author (
     author_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     biography TEXT,
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS authors (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS books (
+CREATE TABLE IF NOT EXISTS book (
     book_id INT PRIMARY KEY AUTO_INCREMENT,
     publisher_id INT,
     title VARCHAR(255) NOT NULL,
@@ -81,19 +81,19 @@ CREATE TABLE IF NOT EXISTS books (
     status ENUM('available', 'unavailable') DEFAULT 'available',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (publisher_id) REFERENCES publishers(publisher_id)
+    FOREIGN KEY (publisher_id) REFERENCES publisher(publisher_id)
 );
 
-CREATE TABLE IF NOT EXISTS book_authors (
+CREATE TABLE IF NOT EXISTS book_author (
     book_id INT,
     author_id INT,
     role VARCHAR(50),
     PRIMARY KEY (book_id, author_id),
-    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
-    FOREIGN KEY (author_id) REFERENCES authors(author_id) ON DELETE CASCADE
+    FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE CASCADE,
+    FOREIGN KEY (author_id) REFERENCES author(author_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS categories (
+CREATE TABLE IF NOT EXISTS category (
     category_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -101,15 +101,15 @@ CREATE TABLE IF NOT EXISTS categories (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS book_categories (
+CREATE TABLE IF NOT EXISTS book_category (
     book_id INT,
     category_id INT,
     PRIMARY KEY (book_id, category_id),
-    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
+    FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES category(category_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS loans (
+CREATE TABLE IF NOT EXISTS loan (
     loan_id INT PRIMARY KEY AUTO_INCREMENT,
     book_id INT,
     issued_by INT,
@@ -121,12 +121,12 @@ CREATE TABLE IF NOT EXISTS loans (
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (book_id) REFERENCES books(book_id),
-    FOREIGN KEY (issued_by) REFERENCES users(user_id),
-    FOREIGN KEY (returned_to) REFERENCES users(user_id)
+    FOREIGN KEY (book_id) REFERENCES book(book_id),
+    FOREIGN KEY (issued_by) REFERENCES user(user_id),
+    FOREIGN KEY (returned_to) REFERENCES user(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS fines (
+CREATE TABLE IF NOT EXISTS fine (
     fine_id INT PRIMARY KEY AUTO_INCREMENT,
     loan_id INT,
     user_id INT,
@@ -138,12 +138,12 @@ CREATE TABLE IF NOT EXISTS fines (
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (loan_id) REFERENCES loans(loan_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (returned_to) REFERENCES users(user_id)
+    FOREIGN KEY (loan_id) REFERENCES loan(loan_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id),
+    FOREIGN KEY (returned_to) REFERENCES user(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS fine_payments (
+CREATE TABLE IF NOT EXISTS fine_payment (
     payment_id INT PRIMARY KEY AUTO_INCREMENT,
     fine_id INT,
     amount DECIMAL(10,2) NOT NULL,
@@ -152,11 +152,11 @@ CREATE TABLE IF NOT EXISTS fine_payments (
     receive_by INT,
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (fine_id) REFERENCES fines(fine_id),
-    FOREIGN KEY (receive_by) REFERENCES users(user_id)
+    FOREIGN KEY (fine_id) REFERENCES fine(fine_id),
+    FOREIGN KEY (receive_by) REFERENCES user(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS book_conditions (
+CREATE TABLE IF NOT EXISTS book_condition (
     condition_id INT PRIMARY KEY AUTO_INCREMENT,
     book_id INT,
     loan_id INT,
@@ -167,12 +167,12 @@ CREATE TABLE IF NOT EXISTS book_conditions (
     assessed_date DATE,
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (book_id) REFERENCES books(book_id),
-    FOREIGN KEY (loan_id) REFERENCES loans(loan_id),
-    FOREIGN KEY (assessed_by) REFERENCES users(user_id)
+    FOREIGN KEY (book_id) REFERENCES book(book_id),
+    FOREIGN KEY (loan_id) REFERENCES loan(loan_id),
+    FOREIGN KEY (assessed_by) REFERENCES user(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS reservations (
+CREATE TABLE IF NOT EXISTS reservation (
     reservation_id INT PRIMARY KEY AUTO_INCREMENT,
     book_id INT,
     user_id INT,
@@ -183,6 +183,6 @@ CREATE TABLE IF NOT EXISTS reservations (
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (book_id) REFERENCES books(book_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (book_id) REFERENCES book(book_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
 );

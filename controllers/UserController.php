@@ -1,87 +1,139 @@
 <?php
+include_once 'models/User.php';
+include_once 'models/Role.php';
 
 class UserController extends Controller
 {
-    private $db;
     private $user;
+    private $role;
 
     public function __construct()
     {
-        $database = new Database();
-        $this->db = $database->getConnection();
-        $this->user = new User($this->db);
+        $this->user = new User();
+        $this->role = new Role();
     }
 
     public function index()
     {
         $users = $this->user->read();
+        $roles = $this->role->read();
         $content = 'views/users/index.php';
         include('views/layouts/base.php');
     }
-
-    public function create()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->user->username = $_POST['username'];
-            $this->user->email = $_POST['email'];
-            $this->user->role_id = $_POST['role_id'];
-            $this->user->password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-
-            if ($this->user->create()) {
-                $_SESSION['message'] = 'User created successfully!';
-                $_SESSION['message_type'] = 'success';
-            } else {
-                $_SESSION['message'] = 'Failed to create user!';
-                $_SESSION['message_type'] = 'danger';
-            }
+    public function show($id) {
+        $user = $this->user->readById($id);
+        if (!$user) {
+            $_SESSION['message'] = 'User not found!';
+            $_SESSION['message_type'] = 'danger';
             header("Location: index.php?model=user&action=index");
             exit();
         }
-
+        
+        $content = 'views/users/show.php';
+        include('views/layouts/base.php');
+    }
+    public function create() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                // Lưu dữ liệu form vào session trước khi xử lý
+                $_SESSION['form_data'] = $_POST;
+                
+                $this->user->status = 'inactive';
+                $this->user->role_id = isset($_POST['role_id']) ? $_POST['role_id'] : 1;
+                
+                foreach ($_POST as $key => $value) {
+                    if (property_exists($this->user, $key) && $key !== 'password') {
+                        $this->user->$key = strip_tags(trim($value));
+                    }
+                }
+                
+                if (!empty($_POST['password'])) {
+                    $this->user->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                }
+                
+                if ($this->user->create()) {
+                    $_SESSION['message'] = 'User created successfully!';
+                    $_SESSION['message_type'] = 'success';
+                    // Xóa dữ liệu form khi thành công
+                    unset($_SESSION['form_data']);
+                    header("Location: index.php?model=user&action=index");
+                    exit();
+                } else {
+                    throw new Exception('Failed to create user');
+                }
+            } catch (Exception $e) {
+                $_SESSION['message'] = 'Trùng email hoặc tên đăng nhập. Vui lòng thử lại!';
+                $_SESSION['message_type'] = 'danger';
+                $roles = $this->role->read();
+                $content = 'views/users/create.php';
+                include('views/layouts/base.php');
+                return;
+            }
+        }
+        
+        $roles = $this->role->read();
         $content = 'views/users/create.php';
         include('views/layouts/base.php');
     }
 
-    public function edit($id)
-    {
+
+    public function edit($id) {
         $user = $this->user->readById($id);
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->user->user_id = $id;
-            $this->user->username = $_POST['username'];
-            $this->user->email = $_POST['email'];
-            $this->user->role_id = $_POST['role_id'];
-            if (!empty($_POST['password'])) {
-                $this->user->password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-            }
-
-            if ($this->user->update($id)) {
-                $_SESSION['message'] = 'User updated successfully!';
-                $_SESSION['message_type'] = 'success';
-            } else {
-                $_SESSION['message'] = 'Failed to update user!';
-                $_SESSION['message_type'] = 'danger';
-            }
+        if (!$user) {
+            $_SESSION['message'] = 'User not found!';
+            $_SESSION['message_type'] = 'danger';
             header("Location: index.php?model=user&action=index");
             exit();
         }
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                foreach ($_POST as $key => $value) {
+                    if (property_exists($this->user, $key) && $key !== 'password') {
+                        $this->user->$key = strip_tags(trim($value));
+                    }
+                }
+
+                if (!empty($_POST['password'])) {
+                    $this->user->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                }
+
+                if ($this->user->update($id)) {
+                    $_SESSION['message'] = 'User updated successfully!';
+                    $_SESSION['message_type'] = 'success';
+                } else {
+                    throw new Exception('Failed to update user');
+                }
+                
+                header("Location: index.php?model=user&action=index");
+                exit();
+            } catch (Exception $e) {
+                $_SESSION['message'] =  'Trùng email hoặc tên đăng nhập. Vui lòng thử lại!';
+                $_SESSION['message_type'] = 'danger';
+            }
+        }
+
+        $roles = $this->role->read();
         $content = 'views/users/edit.php';
         include('views/layouts/base.php');
     }
 
-    public function delete($id)
-    {
-        if ($this->user->delete($id)) {
-            $_SESSION['message'] = 'User deleted successfully!';
-            $_SESSION['message_type'] = 'success';
-        } else {
-            $_SESSION['message'] = 'Failed to delete user!';
+    public function delete($id) {
+        try {
+            if ($this->user->delete($id)) {
+                $_SESSION['message'] = 'Xóa người dùng thành công!';
+                $_SESSION['message_type'] = 'success';
+            } else {
+                throw new Exception('Xóa không thành công!');
+            }
+        } catch (Exception $e) {
+            $_SESSION['message'] = $e->getMessage();
             $_SESSION['message_type'] = 'danger';
         }
+        
         header("Location: index.php?model=user&action=index");
+        exit();
     }
-
     public function statistics()
     {
         // $data = $this->user->getUserStatistics();
