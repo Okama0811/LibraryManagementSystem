@@ -38,5 +38,8 @@ class Controller {
     public function store() {
         
     }
+    public function profile(){
+        
+    }
 }
 ?>

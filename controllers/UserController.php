@@ -20,18 +20,6 @@ class UserController extends Controller
         $content = 'views/users/index.php';
         include('views/layouts/base.php');
     }
-    public function show($id) {
-        $user = $this->user->readById($id);
-        if (!$user) {
-            $_SESSION['message'] = 'User not found!';
-            $_SESSION['message_type'] = 'danger';
-            header("Location: index.php?model=user&action=index");
-            exit();
-        }
-        
-        $content = 'views/users/show.php';
-        include('views/layouts/base.php');
-    }
     public function create() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
@@ -78,6 +66,7 @@ class UserController extends Controller
 
 
     public function edit($id) {
+    
         $user = $this->user->readById($id);
         if (!$user) {
             $_SESSION['message'] = 'User not found!';
@@ -97,7 +86,7 @@ class UserController extends Controller
                 if (!empty($_POST['password'])) {
                     $this->user->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
                 }
-
+                
                 if ($this->user->update($id)) {
                     $_SESSION['message'] = 'User updated successfully!';
                     $_SESSION['message_type'] = 'success';

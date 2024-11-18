@@ -78,6 +78,9 @@ switch ($action) {
     case 'delete':
         $controller->delete($id);
         break;
+    case 'show':
+        $controller->show($id);
+        break;
     case 'login':
         $controller->login();
         break;
@@ -87,8 +90,8 @@ switch ($action) {
     case 'logout':
         $controller->logout();
         break;
-    case 'show':
-        $controller->show($id);
+    case 'profile':
+        $controller->profile();
         break;
     default:
         $controller->index();

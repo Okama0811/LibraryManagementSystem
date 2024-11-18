@@ -32,12 +32,12 @@ class Setup {
 
 try {
     $setup = new Setup();
-    $schemaFile = 'C:\XAMPP\htdocs\LibraryManagementSystem\database\schema.sql';
-    $dataFile = 'C:\XAMPP\htdocs\LibraryManagementSystem\database\data.sql';
+    $schemaFile = 'C:\XAMPP\htdocs\LibraryManagementSystem\database\migrations\schema.sql';
+    $dataFile = 'C:\XAMPP\htdocs\LibraryManagementSystem\database\seeders\data.sql';
     
     $setup->runSQLFromFile($schemaFile);
     $setup->runSQLFromFile($dataFile);
-
+  
 } catch(Exception $e) {
     echo "Lỗi khởi tạo: " . $e->getMessage() . "\n";
 }

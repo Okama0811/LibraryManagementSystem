@@ -1,6 +1,6 @@
 <li class="nav-item <?= ($current_model == 'user' && $current_action == 'index') ? 'active' : '' ?>">
-    <a class="nav-link" href="route.php?model=user&action=index">
-        <i class="fa-solid fa-user-group"></i>
-        <span>Quản lý người dùng</span>
+    <a class="nav-link" href="route.php?model=user&action=index" >
+        <i class="fa-solid fa-user-group"style="color: #423b8e; font-size: 1.2rem; margin-right: 0.75rem;"></i>
+        <span style="color: #423b8e; font-size: 1rem;">Quản lý người dùng</span>
     </a>
 </li>

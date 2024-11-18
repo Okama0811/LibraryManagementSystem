@@ -131,7 +131,8 @@ $(document).ready(function() {
             return;
         }
         
-        var userId = $(this).data('user-id');
+        var userId = $(this).find('td:first').text().trim();
+        
         window.location.href = 'index.php?model=user&action=edit&id=' + userId;
     });
 

@@ -46,31 +46,32 @@ abstract class Model
     }
 
     public function update($id)     
-{         
-    $attributes = $this->getAttributes();
-    unset(
-        $attributes['conn'], 
-        $attributes['table_name'],
-        $attributes['id'],
-        $attributes[$this->table_name . '_id'] 
-    );          
+    {         
+        $attributes = $this->getAttributes();
+        unset(
+            $attributes['conn'], 
+            $attributes['table_name'],
+            $attributes['id'],
+            $attributes['avatar_url'],
+            $attributes[$this->table_name . '_id'] 
+        );          
 
-    $set = [];         
-    foreach ($attributes as $key => $value) {             
-        $set[] = "`$key` = ?";         
-    }         
-    $query = "UPDATE `" . $this->table_name . "` SET " . implode(', ', $set) . " WHERE " . $this->table_name . "_id = ?";
-    
-    $stmt = $this->conn->prepare($query);                  
-    
-    $i = 1;         
-    foreach ($attributes as $value) {             
-        $stmt->bindValue($i++, $value);         
-    }         
-    $stmt->bindValue($i, $id);                  
-    
-    return $stmt->execute();     
-}
+        $set = [];         
+        foreach ($attributes as $key => $value) {             
+            $set[] = "`$key` = ?";         
+        }         
+        $query = "UPDATE `" . $this->table_name . "` SET " . implode(', ', $set) . " WHERE " . $this->table_name . "_id = ?";
+        
+        $stmt = $this->conn->prepare($query);                  
+        
+        $i = 1;         
+        foreach ($attributes as $value) {             
+            $stmt->bindValue($i++, $value);         
+        }         
+        $stmt->bindValue($i, $id);                  
+        
+        return $stmt->execute();     
+    }
 
     public function delete($id)
     {

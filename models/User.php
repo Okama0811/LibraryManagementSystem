@@ -21,7 +21,8 @@ class User extends Model
     public $note;
     public $created_at;
     public $updated_at;
-    private $role;
+    public $avatar_url;
+
     public function __construct(){
         parent::__construct();
     }
@@ -66,9 +67,9 @@ class User extends Model
         return parent::delete($id);
     }
 
-    public function authenticate($email, $password)
+    public function authenticate($username, $password)
     {
-        $user = $this->readByEmail($email);
+        $user = $this->readByUsername($username);
         if ($user && password_verify($password, $user['password'])) {
         // if ($user && $password === $user['password']) {
             foreach ($user as $key => $value) {
@@ -81,12 +82,20 @@ class User extends Model
         return false;
     }
 
-    protected function readByEmail($email)
+    protected function readByUsername($username)
     {
-        $query = "SELECT * FROM {$this->table_name} WHERE email = :email";
+        $query = "SELECT * FROM {$this->table_name} WHERE username = :username";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':username', $username);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public function updateAvatar($id) {
+        $query = "UPDATE `" . $this->table_name . "` SET avatar_url = ? WHERE " . $this->table_name . "_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(1, $this->avatar_url);
+        $stmt->bindValue(2, $id);
+        return $stmt->execute();
+    }
+
 }
