@@ -148,9 +148,15 @@
                         </div>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
-                    <a href="index.php?model=user&action=index" class="btn btn-secondary">Thoát</a>
-                    <button type="button" id="toggleEdit" class="btn btn-primary">Chỉnh sửa</button>
-                    <button type="submit" id="saveChanges" class="btn btn-success" style="display: none;">Lưu thay đổi</button>
+                    <a href="index.php?model=user&action=index" class="btn btn-secondary">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <button type="button" id="toggleEdit" class="btn btn-primary">
+                        <i class="fa-solid fa-pencil"></i>
+                    </button>
+                    <button type="submit" id="saveChanges" class="btn btn-success" style="display: none;"> 
+                        <i class="fa-regular fa-floppy-disk"></i>
+                    </button>
                 </div>
                 </form>
             </div>
@@ -173,10 +179,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Toggle edit mode
     toggleEditBtn.addEventListener('click', function() {
-        const isEditMode = toggleEditBtn.textContent === 'Edit';
+        // Thay đổi logic kiểm tra trạng thái
+        const isDisabled = allInputs[0].disabled;
         
-        // Toggle button text and visibility
-        if (isEditMode) {
+        if (isDisabled) {
+            // Chuyển sang chế độ edit
             toggleEditBtn.style.display = 'none';
             saveChangesBtn.style.display = 'block';
             // Enable all inputs
@@ -184,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 input.disabled = false;
             });
         } else {
+            // Chuyển sang chế độ view
             toggleEditBtn.style.display = 'block';
             saveChangesBtn.style.display = 'none';
             // Disable all inputs

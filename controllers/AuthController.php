@@ -1,6 +1,6 @@
 <?php
 include_once 'models/User.php';
-
+include_once 'models/Role.php';
 
 class AuthController extends Controller {
 
@@ -31,7 +31,7 @@ class AuthController extends Controller {
                 'phone' => $_POST['phone'] ?? '',
                 'address' => $_POST['address'] ?? ''
             ];
-    
+            
             // Kiểm tra điều khoản
             if (!isset($_POST['terms']) || $_POST['terms'] != '1') {
                 $error_msg = "Vui lòng đồng ý với điều khoản sử dụng";
@@ -45,33 +45,53 @@ class AuthController extends Controller {
                 $error_msg = "Mật khẩu xác nhận không khớp";
             }
             else {
-                $this->authModel->email = $_POST['email'];
-                $this->authModel->username = $_POST['username'];
-                $this->authModel->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-                $this->authModel->full_name = $_POST['full_name'];
-                $this->authModel->date_of_birth = $_POST['date_of_birth'];
-                $this->authModel->gender = $_POST['gender'];
-                $this->authModel->phone = $_POST['phone'];
-                $this->authModel->address = $_POST['address'];
-                
-                if ($this->authModel->create()) {
-                    header('Location: index.php?model=auth&action=login');
-                    exit();
-                } else {
-                    $error_msg = "Tên đăng nhập hoặc Email/Số điện thoại đã được sử dụng. Vui lòng thử lại!";
+                // Kiểm tra email tồn tại
+                if ($this->authModel->checkEmailExists($_POST['email'])) {
+                    $error_msg = "Email đã được sử dụng, vui lòng sử dụng email khác";
+                }
+                // Kiểm tra số điện thoại tồn tại
+                else if ($this->authModel->checkPhoneExists($_POST['phone'])) {
+                    $error_msg = "Số điện thoại đã được sử dụng, vui lòng sử dụng số khác";
+                }
+                // Kiểm tra username tồn tại
+                else if ($this->authModel->checkUsernameExists($_POST['username'])) {
+                    $error_msg = "Tên đăng nhập đã được sử dụng, vui lòng chọn tên khác";
+                }
+                else {
+                    $this->authModel->email = $_POST['email'];
+                    $this->authModel->username = $_POST['username'];
+                    $this->authModel->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                    $this->authModel->full_name = $_POST['full_name'];
+                    $this->authModel->date_of_birth = $_POST['date_of_birth'];
+                    $this->authModel->gender = $_POST['gender'];
+                    $this->authModel->phone = $_POST['phone'];
+                    $this->authModel->address = $_POST['address'];
+                    
+                    try {
+                        if ($this->authModel->create()) {
+                            header('Location: index.php?model=auth&action=register_success');
+                            exit();
+                        } else {
+                            $error_msg = "Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại sau!";
+                        }
+                    } catch (Exception $e) {
+                        $error_msg = "Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại sau!";
+                    }
                 }
             }
         }
         
         include('views/auth/register.php');
     }
-
-    public function login() {
+    public function register_success() {
+        include('views/auth/register_success.php');
+    }    public function login() {
         $error_msg ='';
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'];
             $password = $_POST['password'];
             $this->authModel = new User();
+            $role = new Role();
             if ($this->authModel->authenticate($username,$password)) {
                 session_start();
                 $_SESSION['user_id'] = $this->authModel->user_id;
@@ -79,7 +99,9 @@ class AuthController extends Controller {
                 $_SESSION['role_id'] = $this->authModel->role_id;
                 $_SESSION['full_name'] = $this->authModel->full_name;
                 $_SESSION['avatar_url'] = $this->authModel->avatar_url;
-               
+                $_SESSION['role_id']=$this->authModel->role_id;
+                $role->readById($this->authModel->role_id);
+                $_SESSION['role_name']=$role->name;
                 header('Location: dashboard.php');
                 exit();
             } else {
@@ -166,21 +188,48 @@ class AuthController extends Controller {
                 $this->authModel->created_at = $userData['created_at'];
                 $this->authModel->updated_at = date('Y-m-d H:i:s');
     
-
-                if (!empty($_POST['new_password'])) {
+                if (isset($_POST['current_password']) && isset($_POST['new_password']) && isset($_POST['confirm_password'])) {
+                    if (empty($_POST['current_password']) || empty($_POST['new_password']) || empty($_POST['confirm_password'])) {
+                        echo json_encode(['status' => 'error', 'message' => 'Vui lòng điền đầy đủ thông tin!']);
+                        exit();
+                    }
+                    
                     if (!password_verify($_POST['current_password'], $userData['password'])) {
-                        throw new Exception('Mật khẩu hiện tại không đúng!');
+                        echo json_encode(['status' => 'error', 'message' => 'Mật khẩu hiện tại không đúng!']);
+                        exit();
                     }
                     
                     if ($_POST['new_password'] !== $_POST['confirm_password']) {
-                        throw new Exception('Mật khẩu mới và xác nhận mật khẩu không khớp!');
+                        echo json_encode(['status' => 'error', 'message' => 'Mật khẩu mới và xác nhận mật khẩu không khớp!']);
+                        exit();
+                    }
+                    
+                    if (strlen($_POST['new_password']) < 6) {
+                        echo json_encode(['status' => 'error', 'message' => 'Mật khẩu mới phải dài ít nhất 6 ký tự!']);
+                        exit();
                     }
                     
                     $this->authModel->password = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
-                } else {
+                    $this->authModel->user_id = $_SESSION['user_id'];
+                    
+                    if ($this->authModel->update($_SESSION['user_id'])) {
+                        $_SESSION['message'] = 'Cập nhật thông tin thành công!';
+                        $_SESSION['message_type'] = 'success';
+                        $_SESSION['user_id'] = $this->authModel->user_id;
+                        $_SESSION['username'] = $this->authModel->username;
+                        $_SESSION['role_id'] = $this->authModel->role_id;
+                        $_SESSION['full_name'] = $this->authModel->full_name;
+                        $_SESSION['avatar_url'] = $this->authModel->avatar_url;
+                        echo json_encode(['status' => 'success', 'message' => 'Đổi mật khẩu thành công!']);
+                        exit();
+                    } else {
+                        echo json_encode(['status' => 'error', 'message' => 'Không thể cập nhật mật khẩu!']);
+                        exit();
+                    }
+                }
+                else {
                     $this->authModel->password = $userData['password'];
                 }
- 
                 if ($this->authModel->update($_SESSION['user_id'])) {
                     $_SESSION['message'] = 'Cập nhật thông tin thành công!';
                     $_SESSION['message_type'] = 'success';

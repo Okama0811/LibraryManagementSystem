@@ -38,7 +38,7 @@ class Controller {
     public function store() {
         
     }
-    public function profile(){
+    public function register_success(){
         
     }
 }

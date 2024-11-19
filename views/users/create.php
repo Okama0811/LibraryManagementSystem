@@ -148,8 +148,12 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between">
-                        <a href="index.php?model=user&action=index" class="btn btn-secondary">Hủy bỏ</a>
-                        <button type="submit" class="btn btn-success">Tạo người dùng</button>
+                        <a href="index.php?model=user&action=index" class="btn btn-secondary"> 
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-regular fa-floppy-disk"></i>
+                        </button>
                     </div>
                 </form>
             </div>

@@ -97,5 +97,32 @@ class User extends Model
         $stmt->bindValue(2, $id);
         return $stmt->execute();
     }
+  
+    public function checkEmailExists($email) {
+        $sql = "SELECT COUNT(*) FROM user WHERE email = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(1, $email, PDO::PARAM_STR);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+        return $count > 0;
+    }
 
+    public function checkPhoneExists($phone) {
+        $sql = "SELECT COUNT(*) FROM user WHERE phone = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(1, $phone, PDO::PARAM_STR);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+        return $count > 0;
+    }
+    
+    public function checkUsernameExists($username) {
+        $sql = "SELECT COUNT(*) FROM user WHERE username = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(1, $username, PDO::PARAM_STR);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+        return $count > 0;
+    }
+    
 }

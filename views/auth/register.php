@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="./assets/images/header_ic.png" type="image/png">
     <title>Đăng ký - Thư viện UTT</title>
     <link href="./vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href=".\assets\css\mystyle.css">
@@ -170,6 +171,32 @@
         .card:hover {
             transform: translateY(-5px);
         }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .form-error {
+            font-size: 0.875rem;
+            color: #dc3545;
+            margin-top: 0.25rem;
+        }
+
+        .input-error {
+            border-color: #dc3545 !important;
+        }
+
+        .input-error:focus {
+            box-shadow: 0 0 0 0.2rem rgba(220,53,69,.25) !important;
+        }
     </style>
 </head>
 
@@ -192,19 +219,32 @@
                                     </div>
                                     <?php if (!empty($error_msg)): ?>
                                         <div class="alert alert-danger" role="alert">
+                                            <i class="fas fa-exclamation-circle mr-2"></i>
                                             <?php echo $error_msg; ?>
                                         </div>
                                     <?php endif; ?>
                                     <form class="user" action="index.php?model=auth&action=register" method="POST">
                                         <div class="form-group">
-                                            <input type="text" name="username" class="form-control form-control-user" 
-                                                placeholder="Tên người dùng" required 
-                                                value="<?php echo htmlspecialchars($formData['username'] ?? ''); ?>">
+                                            <input type="text" name="username"
+                                                class="form-control form-control-user <?php echo !empty($error_msg) && strpos($error_msg, 'Tên đăng nhập') !== false ? 'input-error' : ''; ?>"
+                                                id="exampleUsername"
+                                                placeholder="Tên đăng nhập"
+                                                value="<?php echo htmlspecialchars($formData['username']); ?>"
+                                                required>
+                                            <?php if (!empty($error_msg) && strpos($error_msg, 'Tên đăng nhập') !== false): ?>
+                                                <div class="form-error"><?php echo $error_msg; ?></div>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="form-group">
-                                            <input type="email" name="email" class="form-control form-control-user" 
-                                                placeholder="Email" required
-                                                value="<?php echo htmlspecialchars($formData['email'] ?? ''); ?>">
+                                            <input type="email" name="email" 
+                                                class="form-control form-control-user <?php echo !empty($error_msg) && strpos($error_msg, 'Email') !== false ? 'input-error' : ''; ?>" 
+                                                id="exampleInputEmail"
+                                                placeholder="Địa chỉ Email"
+                                                value="<?php echo htmlspecialchars($formData['email']); ?>"
+                                                required>
+                                            <?php if (!empty($error_msg) && strpos($error_msg, 'Email') !== false): ?>
+                                                <div class="form-error"><?php echo $error_msg; ?></div>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="form-group">
                                             <div class="password-field">
@@ -245,9 +285,15 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" name="phone" class="form-control form-control-user" 
+                                            <input type="tel" name="phone"
+                                                class="form-control form-control-user <?php echo !empty($error_msg) && strpos($error_msg, 'Số điện thoại') !== false ? 'input-error' : ''; ?>"
+                                                id="examplePhone"
                                                 placeholder="Số điện thoại"
-                                                value="<?php echo htmlspecialchars($formData['phone'] ?? ''); ?>">
+                                                value="<?php echo htmlspecialchars($formData['phone']); ?>"
+                                                required>
+                                            <?php if (!empty($error_msg) && strpos($error_msg, 'Số điện thoại') !== false): ?>
+                                                <div class="form-error"><?php echo $error_msg; ?></div>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="form-group">
                                             <textarea name="address" class="form-control form-control-user" 

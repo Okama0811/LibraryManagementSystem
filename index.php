@@ -22,7 +22,7 @@ $model = isset($_GET['model']) ? $_GET['model'] : 'index';
 $action = isset($_GET['action']) ? $_GET['action'] : 'index';
 $id = isset($_GET['id']) ? $_GET['id'] : null;
 
-if (!isset($_SESSION['user_id']) && !in_array($action, ['login', 'register'])) {
+if (!isset($_SESSION['user_id']) && !in_array($action, ['login', 'register','register_success'])) {
     header('Location: index.php?model=auth&action=login');
     exit();
 }
@@ -90,8 +90,8 @@ switch ($action) {
     case 'logout':
         $controller->logout();
         break;
-    case 'profile':
-        $controller->profile();
+    case 'register_success':
+        $controller->register_success();
         break;
     default:
         $controller->index();

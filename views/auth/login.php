@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="./assets/images/header_ic.png" type="image/png">
     <title>Đăng nhập - Thư viện UTT</title>
     <link href="./vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href=".\assets\css\mystyle.css">
@@ -138,6 +139,15 @@
             background-position: center;
             background-size: cover;
         }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            padding: .75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: .25rem;
+        }
     </style>
 </head>
 
@@ -154,16 +164,33 @@
                                         <h1 class="login-title">Chào mừng trở lại!</h1>
                                     </div>
                                     <?php if (!empty($error_msg)): ?>
-                                        <div class="alert alert-danger" role="alert">
+                                        <div id="alert-message" class="alert alert-danger alert-dismissible fade show" role="alert">
                                             <?php echo $error_msg; ?>
                                         </div>
+                                        <?php
+                                        unset($_SESSION['message']);
+                                        unset($_SESSION['message_type']);
+                                        ?>
+                                        <script>
+                                            setTimeout(function() {
+                                                var alert = document.getElementById('alert-message');
+                                                if (alert) {
+                                                    alert.classList.remove('show');
+                                                    alert.classList.add('fade');
+                                                    setTimeout(function() {
+                                                        alert.style.display = 'none';
+                                                    }, 150); 
+                                                }
+                                            }, 2000);
+                                        </script>
                                     <?php endif; ?>
                                     <form class="user" action="index.php?model=auth&action=login" method="POST">
                                         <div class="form-group">
                                             <input type="username" name="username" 
                                                 class="form-control form-control-user" 
                                                 id="exampleInputUsername" 
-                                                placeholder="Nhập tên đăng nhập" 
+                                                placeholder="Nhập tên đăng nhập"
+                                                value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>" 
                                                 required>
                                         </div>
                                         <div class="form-group">
