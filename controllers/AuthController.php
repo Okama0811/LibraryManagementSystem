@@ -85,13 +85,14 @@ class AuthController extends Controller {
     }
     public function register_success() {
         include('views/auth/register_success.php');
-    }    public function login() {
+    }    
+    public function login() {
         $error_msg ='';
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'];
             $password = $_POST['password'];
             $this->authModel = new User();
-            $role = new Role();
+           
             if ($this->authModel->authenticate($username,$password)) {
                 session_start();
                 $_SESSION['user_id'] = $this->authModel->user_id;
@@ -100,8 +101,14 @@ class AuthController extends Controller {
                 $_SESSION['full_name'] = $this->authModel->full_name;
                 $_SESSION['avatar_url'] = $this->authModel->avatar_url;
                 $_SESSION['role_id']=$this->authModel->role_id;
+                $role = new Role();
+                $role->role_id=$this->authModel->role_id;
                 $role->readById($this->authModel->role_id);
                 $_SESSION['role_name']=$role->name;
+
+                $permissions = $role->getPermissions();
+                $_SESSION['permissions'] = array_column($permissions, 'name');
+
                 header('Location: dashboard.php');
                 exit();
             } else {

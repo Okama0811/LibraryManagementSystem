@@ -34,8 +34,46 @@
         #dataTable tbody tr:hover {
             background-color: rgba(0,0,0,0.05);
         }
-        
-    </style>
+      .dataTables_paginate {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .dataTables_paginate .paginate_button {
+        width: 35px;
+        height: 35px;
+        margin: 0px 5px;
+        margin-top: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 50%; /* Làm tròn nút */
+        background-color: #f8f9fa;
+        color: #000; /* Chữ màu đen */
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .dataTables_paginate .paginate_button:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .dataTables_paginate .paginate_button.current {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    .dataTables_paginate .paginate_button.disabled {
+        color: #6c757d;
+        pointer-events: none;
+        opacity: 0.65;
+    }
+</style>
 </head>
 
 <body id="page-top">
@@ -52,34 +90,15 @@
                     }
                 ?>
                 </div>
-                <!-- /.container-fluid -->
+               
             </div>
-            <!-- End of Main Content -->
+            <?php include 'views/components/footer.php'; ?>
         </div>
     </div>
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Bootstrap core JavaScript-->
     <script src="./vendor/jquery/jquery.min.js"></script>
     <script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

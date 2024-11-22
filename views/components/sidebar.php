@@ -23,29 +23,16 @@
      <hr class="sidebar-divider">      
      
      <!-- Heading -->     
-     <div class="sidebar-heading" style="color: #423b8e; font-size: 0.9rem; font-weight: bold;">         
+     <div class="sidebar-heading" style="color: #423b8e; font-size: 0.8rem; font-weight: bold;">         
          Công cụ     
      </div>      
      
      <?php     
-     if (isset($_SESSION['role_id'])) {         
-         switch ($_SESSION['role_id']) {             
-             case '1':                 
-                 include 'views/components/user_management_sidebar.php';                 
-                 break;             
-             case 'NhanVien':                 
-                 include 'views/components/nhanvien-side.php';                 
-                 break;             
-             case 'NhanVienQuanLy':                 
-                 include 'views/components/nvql-side.php';                 
-                 break;             
-             case 'KyThuat':                 
-                 include 'views/components/kythuat-side.php';                 
-                 break;             
-             default:                 
-                 echo "<li class='nav-item' style='color: #423b8e; font-size: 1rem;'>Không có quyền truy cập</li>";                 
-                 break;         
-         }     
+     if (isset($_SESSION['permissions'])) {     
+        $permissions = $_SESSION['permissions'];
+        if (in_array('manage_users', $permissions)) {
+            include 'views/components/user_management_sidebar.php';
+        }   
      } else {         
          echo "<li class='nav-item' style='color: #423b8e; font-size: 1rem;'>Không có quyền truy cập</li>";     
      }     
@@ -55,13 +42,13 @@
      <hr class="sidebar-divider">      
      
      <!-- Heading -->     
-     <div class="sidebar-heading" style="color: #423b8e; font-size: 0.9rem; font-weight: bold;">         
+     <div class="sidebar-heading" style="color: #423b8e; font-size: 0.8rem; font-weight: bold;">         
          Cá nhân    
      </div>     
      <li class="nav-item <?= ($current_model == 'auth' && $current_action == 'edit') ? 'active' : '' ?>">         
          <a class="nav-link" href="index.php?model=auth&action=edit" style="color: #423b8e; display: flex; align-items: center;">             
-             <i class="fa-solid fa-user" style="color: #423b8e; font-size: 1.2rem; margin-right: 0.75rem;"></i>             
-             <span style="color: #423b8e; font-size: 1rem;">Hồ sơ</span>         
+             <i class="fa-solid fa-user" style="color: #423b8e; font-size: 1.1rem; margin-right: 0.75rem;"></i>             
+             <span style="color: #423b8e; font-size: 0.9rem;">Hồ sơ</span>         
          </a>     
      </li>     
      <hr class="sidebar-divider d-none d-md-block">      

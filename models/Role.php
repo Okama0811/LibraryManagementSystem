@@ -37,8 +37,8 @@ class Role extends Model
 
     // Get all permissions for a role
     public function getPermissions() {
-        $query = "SELECT p.* FROM permissions p 
-                 INNER JOIN role_permissions rp ON p.permission_id = rp.permission_id 
+        $query = "SELECT p.* FROM permission p 
+                 INNER JOIN role_permission rp ON p.permission_id = rp.permission_id 
                  WHERE rp.role_id = :role_id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':role_id', $this->role_id);
