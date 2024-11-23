@@ -73,6 +73,9 @@
         pointer-events: none;
         opacity: 0.65;
     }
+    .nav-link[data-toggle="collapse"]::after {
+    color: #423b8e !important;
+}
 </style>
 </head>
 

@@ -1,68 +1,112 @@
 <?php
 include_once 'Model.php';
 
-class Role extends Model
+class Role extends Model 
 {
     protected $table_name = 'role';
-
+    
     public $role_id;
     public $name;
     public $description;
     public $created_at;
     public $updated_at;
-
-    public function __construct() {
+    
+    public function __construct() 
+    {
         parent::__construct();
     }
+    
+    // Kiểm tra xem role có user nào không trước khi xóa
+    public function hasUsers($role_id) 
+    {
+        $query = "SELECT COUNT(*) as count FROM user WHERE role_id = :role_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':role_id', $role_id);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['count'] > 0;
+    }
 
-    public function create() {
+    public function create() 
+    {
         return parent::create();
     }
-
-    public function read() {
+    
+    public function read() 
+    {
         return parent::read();
     }
-
-    public function readById($id) {
+    
+    public function readById($id) 
+    {
         return parent::readById($id);
     }
-
-    public function update($id) {
+    
+    public function update($id) 
+    {
         return parent::update($id);
     }
 
-    public function delete($id) {
+    public function delete($id) 
+    {
+        // Xóa tất cả permission associations trước
+        $this->removeAllPermissions($id);
         return parent::delete($id);
     }
-
-    // Get all permissions for a role
-    public function getPermissions() {
+    
+    // Lấy tất cả permissions của role
+    public function getPermissions() 
+    {
         $query = "SELECT p.* FROM permission p 
-                 INNER JOIN role_permission rp ON p.permission_id = rp.permission_id 
-                 WHERE rp.role_id = :role_id";
+                  INNER JOIN role_permission rp ON p.permission_id = rp.permission_id 
+                  WHERE rp.role_id = :role_id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':role_id', $this->role_id);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    // Assign permission to role
-    public function assignPermission($permission_id) {
+    
+    // Gán permission cho role
+    public function assignPermission($permission_id) 
+    {
         $query = "INSERT INTO role_permission (role_id, permission_id, created_at) 
-                 VALUES (:role_id, :permission_id, NOW())";
+                  VALUES (:role_id, :permission_id, NOW())";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':role_id', $this->role_id);
+        $stmt->bindParam(':permission_id', $permission_id);
+        return $stmt->execute();
+    }
+    
+    // Xóa permission khỏi role
+    public function removePermission($permission_id) 
+    {
+        $query = "DELETE FROM role_permission 
+                  WHERE role_id = :role_id AND permission_id = :permission_id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':role_id', $this->role_id);
         $stmt->bindParam(':permission_id', $permission_id);
         return $stmt->execute();
     }
 
-    // Remove permission from role
-    public function removePermission($permission_id) {
-        $query = "DELETE FROM role_permission 
-                 WHERE role_id = :role_id AND permission_id = :permission_id";
+    // Xóa tất cả permissions của role
+    public function removeAllPermissions($role_id) 
+    {
+        $query = "DELETE FROM role_permission WHERE role_id = :role_id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':role_id', $this->role_id);
-        $stmt->bindParam(':permission_id', $permission_id);
+        $stmt->bindParam(':role_id', $role_id);
         return $stmt->execute();
+    }
+
+    // Cập nhật permissions của role
+    public function updatePermissions($permissions) 
+    {
+        $this->removeAllPermissions($this->role_id);
+        
+        if (!empty($permissions)) {
+            foreach ($permissions as $permission_id) {
+                $this->assignPermission($permission_id);
+            }
+        }
+        return true;
     }
 }

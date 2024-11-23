@@ -31,7 +31,7 @@
      if (isset($_SESSION['permissions'])) {     
         $permissions = $_SESSION['permissions'];
         if (in_array('manage_users', $permissions)) {
-            include 'views/components/user_management_sidebar.php';
+            include 'views/components/manage_user_sidebar.php';
         }   
      } else {         
          echo "<li class='nav-item' style='color: #423b8e; font-size: 1rem;'>Không có quyền truy cập</li>";     
