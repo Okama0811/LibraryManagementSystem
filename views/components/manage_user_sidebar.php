@@ -22,6 +22,12 @@
             <a class="collapse-item <?= ($current_model == 'permission' && $current_action == 'index') ? 'active' : '' ?>" 
                href="route.php?model=permission&action=index" 
                style="color: #423b8e; font-size: 0.9rem;">Quyền</a>
+            
         </div>
+        
     </div>
+    <a class="nav-link" href="route.php?model=publisher&action=index" >
+        <i class="fa-solid fa-user-group"style="color: #423b8e; font-size: 1.1rem; margin-right: 0.75rem;"></i>
+        <span style="color: #423b8e; font-size: 0.9rem;">Quản lý NXB</span>
+    </a>
 </li>
