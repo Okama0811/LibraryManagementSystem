@@ -1,3 +1,5 @@
+CREATE DATABASE IF NOT EXISTS library_management_system;
+
 CREATE TABLE IF NOT EXISTS role (
     role_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
@@ -62,6 +64,7 @@ CREATE TABLE IF NOT EXISTS author (
     biography TEXT,
     birth_date DATE,
     nationality VARCHAR(50),
+    avatar_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
