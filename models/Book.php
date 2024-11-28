@@ -106,4 +106,15 @@ class Book extends Model
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getAuthors() {
+        $query = "SELECT author_id, name FROM author"; 
+        $stmt = $this->conn->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getCategories() {
+        $query = "SELECT category_id, name FROM category";
+        $stmt = $this->conn->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

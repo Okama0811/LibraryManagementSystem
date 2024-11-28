@@ -148,5 +148,6 @@ class BookController extends Controller
         header("Location: index.php?model=book&action=index");
         exit();
     }
+   
 }
 ?>
