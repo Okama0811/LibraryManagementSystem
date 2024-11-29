@@ -1,18 +1,36 @@
 <?php
 include_once 'models/Book.php';
+include_once 'models/Book_Author.php';
+include_once 'models/Book_Category.php';
+include_once 'models/Author.php';
+include_once 'models/Category.php';
+include_once 'models/Publisher.php';
 
 class BookController extends Controller
 {
     private $book;
+    private $book_author;
+    private $book_category;
+    private $author;
+    private $category;
+    private $publisher;
 
     public function __construct()
     {
         $this->book = new Book();
+        $this->book_author = new Book_Author();
+        $this->book_category = new Book_Category();
+        $this->author = new Author();
+        $this->category = new Category();
+        $this->publisher = new Publisher();
     }
 
     public function index()
     {
         $books = $this->book->read();
+        $categories = $this->category->read();
+        $publishers = $this->publisher->read();
+        $authors = $this->author->read();
         $content = 'views/books/index.php';
         include('views/layouts/base.php');
     }
