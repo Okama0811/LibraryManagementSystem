@@ -183,7 +183,7 @@
 <div class="modal fade" id="newAuthorModal" tabindex="-1" aria-labelledby="newAuthorModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header">s
         <h5 class="modal-title" id="newAuthorModalLabel">Thông báo</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
