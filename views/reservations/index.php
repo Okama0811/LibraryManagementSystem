@@ -69,11 +69,22 @@
                         <?php foreach ($reservations as $reservation): ?>
                             <tr>
                                 <td class="text-center align-middle"><?= $reservation['reservation_id'] ?></td>
-                                <td class="align-middle"><?= htmlspecialchars($reservation['username']) ?></td>
-                                <td class="align-middle"><?= htmlspecialchars($reservation['tilte']) ?></td>
+                                <td class="align-middle"><?= htmlspecialchars($reservation['full_name']) ?></td>
+                                <td class="align-middle"><?= htmlspecialchars($reservation['title']) ?></td>
                                 <td class="align-middle"><?= htmlspecialchars((new DateTime($reservation['reservation_date']))->format('d/m/Y')) ?></td>
                                 <td class="align-middle"><?= htmlspecialchars((new DateTime($reservation['expiry_date']))->format('d/m/Y')) ?></td>
-                                <td class="align-middle"><?= htmlspecialchars($reservation['status']) ?></td>
+                                <td class="align-middle">
+                                <?php 
+                                    $statusLabels = [
+                                        'pending' => 'Đang xử lý',
+                                        'confirmed' => 'Đã xác nhận',
+                                        'fulfilled' => 'Hoàn thành',
+                                        'expired' => 'Hết hạn',
+                                        'cancelled' => 'Bị hủy',
+                                    ];
+                                    echo htmlspecialchars($statusLabels[$reservation['status']] ?? 'Không xác định');
+                                    ?>
+                                </td>
                                 <td class="text-center align-middle">
                                     <div class="d-flex justify-content-center">
                                         <a href="index.php?model=reservation&action=edit&id=<?= $reservation['reservation_id'] ?>" class="btn btn-sm btn-outline-primary me-3" title="Chỉnh sửa">

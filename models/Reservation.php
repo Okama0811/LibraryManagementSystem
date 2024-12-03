@@ -25,7 +25,7 @@ class Reservation extends Model
     }
 
     public function read() {
-        $query = "SELECT * FROM {$this->table_name} r 
+        $query = "SELECT r.*, b.book_id, b.title, u.user_id, u.username, u.full_name FROM {$this->table_name} r 
                   JOIN user u ON u.user_id = r.user_id
                   JOIN book b ON b.book_id = r.book_id";
         $stmt = $this->conn->prepare($query);
@@ -34,9 +34,10 @@ class Reservation extends Model
     }
 
     public function readById($id) {
-        $query = "SELECT * FROM {$this->table_name} r 
+        $query = "SELECT r.*, b.book_id, b.title, b.status as book_status, u.user_id, u.username, u.full_name FROM {$this->table_name} r 
                   JOIN user u ON u.user_id = r.user_id
                   JOIN book b ON b.book_id = r.book_id
+                --   JOIN author a ON b.author_id = a.author_id
                   WHERE reservation_id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);

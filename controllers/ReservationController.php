@@ -1,13 +1,16 @@
 <?php
 include_once 'models/Reservation.php';
+include_once 'models/Book.php';
 
 class ReservationController extends Controller
 {
     private $reservation;
+    private $book;
 
     public function __construct()
     {
         $this->reservation = new Reservation();
+        $this->book = new Book();
     }
 
     public function index()
@@ -30,6 +33,15 @@ class ReservationController extends Controller
                     }
                 }
 
+                $this->reservation->book_id = $_POST['book_id'];
+                $this->reservation->user_id = $_SESSION['user_id'];
+                $this->reservation->reservation_date = date('Y-m-d');
+                $this->reservation->expiry_date = date('Y-m-d', strtotime('+3 days'));
+                $this->reservation->notes = $_POST['notes'];
+                $this->reservation->status = 'pending';
+
+                // var_dump($this->reservation);
+                // exit();
                 if ($this->reservation->create()) {
                     $_SESSION['message'] = 'Tạo phiếu đặt sách thành công!';
                     $_SESSION['message_type'] = 'success';
@@ -45,6 +57,7 @@ class ReservationController extends Controller
             }
         }
 
+        $books = $this->book->read();
         $content = 'views/reservations/create.php';
         include('views/layouts/base.php');
     }
@@ -60,6 +73,13 @@ class ReservationController extends Controller
                         $this->reservation->$key = strip_tags(trim($value));
                     }
                 }
+
+                $this->reservation->book_id = $_POST['book_id'];
+                $this->reservation->user_id = $_SESSION['user_id'];
+                $this->reservation->reservation_date = $_POST['reservation_date'];
+                $this->reservation->expiry_date = date('Y-m-d', strtotime($_POST['reservation_date'] . ' +3 days'));
+                $this->reservation->notes = $_POST['notes'];
+                $this->reservation->status = $_POST['status'];
 
                 if ($this->reservation->update($id)) {
                     $_SESSION['message'] = 'Cập nhật phiếu đặt sách thành công!';
