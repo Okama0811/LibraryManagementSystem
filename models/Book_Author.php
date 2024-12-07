@@ -14,22 +14,15 @@ class Book_Author extends Model
         parent::__construct();
     }
 
-    public function create() {
-        $query = "INSERT INTO " . $this->table_name . " 
-        SET book_id=:book_id, author_id=:author_id, role=:role";
-
-        $stmt = $this->conn->prepare($query);
-
-        $this->book_id = htmlspecialchars(strip_tags($this->book_id));
-        $this->author_id = htmlspecialchars(strip_tags($this->author_id));
-        $this->role = htmlspecialchars(strip_tags($this->role))?: 'author';
-
-        $stmt->bindParam(':book_id', $this->book_id);
-        $stmt->bindParam(':author_id', $this->author_id);
-        $stmt->bindParam(':role', $this->role);
-
-        $stmt->execute()
+    public function insertBookAuthor($bookId, $authorId, $role = 'Author') {
+        $sql = "INSERT INTO book_author (book_id, author_id, role) VALUES (:book_id, :author_id, :role)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+        $stmt->bindParam(':author_id', $authorId, PDO::PARAM_INT);
+        $stmt->bindParam(':role', $role, PDO::PARAM_STR);
+        return $stmt->execute();
     }
+
 
     public function read() {
         $query = "SELECT * FROM {$this->table_name}";

@@ -14,9 +14,12 @@ class Book_Category extends Model
         parent::__construct();
     }
 
-    public function create() {
-        $this->status = 'active'; 
-        return parent::create();
+    public function insertBookCategory($bookId, $categoryId) {
+        $sql = "INSERT INTO book_category (book_id, category_id) VALUES (:book_id, :category_id)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+        $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
     public function read() {

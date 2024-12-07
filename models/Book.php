@@ -31,6 +31,10 @@ class Book extends Model
 
         $stmt = $this->conn->prepare($query);
 
+        if (empty($this->status)) {
+            $this->status = 'available';
+        }
+
         // Binding các tham số
         $stmt->bindParam(':publisher_id', $this->publisher_id);
         $stmt->bindParam(':title', $this->title);
@@ -137,5 +141,29 @@ class Book extends Model
         $stmt = $this->conn->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getLastInsertedId() {
+        return $this->conn->lastInsertId(); // PDO method để lấy ID của bản ghi vừa được thêm
+    }
+
+    function getCurrentQuantity($book_id) {
+        // Truy vấn số lượng sách có sẵn từ bảng
+        $sql = "SELECT available_quantity FROM books WHERE book_id = ?";
+        // Thực hiện truy vấn...
+        return $result['available_quantity'];
+    }
     
+    // Lấy số lượng sách đang được mượn
+    function getBorrowedQuantity($book_id) {
+        // Truy vấn số lượng sách đang được mượn từ bảng mượn sách
+        $sql = "SELECT COUNT(*) as borrowed_quantity FROM loan WHERE book_id = ? AND status = 'borrowed'";
+        // Thực hiện truy vấn...
+        return $result['borrowed_quantity'];
+    }
+    
+    // Cập nhật số lượng sách có sẵn
+    function updateAvailableQuantity($book_id, $updated_quantity) {
+        $sql = "UPDATE books SET available_quantity = ? WHERE book_id = ?";
+        // Thực hiện truy vấn cập nhật...
+        return $result;
+    }
 }
