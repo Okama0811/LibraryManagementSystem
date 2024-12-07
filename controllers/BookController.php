@@ -119,14 +119,24 @@ class BookController extends Controller
     {
         $this->book = new Book();
         $bookData = $this->book->readById($id);
+        // $selectedAuthors = $this->book->getSelectedAuthorsByBookId($book_id);
+
+            // echo '<pre>';
+            // var_dump($bookData);
+            // echo '</pre>';
+            // die();
+
+        // $this->author = new Author();
+        // $allAuthors = $authorModel->getAllAuthors();
+
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                    echo '<pre>';
-                    var_dump($_POST);
-                    var_dump($_FILES);
-                    echo '</pre>';
-                    die();
+                    // echo '<pre>';
+                    // var_dump($_POST);
+                    // var_dump($_FILES);
+                    // echo '</pre>';
+                    // die();
 
                 // $add_quantity = isset($_POST['add_quantity']) ? intval($_POST['add_quantity']) : 0;
 

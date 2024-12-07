@@ -4,7 +4,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.php?model=book&action=index">Quản lý sách</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Thêm sách mới</li>
+                    <li class="breadcrumb-item active" aria-current="page">Chỉnh sửa sách</li>
                 </ol>
             </nav>
         </div>
@@ -16,23 +16,23 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">Thêm sách mới</h5>
+                    <h5 class="card-title mb-0">Chỉnh sửa sách</h5>
                 </div>
                 <div class="card-body">
                     <?php if (isset($_SESSION['message'])): ?>
                         <div id="alert-message" class="alert alert-<?= $_SESSION['message_type']; ?> alert-dismissible fade show" role="alert">
                             <?= $_SESSION['message']; ?>
                         </div>
-                        <?php
+                        <?php   
                         unset($_SESSION['message']);
                         unset($_SESSION['message_type']);
                         ?>
                     <?php endif; ?>
-                    <form action="index.php?model=book&action=edit" method="POST" enctype="multipart/form-data">
+                    <form action="index.php?model=book&action=edit&id=<?php echo $book['book_id']; ?>" method="POST" enctype="multipart/form-data">
 
                         <div class="avatar-wrapper mb-3">
                                     <img id="image-preview" class="rounded-circle img-thumbnail" 
-                                    src="<?php echo !empty($book['cover_image']) ? 'uploads/avatars/' . $book['cover_image'] : 'assets/images/default-avatar.png'; ?>" 
+                                    src="<?php echo !empty($book['cover_image']) ? 'uploads/covers/' . $book['cover_image'] : 'assets/images/default-avatar.png'; ?>" 
                                         alt="Avatar" style="width: 200px; height: 200px; object-fit: cover;">
                                 </div>
                                 <div class="mb-3">
@@ -56,8 +56,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (!empty($selectedAuthors)): ?>
-                                        <?php foreach ($selectedAuthors as $author): ?>
+                                    <?php if (!empty($authors)): ?>
+                                        <?php foreach ($authors as $author): ?>
                                             <tr>
                                                 <td>
                                                     <input type="hidden" name="authors[]" value="<?= htmlspecialchars($author['author_id']); ?>">
@@ -71,23 +71,16 @@
                                     <?php endif; ?>
                                 </tbody>
                             </table>
-                            <button type="button" class="btn btn-primary" onclick="addAuthor()">Thêm tác giả</button>
-                        </div>
-                        <div class="mb-3">
-                            <label for="author_id" class="form-label">Chọn tác giả:</label>
-                            <select id="author_id" class="form-control">
-                                <option value="">Chọn tác giả</option>
-                                <?php if (empty($authors)): ?>
-                                    <option value="">Không có tác giả nào</option>
-                                <?php else: ?>
-                                    <?php foreach ($authors as $author): ?>
-                                        <option value="<?= htmlspecialchars($author['author_id']); ?>">
-                                            <?= htmlspecialchars($author['name']); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                                <option value="new_author">+ Đăng ký tác giả mới</option>
+                            <select id="author_id" class="form-select">
+                                <option value="">-- Chọn tác giả --</option>
+                                <?php foreach ($authors as $author): ?>
+                                    <option value="<?= htmlspecialchars($author['author_id']); ?>">
+                                        <?= htmlspecialchars($author['name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                                <option value="new_author">+ Thêm tác giả mới</option>
                             </select>
+                            <button type="button" class="btn btn-primary" onclick="addAuthor()">Thêm tác giả</button>
                         </div>
 
                         <div class="mb-3">
@@ -100,7 +93,7 @@
                                     <?php foreach ($publishers as $publisher): ?>
                                         <option 
                                             value="<?= htmlspecialchars($publisher['publisher_id']); ?>"
-                                            <?= isset($selected_publisher_id) && $selected_publisher_id == $publisher['publisher_id'] ? 'selected' : ''; ?>>
+                                            <?= $publisher['publisher_id'] == $book['publisher_id'] ? 'selected' : ''; ?>>
                                             <?= htmlspecialchars($publisher['name']); ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -108,7 +101,7 @@
                             </select>
                         </div>
 
-                       <div class="mb-3">
+                        <div class="mb-3">
                             <label class="form-label">Danh sách thể loại đã chọn:</label>
                             <table id="categoriesTable" class="table table-bordered">
                                 <thead>
@@ -118,8 +111,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (!empty($selectedCategories)): ?>
-                                        <?php foreach ($selectedCategories as $category): ?>
+                                    <?php if (!empty($categories)): ?>
+                                        <?php foreach ($categories as $category): ?>
                                             <tr>
                                                 <td>
                                                     <input type="hidden" name="categories[]" value="<?= htmlspecialchars($category['category_id']); ?>">
@@ -133,6 +126,15 @@
                                     <?php endif; ?>
                                 </tbody>
                             </table>
+                            <select id="category_id" class="form-select">
+                                <option value="">-- Chọn thể loại --</option>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?= htmlspecialchars($category['category_id']); ?>">
+                                        <?= htmlspecialchars($category['name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                                <option value="new_category">+ Thêm thể loại mới</option>
+                            </select>
                             <button type="button" class="btn btn-primary" onclick="addCategory()">Thêm thể loại</button>
                         </div>
 
@@ -154,15 +156,15 @@
                         <div class="mb-3">
                             <label for="language" class="form-label">Ngôn ngữ:</label>
                             <select name="language" id="language" class="form-control" required>
-                                <option value="" disabled selected>Chọn ngôn ngữ</option>
-                                <option value="English">Tiếng Anh</option>
-                                <option value="Vietnamese">Tiếng Việt</option>
+                                <option value="" disabled <?= empty($book['language']) ? 'selected' : '' ?>>Chọn ngôn ngữ</option>
+                                <option value="English" <?= $book['language'] === 'English' ? 'selected' : '' ?>>Tiếng Anh</option>
+                                <option value="Vietnamese" <?= $book['language'] === 'Vietnamese' ? 'selected' : '' ?>>Tiếng Việt</option>
                             </select>
                         </div>
                 
                         <div class="mb-3">
                             <label for="quantity" class="form-label">Số lượng:</label>
-                            <input type="number" name="quantity" id="quantity" class="form-control" value="<?php echo $book['quanity']; ?>"  required>
+                            <input type="number" name="quantity" id="quantity" class="form-control" value="<?php echo $book['quantity']; ?>"  required>
                         </div>
 
                         <div class="mb-3">
@@ -193,9 +195,10 @@
                         </div>
 
                         <div class="mb-3">
+                        <div class="mb-3">
                             <label for="description" class="form-label">Mô tả:</label>
-                            <textarea name="description" id="description" class="form-control" rows="3" value="<?php echo htmlspecialchars($book['description']); ?>"></textarea>
-                            </div>
+                            <textarea name="description" id="description" class="form-control" rows="3"><?php echo htmlspecialchars($book['description']); ?></textarea>
+                        </div>
                             <div class="card-footer d-flex justify-content-between">
                             <a href="index.php?model=book&action=index" class="btn btn-secondary">
                                 <i class="fa-solid fa-arrow-left"></i> Trở lại
