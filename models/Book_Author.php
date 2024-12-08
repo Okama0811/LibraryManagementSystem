@@ -16,13 +16,22 @@ class Book_Author extends Model
 
     public function insertBookAuthor($bookId, $authorId, $role = 'Author') {
         $sql = "INSERT INTO book_author (book_id, author_id, role) VALUES (:book_id, :author_id, :role)";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn     ->prepare($sql);
         $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
         $stmt->bindParam(':author_id', $authorId, PDO::PARAM_INT);
         $stmt->bindParam(':role', $role, PDO::PARAM_STR);
         return $stmt->execute();
     }
 
+    public function updateBookAuthor($book_id, $author_id) {
+        $sql = "UPDATE book_author 
+                SET author_id = :author_id 
+                WHERE book_id = :book_id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+        $stmt->bindParam(':author_id', $categoryId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 
     public function read() {
         $query = "SELECT * FROM {$this->table_name}";

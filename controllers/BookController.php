@@ -119,12 +119,20 @@ class BookController extends Controller
     {
         $this->book = new Book();
         $bookData = $this->book->readById($id);
+        // $bookId = $this->bookData->book_id;
         // $selectedAuthors = $this->book->getSelectedAuthorsByBookId($book_id);
 
             // echo '<pre>';
             // var_dump($bookData);
             // echo '</pre>';
             // die();
+            // echo '<pre>';
+            // var_dump($bookData);
+            // var_dump($bookId);
+            //             var_dump($authors);
+            //             var_dump($categories);
+            //             echo '</pre>';
+            //             die();
 
         // $this->author = new Author();
         // $allAuthors = $authorModel->getAllAuthors();
@@ -192,6 +200,17 @@ class BookController extends Controller
                 }
 
                 if ($this->book->update($id)) {
+                 
+                    foreach ($authors as $author_id) {
+                        $this->book_author->updateBookAuthor($book_id, $author_id);
+                    
+                    }
+            
+                    // Thêm vào bảng book_category
+                    foreach ($categories as $category_id) {
+                        $this->book_category->updateBookCategory($book_id, $category_id);
+                    }
+
                     $_SESSION['message'] = 'Cập nhật sách thành công!';
                     $_SESSION['message_type'] = 'success';
                     header("Location: index.php?model=book&action=index");

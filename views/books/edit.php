@@ -199,6 +199,16 @@
                             <label for="description" class="form-label">Mô tả:</label>
                             <textarea name="description" id="description" class="form-control" rows="3"><?php echo htmlspecialchars($book['description']); ?></textarea>
                         </div>
+
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Trạng thái:</label>
+                            <select name="status" id="status" class="form-control" required>
+                                <option value="" disabled <?= empty($book['status']) ? 'selected' : '' ?>>Chọn trạng thái</option>
+                                <option value="available" <?= $book['status'] === 'available' ? 'selected' : '' ?>>available</option>
+                                <option value="unavailable" <?= $book['status'] === 'unavailable' ? 'selected' : '' ?>>unavailable</option>
+                            </select>
+                        </div>
+
                             <div class="card-footer d-flex justify-content-between">
                             <a href="index.php?model=book&action=index" class="btn btn-secondary">
                                 <i class="fa-solid fa-arrow-left"></i> Trở lại
