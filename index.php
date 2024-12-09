@@ -39,7 +39,7 @@ switch ($model) {
         break;
     case 'book':
         $controller = new BookController();
-        break;
+        break;   
     case 'bookcondition':
         $controller = new BookConditionController();
         break;
@@ -93,6 +93,9 @@ switch ($action) {
     case 'register_success':
         $controller->register_success();
         break;
+    case 'loadAuthors':
+        $controller->loadAuthors();
+        break;    
     default:
         $controller->index();
         break;

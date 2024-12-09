@@ -23,14 +23,33 @@ class Book_Author extends Model
         return $stmt->execute();
     }
 
-    public function updateBookAuthor($book_id, $author_id) {
-        $sql = "UPDATE book_author 
-                SET author_id = :author_id 
-                WHERE book_id = :book_id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
-        $stmt->bindParam(':author_id', $categoryId, PDO::PARAM_INT);
-        return $stmt->execute();
+    public function getAuthorsByBookId($book_id) {
+        $stmt = $this->conn->prepare("
+            SELECT author.author_id, author.name 
+            FROM book_author 
+            JOIN author ON book_author.author_id = author.author_id
+            WHERE book_author.book_id = :book_id
+        ");
+        $stmt->bindValue(':book_id', $book_id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        $authors = $stmt->fetchAll(PDO::FETCH_ASSOC); // Lấy toàn bộ kết quả
+        return $authors;
+    }   
+
+    public function updateBookAuthor($id, $author_id) {
+         // Xóa tất cả các tác giả hiện tại trước khi thêm mới
+    $sqlDelete = "DELETE FROM book_author WHERE book_id = :book_id";
+    $stmtDelete = $this->conn->prepare($sqlDelete);
+    $stmtDelete->bindParam(':book_id', $id, PDO::PARAM_INT);
+    $stmtDelete->execute();
+
+    // Thêm mới tác giả
+    $sqlInsert = "INSERT INTO book_author (book_id, author_id) VALUES (:book_id, :author_id)";
+    $stmtInsert = $this->conn->prepare($sqlInsert);
+    $stmtInsert->bindParam(':book_id', $id, PDO::PARAM_INT);
+    $stmtInsert->bindParam(':author_id', $authorId, PDO::PARAM_INT);
+    return $stmtInsert->execute();
     }
 
     public function read() {

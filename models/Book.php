@@ -136,6 +136,21 @@ class Book extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getAuthorsByBookId($id) {
+        $query = "
+            SELECT a.author_id, a.name 
+            FROM book_author ba
+            JOIN author a ON ba.author_id = a.author_id
+            WHERE ba.book_id = :book_id
+        ";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':book_id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }    
+
     public function getCategories() {
         $query = "SELECT category_id, name FROM category";
         $stmt = $this->conn->query($query);
@@ -145,24 +160,74 @@ class Book extends Model
         return $this->conn->lastInsertId(); // PDO method để lấy ID của bản ghi vừa được thêm
     }
 
-    function getCurrentQuantity($book_id) {
+    public function getCategoriesByBookId($id) {
+        $query = "
+            SELECT c.category_id, c.name
+            FROM book_category bc
+            JOIN category c ON bc.category_id = c.category_id
+            WHERE bc.book_id = :book_id
+        ";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':book_id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateBookAuthor($id, $author_ids) {
+        // Xóa tất cả các tác giả hiện tại chỉ một lần
+        $sqlDelete = "DELETE FROM book_author WHERE book_id = :book_id";
+        $stmtDelete = $this->conn->prepare($sqlDelete);
+        $stmtDelete->bindParam(':book_id', $id, PDO::PARAM_INT);
+        $stmtDelete->execute();
+    
+        // Thêm mới các tác giả
+        $sqlInsert = "INSERT INTO book_author (book_id, author_id) VALUES (:book_id, :author_id)";
+        $stmtInsert = $this->conn->prepare($sqlInsert);
+        $stmtInsert->bindParam(':book_id', $id, PDO::PARAM_INT);
+        
+        foreach ($author_ids as $author_id) {
+            $stmtInsert->bindParam(':author_id', $author_id, PDO::PARAM_INT);
+            $stmtInsert->execute();
+        }
+    }
+
+    public function updateBookCategory($id, $category_ids) {
+        // Xóa tất cả các danh mục hiện tại chỉ một lần
+        $sqlDelete = "DELETE FROM book_category WHERE book_id = :book_id";
+        $stmtDelete = $this->conn->prepare($sqlDelete);
+        $stmtDelete->bindParam(':book_id', $id, PDO::PARAM_INT);
+        $stmtDelete->execute();
+    
+        // Thêm mới các thể loại
+        $sqlInsert = "INSERT INTO book_category (book_id, category_id) VALUES (:book_id, :category_id)";
+        $stmtInsert = $this->conn->prepare($sqlInsert);
+        $stmtInsert->bindParam(':book_id', $id, PDO::PARAM_INT);
+    
+        foreach ($category_ids as $category_id) {
+            $stmtInsert->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+            $stmtInsert->execute();
+        }
+    }
+
+    function getCurrentQuantity($id) {
         // Truy vấn số lượng sách có sẵn từ bảng
-        $sql = "SELECT available_quantity FROM books WHERE book_id = ?";
+        $sql = "SELECT available_quantity FROM book WHERE book_id = ?";
         // Thực hiện truy vấn...
         return $result['available_quantity'];
     }
     
     // Lấy số lượng sách đang được mượn
-    function getBorrowedQuantity($book_id) {
+    function getBorrowedQuantity($id) {
         // Truy vấn số lượng sách đang được mượn từ bảng mượn sách
-        $sql = "SELECT COUNT(*) as borrowed_quantity FROM loan WHERE book_id = ? AND status = 'borrowed'";
+        $sql = "SELECT COUNT(*) as borrowed_quantity FROM loan WHERE book_id = ? ";
         // Thực hiện truy vấn...
         return $result['borrowed_quantity'];
     }
     
     // Cập nhật số lượng sách có sẵn
-    function updateAvailableQuantity($book_id, $updated_quantity) {
-        $sql = "UPDATE books SET available_quantity = ? WHERE book_id = ?";
+    function updateAvailableQuantity($id, $updated_quantity) {
+        $sql = "UPDATE book SET available_quantity = ? WHERE book_id = ?";
         // Thực hiện truy vấn cập nhật...
         return $result;
     }

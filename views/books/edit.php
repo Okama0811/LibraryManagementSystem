@@ -56,8 +56,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (!empty($authors)): ?>
-                                        <?php foreach ($authors as $author): ?>
+                                    <?php if (!empty($selectedauthors)): ?>
+                                        <?php foreach ($selectedauthors as $author): ?>
                                             <tr>
                                                 <td>
                                                     <input type="hidden" name="authors[]" value="<?= htmlspecialchars($author['author_id']); ?>">
@@ -111,8 +111,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (!empty($categories)): ?>
-                                        <?php foreach ($categories as $category): ?>
+                                    <?php if (!empty($selectedcategories)): ?>
+                                        <?php foreach ($selectedcategories as $category): ?>
                                             <tr>
                                                 <td>
                                                     <input type="hidden" name="categories[]" value="<?= htmlspecialchars($category['category_id']); ?>">
@@ -164,30 +164,20 @@
                 
                         <div class="mb-3">
                             <label for="quantity" class="form-label">Số lượng:</label>
-                            <input type="number" name="quantity" id="quantity" class="form-control" value="<?php echo $book['quantity']; ?>"  required>
+                            <input type="number" name="quantity" id="quantity" class="form-control" 
+                                value="<?php echo $book['quantity']; ?>" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="current_quantity" class="form-label">Số lượng sách hiện tại:</label>
-                            <input type="number" 
-                                id="current_quantity" 
-                                class="form-control" 
-                                value="<?= htmlspecialchars($book['available_quantity']); ?>" 
-                                readonly>
-
-                            <label for="add_quantity" class="form-label mt-3">Số lượng muốn cộng thêm:</label>
-                            <input type="number" 
-                                name="add_quantity" 
-                                id="add_quantity" 
-                                class="form-control" 
-                                min="0" 
-                                placeholder="Nhập số lượng muốn thêm" 
-                                >
-
-                            <p id="warning_message" class="text-danger mt-2" style="display: none;">
-                                Tổng số lượng không thể vượt quá số lượng hiện tại!
-                            </p>
+                            <label for="available_quantity" class="form-label">Số lượng có sẵn:</label>
+                            <input type="number" name="available_quantity" id="available_quantity" 
+                                class="form-control" min="0" 
+                                value="<?php echo $book['available_quantity']; ?>" required>
+                            <div id="error-message" class="text-danger mt-1" style="display: none;">
+                                Số lượng có sẵn phải nhỏ hơn hoặc bằng số lượng tổng.
+                            </div>
                         </div>
+
 
                         <div class="mb-3">
                             <label for="price" class="form-label">Giá:</label>
@@ -270,12 +260,24 @@
 
     const quantityInput = document.getElementById('quantity');
     const availableQuantityInput = document.getElementById('available_quantity');
+    const errorMessage = document.getElementById('error-message');
 
-    // Lắng nghe sự kiện khi người dùng nhập số lượng
-    quantityInput.addEventListener('input', function () {
-        const quantity = parseInt(quantityInput.value) || 0; // Lấy giá trị hoặc gán mặc định là 0
-        availableQuantityInput.value = quantity; // Gán số lượng có sẵn bằng số lượng
-    });
+    function validateAvailableQuantity() {
+        const quantity = parseInt(quantityInput.value, 10) || 0;
+        const availableQuantity = parseInt(availableQuantityInput.value, 10) || 0;
+
+        if (availableQuantity > quantity) {
+            errorMessage.style.display = 'block';
+            availableQuantityInput.setCustomValidity('Số lượng có sẵn phải nhỏ hơn hoặc bằng số lượng tổng.');
+        } else {
+            errorMessage.style.display = 'none';
+            availableQuantityInput.setCustomValidity('');
+        }
+    }
+
+    quantityInput.addEventListener('input', validateAvailableQuantity);
+    availableQuantityInput.addEventListener('input', validateAvailableQuantity);
+   
 
     function addAuthor() {
     const authorsSelect = document.getElementById('author_id'); // Lấy dropdown danh sách tác giả
