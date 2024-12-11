@@ -22,18 +22,16 @@
             <a class="collapse-item <?= ($current_model == 'permission' && $current_action == 'index') ? 'active' : '' ?>" 
                href="route.php?model=permission&action=index" 
                style="color: #423b8e; font-size: 0.9rem;">Quyền</a>
+            
         </div>
+        
     </div>
-    <a class="nav-link" href="route.php?model=author&action=index" >
+    <a class="nav-link" href="route.php?model=publisher&action=index" >
         <i class="fa-solid fa-user-group"style="color: #423b8e; font-size: 1.1rem; margin-right: 0.75rem;"></i>
-        <span style="color: #423b8e; font-size: 0.9rem;">Quản lý tác giả</span>
+        <span style="color: #423b8e; font-size: 0.9rem;">Quản lý NXB</span>
     </a>
-    <a class="nav-link" href="route.php?model=category&action=index" >
+    <a class="nav-link" href="route.php?model=book&action=index" >
         <i class="fa-solid fa-user-group"style="color: #423b8e; font-size: 1.1rem; margin-right: 0.75rem;"></i>
-        <span style="color: #423b8e; font-size: 0.9rem;">Quản lý thể loại</span>
-    </a>
-    <a class="nav-link" href="route.php?model=reservation&action=index" >
-        <i class="fa-solid fa-user-group"style="color: #423b8e; font-size: 1.1rem; margin-right: 0.75rem;"></i>
-        <span style="color: #423b8e; font-size: 0.9rem;">Quản lý đặt sách</span>
+        <span style="color: #423b8e; font-size: 0.9rem;">Quản lý sách</span>
     </a>
 </li>

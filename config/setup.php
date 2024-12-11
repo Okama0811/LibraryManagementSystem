@@ -32,13 +32,13 @@ class Setup {
 
 try {
     $setup = new Setup();
-    $schemaFile = 'D:\xampp\htdocs\LibraryManagementSystem\database\migrations\schema.sql';
-    $dataFile = 'D:\xampp\htdocs\LibraryManagementSystem\database\seeders\data.sql';
-    $updateFile = 'D:\xampp\htdocs\LibraryManagementSystem\database\migrations\update.sql';
-
-    $setup->runSQLFromFile($schemaFile);
-    $setup->runSQLFromFile($dataFile);
-    // $setup->runSQLFromFile($updateFile);
+    $schemaFile = 'D:\XAMPP\htdocs\LibraryManagementSystem\database\migrations\schema.sql';
+    $dataFile = 'D:\XAMPP\htdocs\LibraryManagementSystem\database\seeders\data.sql';
+    $updateFile = 'D:\XAMPP\htdocs\LibraryManagementSystem\database\migrations\update.sql';
+    
+    // $setup->runSQLFromFile($schemaFile);
+    // $setup->runSQLFromFile($dataFile);
+    $setup->runSQLFromFile($updateFile);
   
 } catch(Exception $e) {
     echo "Lỗi khởi tạo: " . $e->getMessage() . "\n";
