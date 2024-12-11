@@ -34,8 +34,8 @@
                 <h5 class="card-title mb-0">Quản lý sách</h5>
                 <div class="d-flex align-items-center">
                     <input type="search" id="searchInput" class="form-control me-3" placeholder="Tìm kiếm sách...">
-                    <a href="index.php?model=book&action=create" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Thêm mới sách
+                    <a href="index.php?model=book&action=create" class="btn btn-primary ml-3">
+                        <i class="fas fa-plus"></i>
                     </a>
                 </div>
             </div>

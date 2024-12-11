@@ -41,67 +41,86 @@
                                     <small class="text-muted">Cho phép: JPG, JPEG, PNG. Tối đa 2MB</small>
                                 </div>
                               
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Tên sách:</label>
-                            <input type="text" name="title" id="title" class="form-control" value="<?php echo htmlspecialchars($book['title']); ?>" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Danh sách tác giả đã chọn:</label>
-                            <table id="authorsTable" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Tác giả</th>
-                                        <th>Hành động</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if (!empty($selectedauthors)): ?>
-                                        <?php foreach ($selectedauthors as $author): ?>
-                                            <tr>
-                                                <td>
-                                                    <input type="hidden" name="authors[]" value="<?= htmlspecialchars($author['author_id']); ?>">
-                                                    <?= htmlspecialchars($author['name']); ?>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeAuthor(this)">Xóa</button>
-                                                </td>
-                                            </tr>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="title" class="form-label">Tên sách:</label>
+                                <input type="text" name="title" id="title" class="form-control" value="<?php echo htmlspecialchars($book['title']); ?>" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="publisher_id" class="form-label">Nhà xuất bản:</label>
+                                <select name="publisher_id" id="publisher_id" class="form-control" required>
+                                    <option value="">Chọn nhà xuất bản</option>
+                                    <?php if (empty($publishers)): ?>
+                                        <option value="">Không có nhà xuất bản nào</option>
+                                    <?php else: ?>
+                                        <?php foreach ($publishers as $publisher): ?>
+                                            <option 
+                                                value="<?= htmlspecialchars($publisher['publisher_id']); ?>"
+                                                <?= $publisher['publisher_id'] == $book['publisher_id'] ? 'selected' : ''; ?>>
+                                                <?= htmlspecialchars($publisher['name']); ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
-                                </tbody>
-                            </table>
-                            <select id="author_id" class="form-select">
-                                <option value="">-- Chọn tác giả --</option>
-                                <?php foreach ($authors as $author): ?>
-                                    <option value="<?= htmlspecialchars($author['author_id']); ?>">
-                                        <?= htmlspecialchars($author['name']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="new_author">+ Thêm tác giả mới</option>
-                            </select>
-                            <button type="button" class="btn btn-primary" onclick="addAuthor()">Thêm tác giả</button>
+                                    <option value="new_publisher">+ Thêm nhà xuất bản mới</option>
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="publisher_id" class="form-label">Nhà xuất bản:</label>
-                            <select name="publisher_id" id="publisher_id" class="form-control" required>
-                                <option value="">Chọn nhà xuất bản</option>
-                                <?php if (empty($publishers)): ?>
-                                    <option value="">Không có nhà xuất bản nào</option>
-                                <?php else: ?>
-                                    <?php foreach ($publishers as $publisher): ?>
-                                        <option 
-                                            value="<?= htmlspecialchars($publisher['publisher_id']); ?>"
-                                            <?= $publisher['publisher_id'] == $book['publisher_id'] ? 'selected' : ''; ?>>
-                                            <?= htmlspecialchars($publisher['name']); ?>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                            <select id="author_id" class="form-control">
+                                    <option value="">-- Chọn tác giả --</option>
+                                    <?php foreach ($authors as $author): ?>
+                                        <option value="<?= htmlspecialchars($author['author_id']); ?>">
+                                            <?= htmlspecialchars($author['name']); ?>
                                         </option>
                                     <?php endforeach; ?>
-                                <?php endif; ?>
-                            </select>
+                                    <option value="new_author">+ Thêm tác giả mới</option>
+                                </select>
+                                <button type="button" class="btn btn-primary ml-3" onclick="addAuthor()">Thêm tác giả</button>
+                            </div>
+                            <div class="col-md-6">
+                            <label class="form-label">Danh sách tác giả đã chọn:</label>
+                                <table id="authorsTable" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Tác giả</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php if (!empty($selectedauthors)): ?>
+                                            <?php foreach ($selectedauthors as $author): ?>
+                                                <tr>
+                                                    <td>
+                                                        <input type="hidden" name="authors[]" value="<?= htmlspecialchars($author['author_id']); ?>">
+                                                        <?= htmlspecialchars($author['name']); ?>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeAuthor(this)">Xóa</button>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                            <select id="category_id" class="form-control">
+                                <option value="">-- Chọn thể loại --</option>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?= htmlspecialchars($category['category_id']); ?>">
+                                        <?= htmlspecialchars($category['name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                                <option value="new_category">+ Thêm thể loại mới</option>
+                            </select>
+                            <button type="button" class="btn btn-primary ml-3" onclick="addCategory()">Thêm thể loại</button>
+                            </div>
+                            <div class="col-md-6">
                             <label class="form-label">Danh sách thể loại đã chọn:</label>
                             <table id="categoriesTable" class="table table-bordered">
                                 <thead>
@@ -126,42 +145,35 @@
                                     <?php endif; ?>
                                 </tbody>
                             </table>
-                            <select id="category_id" class="form-select">
-                                <option value="">-- Chọn thể loại --</option>
-                                <?php foreach ($categories as $category): ?>
-                                    <option value="<?= htmlspecialchars($category['category_id']); ?>">
-                                        <?= htmlspecialchars($category['name']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                                <option value="new_category">+ Thêm thể loại mới</option>
-                            </select>
-                            <button type="button" class="btn btn-primary" onclick="addCategory()">Thêm thể loại</button>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="publication_year" class="form-label">Năm xuất bản:</label>
-                            <input type="number" name="publication_year" id="publication_year" class="form-control" value="<?php echo htmlspecialchars($book['publication_year']); ?>" required>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="publication_year" class="form-label">Năm xuất bản:</label>
+                                <input type="number" name="publication_year" id="publication_year" class="form-control" value="<?php echo htmlspecialchars($book['publication_year']); ?>" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edition" class="form-label">Tái bản:</label>
+                                <input type="text" name="edition" id="edition" class="form-control" value="<?php echo htmlspecialchars($book['edition']); ?>" maxlength="50" required>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="edition" class="form-label">Tái bản:</label>
-                            <input type="text" name="edition" id="edition" class="form-control" value="<?php echo htmlspecialchars($book['edition']); ?>" maxlength="50" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="pages" class="form-label">Số trang:</label>
-                            <input type="number" name="pages" id="pages" class="form-control" value="<?php echo htmlspecialchars($book['pages']); ?>" min="1" required>
-                        </div>
-
-                        <div class="mb-3">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="pages" class="form-label">Số trang:</label>
+                                <input type="number" name="pages" id="pages" class="form-control" value="<?php echo htmlspecialchars($book['pages']); ?>" min="1" required>
+                            </div>
+                            <div class="col-md-6">
                             <label for="language" class="form-label">Ngôn ngữ:</label>
-                            <select name="language" id="language" class="form-control" required>
-                                <option value="" disabled <?= empty($book['language']) ? 'selected' : '' ?>>Chọn ngôn ngữ</option>
-                                <option value="English" <?= $book['language'] === 'English' ? 'selected' : '' ?>>Tiếng Anh</option>
-                                <option value="Vietnamese" <?= $book['language'] === 'Vietnamese' ? 'selected' : '' ?>>Tiếng Việt</option>
-                            </select>
+                                <select name="language" id="language" class="form-control" required>
+                                    <option value="" disabled <?= empty($book['language']) ? 'selected' : '' ?>>Chọn ngôn ngữ</option>
+                                    <option value="English" <?= $book['language'] === 'English' ? 'selected' : '' ?>>Tiếng Anh</option>
+                                    <option value="Vietnamese" <?= $book['language'] === 'Vietnamese' ? 'selected' : '' ?>>Tiếng Việt</option>
+                                </select>
+                            </div>
                         </div>
-                
+
                         <div class="mb-3">
                             <label for="quantity" class="form-label">Số lượng:</label>
                             <input type="number" name="quantity" id="quantity" class="form-control" 
@@ -218,7 +230,7 @@
 <div class="modal fade" id="newAuthorModal" tabindex="-1" aria-labelledby="newAuthorModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">s
+      <div class="modal-header">
         <h5 class="modal-title" id="newAuthorModalLabel">Thông báo</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -252,6 +264,16 @@
 </div>
 
 <script>
+document.getElementById('publisher_id').addEventListener('change', function () {
+        if (this.value === 'new_publisher') {
+            if (confirm('Bạn muốn sang trang đăng ký nhà xuất bản?')) {
+                window.location.href = 'index.php?model=publisher&action=create'; // Thay bằng URL của trang đăng ký nhà xuất bản
+            } else {
+                this.value = ''; // Reset lại lựa chọn nếu người dùng không muốn chuyển trang
+            }
+        }
+    });
+
       // Lấy năm hiện tại
       const currentYear = new Date().getFullYear();
 
@@ -326,6 +348,7 @@ document.getElementById('author_id').addEventListener('change', function () {
         this.value = ""; // Reset lại dropdown
     }
 });
+
 
 function addCategory() {
     const categoriesSelect = document.getElementById('category_id'); // Lấy dropdown danh sách thể loại
