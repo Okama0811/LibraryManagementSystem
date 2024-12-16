@@ -75,46 +75,78 @@ class BookConditionController extends Controller
         include('views/layouts/base.php');
     }
 
-     public function edit($id)
-     {
-         $this->book_condition = new Condition();
-         $conditionData = $this->book_condition->readById($id);
+    public function edit($id)
+    {
+        $this->book_condition = new Condition();
+        $conditionData = $this->book_condition->readById($id);
 
-         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-              try {
-                foreach ($_POST as $key => $value) {
-                     if (property_exists($this->book_condition, $key)) {
-                         $this->book_condition->$key = strip_tags(trim($value));
-                     }
-                 }
-
-                 if ($this->book_condition->update($id)) {
-
-                     $_SESSION['message'] = 'Cập nhật phiếu thành công!';
-                     $_SESSION['message_type'] = 'success';
-                     header("Location: index.php?model=book_condition&action=index");
-                     exit();
-                 } else {
-                   throw new Exception('Cập nhật sách không thành công.');
-                 }
-             } catch (Exception $e) {
-                 $_SESSION['message'] = $e->getMessage();
-                $_SESSION['message_type'] = 'danger';
-             }
+        // Kiểm tra dữ liệu phiếu mượn
+        if (!$conditionData) {
+            $_SESSION['message'] = "Không tìm thấy dữ liệu cho ID: $id";
+            $_SESSION['message_type'] = 'danger';
+            header("Location: index.php?model=book_condition&action=index");
+            exit();
         }
 
-        $books=$this->book->getUnassessedBooks();
-        $loans=$this->book_condition->getLoans();
-         $book_condition = $conditionData;
-         $content = 'views/book_condition/edit.php';
-         include('views/layouts/base.php');
-     }
+        // Kiểm tra quyền của người dùng hiện tại
+        if ($_SESSION['user_id'] != $conditionData['assessed_by']) {
+            $_SESSION['message'] = "Bạn không có quyền chỉnh sửa phiếu này.";
+            $_SESSION['message_type'] = 'danger';
+            header("Location: index.php?model=book_condition&action=index");
+            exit();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                // Duyệt qua dữ liệu từ form và gán giá trị
+                foreach ($_POST as $key => $value) {
+                    if (property_exists($this->book_condition, $key)) {
+                        $this->book_condition->$key = strip_tags(trim($value));
+                    }
+                }
+
+                // Nếu condition_after là Intact, xóa nội dung damage_description
+                if ($this->book_condition->condition_after === 'Intact') {
+                    $this->book_condition->damage_description = '';
+                }
+
+                // Thực hiện cập nhật dữ liệu
+                if ($this->book_condition->update($id)) {
+                    $_SESSION['message'] = 'Cập nhật phiếu thành công!';
+                    $_SESSION['message_type'] = 'success';
+                    header("Location: index.php?model=book_condition&action=index");
+                    exit();
+                } else {
+                    throw new Exception('Cập nhật phiếu không thành công.');
+                }
+            } catch (Exception $e) {
+                $_SESSION['message'] = $e->getMessage();
+                $_SESSION['message_type'] = 'danger';
+            }
+        }
+
+        // Lấy danh sách sách và phiếu mượn
+        $books = $this->book->getUnassessedBooks() ?: [];
+        $loans = $this->book_condition->getLoans() ?: [];
+
+        // Dữ liệu truyền vào view
+        $book_condition = $conditionData;
+        $content = 'views/book_condition/edit.php';
+        include('views/layouts/base.php');
+    }
+
 
     public function delete($id)
     {
         try {
-            if ($this->book->delete($id)) {
-                $_SESSION['message'] = 'Xóa sách thành công!';
+            // Kiểm tra quyền của người dùng hiện tại
+            if ($_SESSION['role_id'] !== 1) {
+                throw new Exception('Bạn không có quyền xóa sách.');
+            }
+
+            // Thực hiện xóa sách nếu người dùng là admin
+            if ($this->book_condition->delete($id)) {
+                $_SESSION['message'] = 'Xóa phiếu thành công!';
                 $_SESSION['message_type'] = 'success';
             } else {
                 throw new Exception('Xóa sách không thành công.');
@@ -123,7 +155,8 @@ class BookConditionController extends Controller
             $_SESSION['message'] = $e->getMessage();
             $_SESSION['message_type'] = 'danger';
         }
-        header("Location: index.php?model=book&action=index");
+
+        header("Location: index.php?model=book_condition&action=index");
         exit();
     }
    

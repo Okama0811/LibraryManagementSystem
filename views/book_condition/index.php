@@ -1,4 +1,9 @@
+<?php
 
+// echo '<pre>';
+// var_dump($_SESSION);
+// echo '</pre>';
+?>
 <div class="container-fluid">
     <div class="row mt-3">
         <div class="col">

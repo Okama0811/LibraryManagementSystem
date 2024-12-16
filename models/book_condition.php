@@ -70,12 +70,28 @@ class Condition extends Model
 
     public function update($id)
     {
-        return parent::update($id);
+        $sql = "UPDATE book_condition 
+                SET condition_after = :condition_after, damage_description = :damage_description, notes = :notes
+                WHERE condition_id = :condition_id";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':condition_after', $this->condition_after);
+        $stmt->bindValue(':damage_description', $this->damage_description);
+        $stmt->bindValue(':notes', $this->notes);
+        $stmt->bindValue(':condition_id', $id);
+
+        return $stmt->execute();
     }
 
     public function delete($id)
     {
-        return parent::delete($id);
+        $sql = "DELETE FROM book_condition 
+        WHERE condition_id = :condition_id";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':condition_id', $id);
+
+        return $stmt->execute();
     }
     
     public function getLoans() {
