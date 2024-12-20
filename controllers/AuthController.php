@@ -121,7 +121,7 @@ class AuthController extends Controller {
     }
     public function logout() {
         session_destroy();
-        header('Location: index.php?model=auth&action=login');
+        header('Location: index.php?');
         exit();
     }
     public function edit($user_id) {
