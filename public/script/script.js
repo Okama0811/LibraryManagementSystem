@@ -40,16 +40,16 @@
   })
 
 });
-function Display_PrdDetail(masp){
-  $('#modal-id').attr('data-remote','product/PrdDetail/'+masp);
+function Display_PrdDetail(book_id){
+  $('#modal-id').attr('data-remote','index.php?model=book&action=detail&id='+book_id);
   $('#modal-sanpham').empty();
 
   $.ajax({
-    url : "product/PrdDetail/"+masp,
+    url : "index.php?model=book&action=detail&id="+book_id,
     type : "post",
     dataType:"text",
     data : {
-      masp
+      book_id
     },
     success : function (result){
       $('#modal-sanpham').html(result);

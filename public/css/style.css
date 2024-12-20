@@ -74,25 +74,25 @@
 li.menu-name {cursor: pointer;}
 .all-product{text-align: center;}
 .carousel-caption .btn{position: relative; top: 40px;}
-#headerSlide{background-color: #3B4856;}
+#headerSlide{background-color:white;}
 td{vertical-align: middle!important;}
 a{cursor: pointer!important;}
 #nav{position: sticky; top: 0; z-index: 2;}
 a:hover{text-decoration: none!important}
-.navbar-default{background-color: #2c3e50!important; color: white; border: none!important;}
-.navbar-default .navbar-nav>li>a{color: white!important;}
-.logo{color: yellow!important; font-family: 'Kaushan Script', cursive;}
+.navbar-default{background-color: white!important; color: white; border: none!important;}
+.navbar-default .navbar-nav>li>a{color: black!important;}
+.logo{color: blue!important; font-family: 'Kaushan Script', cursive;}
 .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover{
 	background-color: #1595a9!important;
 }
 .km{padding: 5px 10px; background-color: green; border-radius: 15px; color: white;}
 .navbar{bottom: 23px; margin: 0!important;}
-.menu-name:hover{background-color: black}
+.menu-name:hover{background-color: rgba(150, 143, 143, 0.119)}
 /* .content-menu:hover{letter-spacing: 5px; transition: .5s} */
 .content-menu{transition: .5s; text-align: left;}
 header{
 	width: 100%; height: 150px; position: relative; background-color: teal;
-	background-image: url('../images/cover-photo.jpg');
+	background-image: url('../images/cover_img.jpg');
 	background-size: cover;
 }
 header img{width: 157px;margin-top: 6px;}
@@ -518,7 +518,7 @@ footer{
 	padding-bottom: 45px;
 }
 #like_count:before{color:red;}
-#cart_count:before{color:yellow;}
+#cart_count:before{color:blue;}
 #cart_count:hover{transform: scale(1.3); transition: .3s;}
 #cart_count{transition: .3s; position: relative;}
 #like_count:hover{transform: scale(1.3); transition: .3s;}
@@ -733,7 +733,7 @@ a.snip0050.hover:before {
     font-size: 23px;
 }
 .rate{
-	color: yellow;
+	color: blue;
 	position: absolute;
 	top: 30px;
 	width: 100%;

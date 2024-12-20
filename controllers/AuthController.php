@@ -94,7 +94,9 @@ class AuthController extends Controller {
             $this->authModel = new User();
            
             if ($this->authModel->authenticate($username,$password)) {
-                session_start();
+                if (!isset($_SESSION)) {
+                    session_start();
+                }
                 $_SESSION['user_id'] = $this->authModel->user_id;
                 $_SESSION['username'] = $this->authModel->username;
                 $_SESSION['role_id'] = $this->authModel->role_id;
@@ -108,12 +110,8 @@ class AuthController extends Controller {
 
                 $permissions = $role->getPermissions();
                 $_SESSION['permissions'] = array_column($permissions, 'name');
-                if( $_SESSION['role_id']==3)
-                    include('views/layouts/application.php');
-                else{
-                    $content = 'views/users/create.php';
-                    include('views/layouts/base.php');
-                }
+            
+                header('Location: index.php?model=default');
                 exit();
             } else {
                 $error_msg = "Tên đăng nhập hoặc mật khẩu không chính xác.";

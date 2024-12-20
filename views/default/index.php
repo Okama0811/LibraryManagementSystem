@@ -30,7 +30,7 @@
 		<div class="row">
 			<div class="col-sm-12 all-product">
 				<a href="product/List/BestSelling">
-					<h2 title="Những sản phẩm bán chạy nhất tuần qua" class="content-menu">Mua Nhiều Tuần Qua 
+					<h2 title="" class="content-menu">Top sách tuần qua
 						<span class="glyphicon glyphicon-menu-right" style="font-size: 18px"></span>
 					</h2>
 				</a>
@@ -66,7 +66,7 @@
 				<?php } ?>
 
 				<a href="product/List/Newest">
-					<h2 title="Những sản phẩm mới nhất" class="content-menu">Sản phẩm mới 
+					<h2 title="Những sản phẩm mới nhất" class="content-menu">Sách mới
 						<span class="glyphicon glyphicon-menu-right" style="font-size: 18px"></span>
 					</h2>
 				</a>

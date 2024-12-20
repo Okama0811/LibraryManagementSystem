@@ -1,54 +1,255 @@
-<?php
-// if(isset($_COOKIE['user']) && !isset($_SESSION['user'])){
-// 	header('location: user/rememberLogin');
-// }
-// ?>
 <html lang="en">
+
 <head>
-    <link rel="icon" href="./assets/images/header_ic.png" type="image/png">
+	<link rel="icon" href="./assets/images/header_ic.png" type="image/png">
 	<title> E-library</title>
 	<meta charset="utf-8">
-	<!-- <base href="/WBH_MVC-master/"> -->
+
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="public/css/style.css">
-	<!-- <link rel="stylesheet" href="/WBH_MVC/public/css/style.css"> -->
-	<!-- File css -> file js -> file jquery -->
-	<!-- Put script after jquery -->
 	<link rel="stylesheet" href="public/bootstrap/css/bootstrap.css">
 	<script src="public/jquery/jquery-latest.js"></script>
 	<script type="text/javascript" src="public/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="public/script/script.js"></script>
-
-	<!-- font used in this site -->
-	<!-- <link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet"> -->
 	<link rel="stylesheet" type="text/css" href="public/animate.css">
+	<style>
+		.scroll-to-top {
+			position: fixed;
+			bottom: 40px;
+			right: 40px;
+			background: linear-gradient(145deg, #ffffff, #f0f0f0);
+			width: 50px;
+			height: 50px;
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+			opacity: 0.9;
+			backdrop-filter: blur(8px);
+			box-shadow:
+				0 10px 15px -3px rgba(0, 0, 0, 0.1),
+				0 4px 6px -2px rgba(0, 0, 0, 0.05),
+				inset 0 -2px 5px rgba(255, 255, 255, 0.2);
+		}
+
+		.scroll-to-top:hover {
+			transform: translateY(-5px) scale(1.05);
+			opacity: 1;
+			box-shadow:
+				0 20px 25px -5px rgba(0, 0, 0, 0.1),
+				0 10px 10px -5px rgba(0, 0, 0, 0.04),
+				inset 0 -2px 5px rgba(255, 255, 255, 0.2);
+		}
+
+		.scroll-to-top i {
+			font-size: 24px;
+			transform: translateY(2px);
+			transition: transform 0.3s ease;
+			color: #4f46e5;
+		}
+
+		.scroll-to-top:hover i {
+			transform: translateY(-2px);
+		}
+
+		/* Giữ màu icon khi click */
+		.scroll-to-top:active i,
+		.scroll-to-top:visited i,
+		.scroll-to-top:link i {
+			color: #4f46e5;
+		}
+
+		/* Add smooth scrolling */
+		html {
+			scroll-behavior: smooth;
+		}
+
+		/* Demo content */
+		body {
+			margin: 0;
+			background: #f5f5f5;
+		}
+
+		.content {
+			padding: 20px;
+			height: 2000px;
+			background: linear-gradient(180deg, #f5f5f5, #e5e5e5);
+		}
+
+
+		footer {
+			background: linear-gradient(145deg, #1a1c23, #2d2f36);
+			color: #ffffff;
+			padding: 60px 0 20px 0;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+
+		.map-container {
+			position: relative;
+			overflow: hidden;
+			border-radius: 12px;
+			box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+		}
+
+		.map-container iframe {
+			width: 100%;
+			max-width: 600px;
+			height: 300px;
+			border-radius: 12px;
+		}
+
+		.contact-info {
+			background: rgba(255, 255, 255, 0.05);
+			padding: 30px;
+			border-radius: 12px;
+			backdrop-filter: blur(10px);
+		}
+
+		.contact-info h3 {
+			color: #fff;
+			font-weight: 600;
+			margin-bottom: 25px;
+			font-size: 24px;
+		}
+
+		.contact-info i {
+			color: #4f46e5;
+			margin-right: 10px;
+			font-size: 18px;
+			width: 24px;
+		}
+
+		.contact-info span {
+			color: #e2e2e2;
+			font-size: 15px;
+			line-height: 35px;
+		}
+
+		.newsletter {
+			margin-top: 30px;
+		}
+
+		.newsletter h4 {
+			color: #e2e2e2;
+			font-size: 16px;
+			margin-bottom: 20px;
+		}
+
+		.newsletter-form {
+			display: flex;
+			gap: 10px;
+		}
+
+		.newsletter-form input {
+			background: rgba(255, 255, 255, 0.1);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			color: white;
+			border-radius: 8px;
+			padding: 10px 15px;
+			flex-grow: 1;
+		}
+
+		.newsletter-form input::placeholder {
+			color: rgba(255, 255, 255, 0.5);
+		}
+
+		.newsletter-form button {
+			background: #4f46e5;
+			color: white;
+			border: none;
+			padding: 10px 25px;
+			border-radius: 8px;
+			transition: all 0.3s ease;
+		}
+
+		.newsletter-form button:hover {
+			background: #4338ca;
+			transform: translateY(-2px);
+		}
+
+		.copyright {
+			text-align: center;
+			padding-top: 40px;
+			margin-top: 40px;
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
+			color: #a0a0a0;
+			font-size: 14px;
+		}
+
+		@media (max-width: 768px) {
+			.map-container {
+				margin-bottom: 30px;
+			}
+
+			.newsletter-form {
+				flex-direction: column;
+			}
+
+			.newsletter-form button {
+				width: 100%;
+			}
+		}
+	</style>
 
 </head>
+
 <body>
 	<header id='header'>
-		<a href=""><img src="public/images/logo.png"><h2 class="logo">9XWatch</h2></a>
+		<a class="mx-3" href=""><img src="assets/images/header_ic.png">
+			<h2 class="logo">E-LIBRARY</h2>
+		</a>
 		<ul class="header-menu">
 			<?php
-			if((!isset($_SESSION['user_id']))){ ?>
-			<!-- if(($_SESSION['user']) == ""){ ?> -->
-			<li><a href="index.php?model=auth&action=login" id="s-s" data-stt='nosignin'>Đăng nhập</a><div class='mn-ef'></div></li>
-			<li><a href="index.php?model=auth&action=register">Đăng ký</a><div class='mn-ef'></div></li>
+			if ((!isset($_SESSION['user_id']))) { ?>
+				<!-- if(($_SESSION['user']) == ""){ ?> -->
+				<li><a href="index.php?model=auth&action=login" id="s-s" data-stt='nosignin'>Đăng nhập</a>
+					<div class='mn-ef'></div>
+				</li>
+				<li><a href="index.php?model=auth&action=register">Đăng ký</a>
+					<div class='mn-ef'></div>
+				</li>
 			<?php } else { ?>
-			<li><a onclick="$('#user-setting').toggle()" id="s-s">Chào <?php echo $_SESSION['full_name'] ?></a><div class='mn-ef'></div></li>
-			<div id='user-setting'>
-				<ul>
-					<a href="index.php?model=auth&action=logout"><li>Đăng xuất</li></a>
-					<a href="user/viewinfo"><li onclick="$('#user-setting').toggle()">Thông tin tài khoản</li></a>
-					<a href="user/vieweditpassword"><li>Đổi mật khẩu</li></a>
-				</ul>
-			</div>
+				<?php
+				$avatar = isset($_SESSION['avatar_url']) ? 'uploads/avatars/' . $_SESSION['avatar_url'] : 'assets/images/default-avatar.png';
+				?>
+				<img class="img-profile rounded-circle" src="<?php echo $avatar; ?>"
+					style="width: 40px; height: 40px; object-fit: cover;">
+				<li><a onclick="$('#user-setting').toggle()" id="s-s">Chào <?php echo $_SESSION['full_name'] ?></a>
+					<div class='mn-ef'></div>
+				</li>
+				<div id='user-setting'>
+					<ul>
+						<a href="index.php?model=auth&action=logout">
+							<li>Đăng xuất</li>
+						</a>
+						<?php
+							if (($_SESSION['role_id']!=3)) { ?>
+								<a href="index.php?model=default&action=admin_dashboard">
+								<li>Trang Admin</li>
+						</a>
+						<?php }else {
+						?>
+						<a href="user/viewinfo">
+							<li onclick="$('#user-setting').toggle()">Thông tin tài khoản</li>
+						</a>
+						<a href="user/vieweditpassword">
+							<li>Đổi mật khẩu</li>
+						</a>
+						<?php }
+						?>
+					</ul>
+				</div>
 			<?php }
 			?>
-			<li><a href="client/viewcart"><i class="glyphicon glyphicon-shopping-cart"></i> Giỏ hàng</a><div class="mn-ef"></div></li>
+			<li><a href="client/viewcart"><i class="glyphicon glyphicon-shopping-cart"></i> Giỏ sách</a>
+				<div class="mn-ef"></div>
+			</li>
 		</ul>
 		<div class="header-detail">
-			<p>113 Hoàng Sa, Đa Kao, Tân Bình, Hồ Chí Minh, Việt Nam<br>
-				<i>8h - 22h Hằng ngày, kể cả Ngày lễ và Chủ nhật</i>
+			<p>54 P. Triều Khúc, Thanh Xuân Nam, Thanh Xuân, Hà Nội<br>
+				<i>8h - 18h Hằng ngày</i>
 			</p>
 		</div>
 	</header>
@@ -63,7 +264,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand logo" href="">9XWatch</a>
+				<a class="navbar-brand logo" href="">E-library</a>
 				<div id="custom-search-input">
 					<div class="input-group col-md-12" style="background-color: white;">
 						<input type="text" class="form-control input-lg" placeholder="Bạn tìm gì?" id='src-v' />
@@ -79,17 +280,19 @@
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav">
 					<li class="dropdown menu-name">
-						<a class="dropdown-toggle" data-toggle="dropdown" style="cursor: pointer;">Danh mục sách <b class="caret"></b></a>
+						<a class="dropdown-toggle" data-toggle="dropdown" style="cursor: pointer;">Danh mục sách <b
+								class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="product/List/All">Tất cả danh mục</a></li>
-							<?php 
+							<?php
 							require_once 'models/Category.php';
 							$md = new Category;
 							$data = $md->read();
-							for ($i=0; $i < count($data); $i++) { 
+							for ($i = 0; $i < count($data); $i++) {
 								$shortname = preg_replace('/\s+/', '', ucfirst($data[$i]['name']));
 								?>
-								<li><a href="product/List/<?php echo $shortname ?>"><?php echo $data[$i]['name'] ?> </a></li>
+								<li><a href="product/List/<?php echo $shortname ?>"><?php echo $data[$i]['name'] ?> </a>
+								</li>
 							<?php } ?>
 						</ul>
 					</li>
@@ -98,9 +301,13 @@
 					<li class="menu-name" id="mntq"><a href="product/List/BestSelling">Top sách tuần qua</a></li>
 
 				</ul>
-				<div style="cursor: pointer;"><a href="client/viewcart" style="color: yellow"><i class="glyphicon glyphicon-shopping-cart navbar-right btn-lg" id="cart_count"> 
-					<?php if(isset($_SESSION['cart'])){echo count($_SESSION['cart']);} else echo "0"; ?>
-				</i></a></div>
+				<div style="cursor: pointer;"><a href="client/viewcart" style="color: blue"><i
+							class="glyphicon glyphicon-shopping-cart navbar-right btn-lg" id="cart_count">
+							<?php if (isset($_SESSION['cart'])) {
+								echo count($_SESSION['cart']);
+							} else
+								echo "0"; ?>
+						</i></a></div>
 				<div class="navbar-form navbar-right searchbox-desktop">
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="Bạn tìm gì?" id='srch-val'>
@@ -112,9 +319,9 @@
 	</nav>
 
 	<div id="bodyContainer">
-		<?php  if (isset($content)) {
-                        include ($content);
-                    } ?>
+		<?php if (isset($content)) {
+			include($content);
+		} ?>
 	</div>
 
 
@@ -131,36 +338,54 @@
 	</div>
 
 	<footer>
-		<div class="container-fluid">
+		<div class="container">
 			<div class="row">
-				<div class="col-lg-8" style="text-align: center; padding: 20px 0;">
-					<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.23569783274!2d106.69508341423565!3d10.793251561835596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528ca49aeac97%3A0xd5f5346e3a68cc2a!2zMTEzIEhvw6BuZyBTYSwgxJBhIEthbywgUXXhuq1uIDEsIEjhu5MgQ2jDrSBNaW5oLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1509275765221" width="300" height="300" frameborder="0" style="border:0" allowfullscreen id="maps"></iframe>
+				<div class="col-lg-7 mb-4 mb-lg-0">
+					<div class="map-container">
+						<iframe
+							src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.218994773127!2d105.7954915115683!3d20.983856880573445!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135acc6bdc7f95f%3A0x58ffc66343a45247!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBDw7RuZyBuZ2jhu4cgR2lhbyB0aMO0bmcgVuG6rW4gdOG6o2k!5e0!3m2!1svi!2s!4v1734702937379!5m2!1svi!2s"
+							width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+							referrerpolicy="no-referrer-when-downgrade"></iframe>
+					</div>
 				</div>
-				<div class="col-lg-4" id="contact">
-					<h3>Contact</h3>
-					<i class="glyphicon glyphicon-map-marker"></i><span> Linh Trung, Thủ Đức, tp.HCM</span><br>
-					<i class="glyphicon glyphicon-earphone"></i><span> (08) 391 525</span><br>
-					<i class="glyphicon glyphicon-envelope"></i><span> 9XWatch@gmail.com</span><br>
-					<h4 style="line-height: 26px">Nhận email thông báo của chúng tôi khi có sản phẩm mới hay giảm giá:</h4>
-					<form action="" method="POST" class="form-inline" role="form">
-						<div class="form-group">
-							<label class="sr-only" for="">label</label>
-							<input type="email" class="form-control" id="" placeholder="your_email@example.com">
+				<div class="col-lg-5">
+					<div class="contact-info">
+						<h3>Liên Hệ</h3>
+						<p>
+							<i class="fas fa-map-marker-alt"></i>
+							<span>54 P. Triều Khúc, Thanh Xuân Nam, Thanh Xuân, Hà Nội, Việt Nam</span>
+						</p>
+						<p>
+							<i class="fas fa-phone"></i>
+							<span>0865 371 378</span>
+						</p>
+						<p>
+							<i class="fas fa-envelope"></i>
+							<span>hamanhhung20012004@gmail.com</span>
+						</p>
+
+						<div class="newsletter">
+							<h4>Đăng ký nhận thông báo</h4>
+							<div class="newsletter-form">
+								<input type="email" placeholder="Email của bạn" class="form-control">
+								<button class="btn" onclick="alert('Cảm ơn bạn đã đăng ký!')">
+									Đăng ký
+								</button>
+							</div>
 						</div>
-						<span class="btn btn-primary" onclick="alert('Bạn sẽ nhận được thông báo của chúng tôi khi có ưu đãi mới!')">Gửi</span>
-					</form>
+					</div>
 				</div>
-				<div class="col-lg-12" id="copyright-txt">
-					<b>All right reverse, &#169; copyright of 9XWatch.com</b>
-				</div>
+			</div>
+
+			<div class="copyright">
+				<p>© 2024 . Tất cả quyền được bảo lưu.</p>
 			</div>
 		</div>
 	</footer>
-	<div class="goTop">
-		<a href="#header">
-			<h5 style="color: white" class="glyphicon glyphicon-menu-up"></h5>
-		</a>
-	</div>
+	<a href="#top" class="scroll-to-top">
+		<i class="fas fa-arrow-up"></i>
+	</a>
 </body>
-</html>
+<script src="https://kit.fontawesome.com/1b233c9fdd.js" crossorigin="anonymous"></script>
 
+</html>

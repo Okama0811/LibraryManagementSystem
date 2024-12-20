@@ -29,7 +29,7 @@ class User extends Model
     public function create()
     {
         $this->status = 'inactive';
-        $this->role_id= 1;
+        $this->role_id= 3;
         return parent::create();
     }
 

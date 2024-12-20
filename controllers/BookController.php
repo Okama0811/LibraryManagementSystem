@@ -213,6 +213,9 @@ class BookController extends Controller
         header("Location: index.php?model=book&action=index");
         exit();
     }
-   
+    public function detail($id)
+    {
+        include('views/books/book_detail.php');
+    }
 }
 ?>

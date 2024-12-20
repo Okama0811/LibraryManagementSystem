@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'controllers/abstract/Controller.php';
 require 'controllers/AuthorController.php';
 require 'controllers/AuthController.php';
@@ -128,6 +129,12 @@ switch ($model) {
 }
 
 switch ($action) {
+    case 'admin_dashboard':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
+            header('Location: index.php?model=default&action=index');
+            exit();
+        }
+        $controller->admin_dashboard();
     case 'create':
         $controller->create();
         break;
@@ -138,6 +145,9 @@ switch ($action) {
         $controller->delete($id);
         break;
     case 'show':
+        $controller->show($id);
+        break;
+    case 'detail':
         $controller->show($id);
         break;
     case 'login':

@@ -26,6 +26,9 @@ class Controller {
     public function show($id) {
         
     }
+    public function detail($id) {
+        
+    }
     public function register() {
         
     }
@@ -43,6 +46,9 @@ class Controller {
     }
     public function update_status($status, $returnDate = null){
         
+    }
+    public function admin_dashboard(){
+
     }
 }
 ?>
