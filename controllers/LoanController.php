@@ -85,7 +85,7 @@ public function update_status($status = null, $returnDate = null)
                         $this->loan->deleteBookFromLoan($loanId, $bookId);
                     }
                 } catch (Exception $e) {
-$_SESSION['message'] = 'Lỗi khi cập nhật: ' . $e->getMessage();
+                    $_SESSION['message'] = 'Lỗi khi cập nhật: ' . $e->getMessage();
                     $_SESSION['message_type'] = 'danger';
                     header('Location: index.php?model=loan&action=show&id=' . $loanId);
                     exit;

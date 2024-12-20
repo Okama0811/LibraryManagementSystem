@@ -5,7 +5,7 @@
          <div class="sidebar-brand-icon rotate-n-15" style="color: #423b8e; font-size: 1.8rem;">             
              <i class="fa-solid fa-book-open" style="color: #423b8e;"></i>         
          </div>         
-         <div class="sidebar-brand-text mx-2" style="color: #423b8e; font-size: 1.2rem;">UTT LIBRARY</div>     
+         <div class="sidebar-brand-text mx-2" style="color: #423b8e; font-size: 1.2rem;"> E-LIBRARY</div>     
      </a>      
      
      <!-- Divider -->     

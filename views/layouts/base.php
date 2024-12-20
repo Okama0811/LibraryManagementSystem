@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="icon" href="./assets/images/header_ic.png" type="image/png">
 
-    <title>Thư viện UTT</title>
+    <title>Thư viện điện tử</title>
     <!-- Custom fonts for this template -->
     <link href="./vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
