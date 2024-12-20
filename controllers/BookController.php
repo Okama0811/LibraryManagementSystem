@@ -120,6 +120,11 @@ class BookController extends Controller
          $this->book = new Book();
          $bookData = $this->book->readById($id);
 
+            //  echo '<pre>';
+            //         var_dump($bookData);
+            //         echo '</pre>';
+            //         die();
+
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               try {
                 foreach ($_POST as $key => $value) {
