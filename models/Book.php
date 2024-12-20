@@ -116,14 +116,6 @@ class Book extends Model
         return parent::delete($id);
     }
 
-    public function updateImage($id) {
-        $query = "UPDATE `" . $this->table_name . "` SET cover_image = ? WHERE " . $this->table_name . "_id = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindValue(1, $this->avatar_url);
-        $stmt->bindValue(2, $id);
-        return $stmt->execute();
-    }
-  
     public function getPublishers() {
         $query = "SELECT publisher_id, name FROM publisher ORDER BY name ASC";
         $stmt = $this->conn->prepare($query);

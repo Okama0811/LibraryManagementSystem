@@ -108,8 +108,12 @@ class AuthController extends Controller {
 
                 $permissions = $role->getPermissions();
                 $_SESSION['permissions'] = array_column($permissions, 'name');
-
-                header('Location: dashboard.php');
+                if( $_SESSION['role_id']==3)
+                    include('views/layouts/application.php');
+                else{
+                    $content = 'views/users/create.php';
+                    include('views/layouts/base.php');
+                }
                 exit();
             } else {
                 $error_msg = "Tên đăng nhập hoặc mật khẩu không chính xác.";
