@@ -152,15 +152,6 @@ switch ($action) {
     case 'register_success':
         $controller->register_success();
         break;
-<<<<<<< Updated upstream
-    case 'update_status':
-        $controller->update_status($status, $returnDate = null);
-            break;
-    case 'loadAuthors':
-        $controller->loadAuthors();
-        break;    
-=======
->>>>>>> Stashed changes
     default:
         $controller->index();
         break;
