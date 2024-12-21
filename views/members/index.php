@@ -58,30 +58,28 @@
                             <th class="align-middle">ID</th>
                             <th class="align-middle">Họ tên</th>
                             <th class="align-middle">Email</th>
-                            <th class="align-middle">Vai Trò</th>
                             <th class="text-center align-middle"><i class="fas fa-cog"></i></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($users as $user): ?>
-                            <?php if ($user['role_id'] != 3): ?>
+                            <?php if ($user['role_id'] == 3): ?>
                                 <tr>
                                     <td class="text-center align-middle"><?= $user['user_id'] ?></td>
                                     <td class="align-middle"><?= htmlspecialchars($user['full_name']) ?></td>
                                     <td class="align-middle"><?= htmlspecialchars($user['email']) ?></td>
-                                    <td class="align-middle"><?= htmlspecialchars($user['role_name']) ?></td>
                                     <td class="text-center align-middle">
                                         <div class="d-flex justify-content-center">
-                                            <a href="index.php?model=user&action=edit&id=<?= $user['user_id'] ?>"
-                                                class="btn btn-sm btn-outline-primary me-3" title="Chỉnh sửa">
-                                                <i class="fas fa-edit"></i>
+                                            <a href="index.php?model=user&action=show&id=<?= $user['user_id'] ?>"
+                                                class="btn btn-sm btn-outline-primary me-3" title="Chi tiết">
+                                                <i class="fa-solid fa-eye"></i>
                                             </a>
-                                            <form action="index.php?model=user&action=delete&id=<?= $user['user_id'] ?>"
+                                            <!-- <form action="index.php?model=user&action=delete&id=<?= $user['user_id'] ?>"
                                                 method="POST" class="d-inline" onsubmit="return confirmDelete();">
                                                 <button type="submit" class="btn btn-sm btn-outline-danger mx-2" title="Xóa">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
-                                            </form>
+                                            </form> -->
                                         </div>
                                     </td>
                                 </tr>

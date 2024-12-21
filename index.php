@@ -44,83 +44,39 @@ switch ($model) {
         $controller = new DefaultController();
         break;
     case 'role':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new RoleController();
         break;
     case 'permission':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new PermissionController();
         break;
     case 'user':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new UserController();
         break;
     case 'book':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new BookController();
         break;
     case 'book_condition':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new BookConditionController();
         break;
     case 'fine':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new FineController();
         break;
     case 'reservation':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new ReservationController();
         break;
     case 'auth':
         $controller = new AuthController();
         break;
     case 'author':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new AuthorController();
         break;
     case 'loan':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new LoanController();
         break;
     case 'publisher':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new PublisherController();
         break;
     case 'category':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
         $controller = new CategoryController();
         break;
     default:
@@ -136,12 +92,31 @@ switch ($action) {
         }
         $controller->admin_dashboard();
     case 'create':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
+            header('Location: index.php?model=default&action=index');
+            exit();
+        }
         $controller->create();
         break;
+    case 'member':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
+            header('Location: index.php?model=default&action=index');
+            exit();
+        }
+        $controller->member();
+        break;
     case 'edit':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
+            header('Location: index.php?model=default&action=index');
+            exit();
+        }
         $controller->edit($id);
         break;
     case 'delete':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
+            header('Location: index.php?model=default&action=index');
+            exit();
+        }
         $controller->delete($id);
         break;
     case 'show':
