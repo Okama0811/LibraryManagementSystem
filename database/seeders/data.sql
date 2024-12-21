@@ -1,31 +1,69 @@
 
-INSERT INTO Role (role_id, name, description, created_at, updated_at) VALUES
-(1, 'Admin', 'System administrator with full access', NOW(), NOW()),
-(2, 'Librarian', 'Handles book management and user queries', NOW(), NOW()),
-(3, 'Member', 'Regular user with book borrowing rights', NOW(), NOW());
+-- Insert roles
+INSERT INTO Role (role_id, name, description, created_at, updated_at) 
+VALUES 
+(1, 'Admin', 'Quản trị viên hệ thống với quyền truy cập đầy đủ', NOW(), NOW()),
+(2, 'Librarian', 'Thủ thư phụ trách quản lý sách và xử lý yêu cầu của người dùng', NOW(), NOW()),
+(3, 'Member', 'Người dùng thông thường với quyền mượn sách', NOW(), NOW());
 
-INSERT INTO Permission (permission_id, name, description, created_at, updated_at) VALUES
-(1, 'view_books', 'Permission to view books', NOW(), NOW()),
-(2, 'borrow_books', 'Permission to borrow books', NOW(), NOW()),
-(3, 'manage_users', 'Permission to manage user accounts', NOW(), NOW());
+-- Insert all permissions
+INSERT INTO Permission (permission_id, name, description, created_at, updated_at) 
+VALUES 
+(1, 'manage_users', 'Quyền quản lý tài khoản người dùng', NOW(), NOW()),
+(2, 'manage_authors', 'Quyền quản lý thông tin tác giả', NOW(), NOW()),
+(3, 'manage_books', 'Quyền quản lý sách', NOW(), NOW()),
+(4, 'manage_loans', 'Quyền quản lý mượn trả sách', NOW(), NOW()),
+(5, 'manage_categories', 'Quyền quản lý danh mục sách', NOW(), NOW()),
+(6, 'manage_publishers', 'Quyền quản lý nhà xuất bản', NOW(), NOW()),
+(7, 'manage_reservations', 'Quyền quản lý đặt sách', NOW(), NOW()),
+(8, 'manage_bookConditions', 'Quyền quản lý tình trạng sách', NOW(), NOW()),
+(9, 'manage_members', 'Quyền quản lý thành viên', NOW(), NOW());;
 
-INSERT INTO Role_Permission (role_id, permission_id, created_at) VALUES
-(1, 1, NOW()),
-(1, 2, NOW()),
-(1, 3, NOW()),
-(2, 1, NOW()),
-(2, 2, NOW()),
-(3, 1, NOW());
+-- Assign permissions to roles
+INSERT INTO Role_Permission (role_id, permission_id, created_at) 
+VALUES 
+-- Admin gets all permissions
+(1, 1, NOW()), -- manage_users
+(1, 2, NOW()), -- manage_authors
+(1, 3, NOW()), -- manage_books
+(1, 4, NOW()), -- manage_loans
+(1, 5, NOW()), -- manage_categories
+(1, 6, NOW()), -- manage_publishers
+(1, 7, NOW()), -- manage_reservations
+(1, 8, NOW()), -- manage_bookConditions
+(1, 9, NOW()),
+-- Librarian gets all management permissions except user management
+(2, 2, NOW()), -- manage_authors
+(2, 3, NOW()), -- manage_books
+(2, 4, NOW()), -- manage_loans
+(2, 5, NOW()), -- manage_categories
+(2, 6, NOW()), -- manage_publishers
+(2, 7, NOW()), -- manage_reservations
+(2, 8, NOW()),
+(2, 9, NOW()); 
 
 INSERT INTO User (user_id, role_id, username, password, email, full_name, date_of_birth, gender, phone, address, member_type, expiry_date, max_books, status, note, created_at, updated_at) VALUES
 (1, 1, 'admin', 'adminpass', 'admin@example.com', 'System Admin', '1980-01-01', 'male', '123456789', '123 Admin Street', 'Admin', '2030-01-01', 0, 'active', NULL, NOW(), NOW()),
 (2, 2, 'librarian', 'libpass', 'librarian@example.com', 'John Doe', '1990-05-12', 'male', '987654321', '45 Library Ave', 'Staff', '2030-01-01', 10, 'active', NULL, NOW(), NOW()),
 (3, 3, 'member1', 'memberpass', 'member1@example.com', 'Jane Smith', '2000-02-20', 'female', '555666777', '78 Member Lane', 'Member', '2025-01-01', 5, 'active', 'Good standing', NOW(), NOW());
 
-INSERT INTO Category (category_id, name, description, created_at) VALUES
-(1, 'Fiction', 'Fictional works including novels and stories', NOW()),
-(2, 'Non-fiction', 'Non-fictional works including biographies and essays', NOW()),
-(3, 'Science', 'Books about science and research', NOW());
+INSERT INTO Category (category_id, name, description, created_at) 
+VALUES 
+(1, 'Tiểu thuyết', 'Các tác phẩm hư cấu bao gồm tiểu thuyết và truyện ngắn', NOW()),
+(2, 'Phi tiểu thuyết', 'Các tác phẩm phi hư cấu bao gồm tiểu sử và các bài luận', NOW()),
+(3, 'Khoa học', 'Sách về khoa học và nghiên cứu', NOW()),
+(4, 'Văn học', 'Các tác phẩm văn học Việt Nam và nước ngoài', NOW()),
+(5, 'Giáo trình', 'Sách giáo khoa và tài liệu học tập các cấp', NOW()),
+(6, 'Thiếu nhi', 'Sách dành cho trẻ em và thanh thiếu niên', NOW()),
+(7, 'Kinh tế', 'Sách về kinh doanh, tài chính và quản lý', NOW()),
+(8, 'Kỹ năng sống', 'Sách về phát triển bản thân và kỹ năng sống', NOW()),
+(9, 'Công nghệ', 'Sách về công nghệ thông tin và kỹ thuật', NOW()),
+(10, 'Tâm lý - Tôn giáo', 'Sách về tâm lý học và các tôn giáo', NOW()),
+(11, 'Nghệ thuật', 'Sách về hội họa, âm nhạc và các loại hình nghệ thuật', NOW()),
+(12, 'Lịch sử', 'Sách về lịch sử Việt Nam và thế giới', NOW()),
+(13, 'Y học - Sức khỏe', 'Sách về y học, sức khỏe và dinh dưỡng', NOW()),
+(14, 'Ngoại ngữ', 'Sách học ngoại ngữ và từ điển', NOW()),
+(15, 'Chính trị - Pháp luật', 'Sách về chính trị, pháp luật và các văn bản quy phạm', NOW());
 
 INSERT INTO Author (author_id, name, biography, birth_date, nationality, created_at, updated_at) VALUES
 (1, 'J.K. Rowling', 'British author, best known for Harry Potter series', '1965-07-31', 'British', NOW(), NOW()),

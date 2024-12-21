@@ -1,7 +1,7 @@
 <?php $current_model = isset($_GET['model']) ? $_GET['model'] : ''; $current_action = isset($_GET['action']) ? $_GET['action'] : ''; ?>  
 <ul style="background-image: linear-gradient(to bottom, #dfe2f0, #b8cfe7); color: #423b8e;" class="navbar-nav sidebar sidebar-dark accordion position-sticky" id="accordionSidebar">
      <!-- Sidebar - Brand -->     
-     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html" style="color: #423b8e; margin-bottom: 10px; margin-top: 10px">         
+     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php?model=default&action=admin_dashboard" style="color: #423b8e; margin-bottom: 10px; margin-top: 10px">         
          <div class="sidebar-brand-icon rotate-n-15" style="color: #423b8e; font-size: 1.8rem;">             
              <i class="fa-solid fa-book-open" style="color: #423b8e;"></i>         
          </div>         
@@ -12,10 +12,10 @@
      <hr class="sidebar-divider my-0">      
      
      <!-- Nav Item - Dashboard -->     
-     <li class="nav-item <?= ($current_model == '' && $current_action == '') ? 'active' : '' ?>">         
-         <a class="nav-link" href="index.html" style="color: #423b8e; display: flex; align-items: center;">             
-             <i class="fas fa-fw fa-tachometer-alt" style="color: #423b8e; font-size: 1.2rem; margin-right: 0.75rem;"></i>             
-             <span style="color: #423b8e; font-size: 1rem;">Trang chủ</span>         
+     <li class="nav-item <?= ($current_model == '' && $current_action == '') ? 'active' : '' ?>">     
+         <a class="nav-link" href="index.php?model=default&action=admin_dashboard"style="color: #423b8e; display: flex; align-items: center;">             
+             <i class="fas fa-fw fa-tachometer-alt " style="color: #423b8e; font-size: 1.2rem; margin-right: 0.75rem;"></i>             
+             <span class="sidebar-brand-text"style="color: #423b8e; font-size: 1rem;">Trang chủ</span>         
          </a>     
      </li>      
      
@@ -33,9 +33,50 @@
         if (in_array('manage_users', $permissions)) {
             include 'views/components/manage_user_sidebar.php';
         }   
+        if (in_array('manage_members', $permissions)) {
+            include 'views/components/manage_member_sidebar.php';
+        }  
+        if (in_array('manage_authors', $permissions)) {
+            include 'views/components/manage_author_sidebar.php';
+        }   
+        if (in_array('manage_books', $permissions)) {
+            include 'views/components/manage_book_sidebar.php';
+        }   
+        if (in_array('manage_categories', $permissions)) {
+            include 'views/components/manage_category_sidebar.php';
+        }  
+        if (in_array('manage_publishers', $permissions)) {
+            include 'views/components/manage_publisher_sidebar.php';
+        }  
+        ?>
+        <li class="nav-item <?= ($current_model == 'loan' || $current_model == 'reservation' || $current_model == 'book_condition') ? 'active' : '' ?>">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseTwo" 
+            style="color: #423b8e; position: relative;"
+            data-custom-color="#423b8e">
+                <i class="fa-solid fa-file" style="color: #423b8e; font-size: 1.1rem; margin-right: 0.75rem;"></i>
+                <span style="color: #423b8e; font-size: 0.9rem; margin-right: 0.75rem; margin-left: 0.4rem">Quản lý phiếu</span>
+            </a>
+            <div id="collapseFour" class="collapse <?= ($current_model == 'role' || $current_model == 'permission' || $current_model == 'user' ) ? 'show' : '' ?>" aria-labelledby="headingTwo">
+                <div class="bg-transparent py-2 collapse-inner rounded">
+        <?php
+        if (in_array('manage_loans', $permissions)) {
+            include 'views/components/manage_loan_sidebar.php';
+        }   
+        if (in_array('manage_reservations', $permissions)) {
+            include 'views/components/manage_reservation_sidebar.php';
+        }   
+        if (in_array('manage_bookConditions', $permissions)) {
+            include 'views/components/manage_bookCondition_sidebar.php';
+        }   
+        ?>
+                </div>   
+            </div>
+        </li>
+        <?php
      } else {         
          echo "<li class='nav-item' style='color: #423b8e; font-size: 1rem;'>Không có quyền truy cập</li>";     
-     }     
+     }    
+      
      ?>      
      
      <!-- Divider -->     
