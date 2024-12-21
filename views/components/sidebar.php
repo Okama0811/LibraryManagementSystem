@@ -49,14 +49,14 @@
             include 'views/components/manage_publisher_sidebar.php';
         }  
         ?>
-        <li class="nav-item <?= ($current_model == 'loan' || $current_model == 'reservation' || $current_model == 'book_condition') ? 'active' : '' ?>">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseTwo" 
+        <li class="nav-item ">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour" 
             style="color: #423b8e; position: relative;"
             data-custom-color="#423b8e">
                 <i class="fa-solid fa-file" style="color: #423b8e; font-size: 1.1rem; margin-right: 0.75rem;"></i>
                 <span style="color: #423b8e; font-size: 0.9rem; margin-right: 0.75rem; margin-left: 0.4rem">Quản lý phiếu</span>
             </a>
-            <div id="collapseFour" class="collapse <?= ($current_model == 'role' || $current_model == 'permission' || $current_model == 'user' ) ? 'show' : '' ?>" aria-labelledby="headingTwo">
+            <div id="collapseFour" class="collapse <?= ($current_model == 'loan' || $current_model == 'reservation' || $current_model == 'book_condition' ) ? 'show' : '' ?>" aria-labelledby="headingTwo">
                 <div class="bg-transparent py-2 collapse-inner rounded">
         <?php
         if (in_array('manage_loans', $permissions)) {

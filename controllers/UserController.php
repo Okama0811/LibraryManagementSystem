@@ -20,6 +20,12 @@ class UserController extends Controller
         $content = 'views/users/index.php';
         include('views/layouts/base.php');
     }
+    public function member()
+    {
+        $users = $this->user->read();
+        $content = 'views/members/index.php';
+        include('views/layouts/base.php');
+    }
     public function create() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {

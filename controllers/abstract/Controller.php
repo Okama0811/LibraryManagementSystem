@@ -50,5 +50,8 @@ class Controller {
     public function admin_dashboard(){
 
     }
+    public function member(){
+        
+    }
 }
 ?>
