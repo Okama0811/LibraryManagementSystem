@@ -20,23 +20,23 @@ class RoleController extends Controller
         include('views/layouts/base.php');
     }
 
-    public function create()
-    {
+    public function create() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                $_SESSION['form_data'] = $_POST;
-                
-                foreach ($_POST as $key => $value) {
-                    if (property_exists($this->role, $key)) {
-                        $this->role->$key = strip_tags(trim($value));
+                // Lưu trữ dữ liệu form vào session để giữ lại khi có lỗi
+                $_SESSION['form_data'] = [
+                    'name' => $_POST['name'] ?? '',
+                    'description' => $_POST['description'] ?? '',
+                    'permissions' => $_POST['permissions'] ?? []
+                ];
+    
+                // Xử lý dữ liệu cơ bản của role
+                foreach (['name', 'description'] as $field) {
+                    if (property_exists($this->role, $field) && isset($_POST[$field])) {
+                        $this->role->$field = strip_tags(trim($_POST[$field]));
                     }
                 }
-
                 if ($this->role->create()) {
-                    if (isset($_POST['permissions']) && is_array($_POST['permissions'])) {
-                        $this->role->updatePermissions($_POST['permissions']);
-                    }
-
                     $_SESSION['message'] = 'Role created successfully!';
                     $_SESSION['message_type'] = 'success';
                     unset($_SESSION['form_data']);
@@ -45,17 +45,18 @@ class RoleController extends Controller
                 } else {
                     throw new Exception('Failed to create role');
                 }
+    
             } catch (Exception $e) {
-                $_SESSION['message'] = 'Role creation failed. Please try again!';
+                $_SESSION['message'] = 'Role creation failed: ' . $e->getMessage();
                 $_SESSION['message_type'] = 'danger';
-                $permissions = $this->permission->read();
+                
+                $data = $this->permission->read();
                 $content = 'views/roles/create.php';
                 include('views/layouts/base.php');
                 return;
             }
         }
-
-        $permissions = $this->permission->read();
+        $data = $this->permission->read();
         $content = 'views/roles/create.php';
         include('views/layouts/base.php');
     }

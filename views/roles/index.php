@@ -71,9 +71,6 @@
                                         <a href="index.php?model=role&action=edit&id=<?= $role['role_id'] ?>" class="btn btn-sm btn-outline-primary me-3" title="Chỉnh sửa">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="index.php?model=role&action=permissions&id=<?= $role['role_id'] ?>" class="btn btn-sm btn-outline-info me-3" title="Phân quyền">
-                                            <i class="fas fa-key"></i>
-                                        </a>
                                         <form action="index.php?model=role&action=delete&id=<?= $role['role_id'] ?>" method="POST" class="d-inline" onsubmit="return confirmDelete();">
                                             <button type="submit" class="btn btn-sm btn-outline-danger mx-2" title="Xóa">
                                                 <i class="fas fa-trash-alt"></i>
