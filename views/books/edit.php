@@ -190,12 +190,6 @@
                             </div>
                         </div>
 
-
-                        <div class="mb-3">
-                            <label for="price" class="form-label">Giá:</label>
-                            <input type="number" name="price" id="price" class="form-control" step="0.01" min="0" value="<?php echo htmlspecialchars($book['price']); ?>" required>
-                        </div>
-
                         <div class="mb-3">
                         <div class="mb-3">
                             <label for="description" class="form-label">Mô tả:</label>

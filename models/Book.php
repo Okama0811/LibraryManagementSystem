@@ -14,7 +14,6 @@ class Book extends Model
     public $description;
     public $quantity;
     public $available_quantity;
-    public $price;
     public $status;
     public $cover_image;
     public $created_at;
@@ -45,7 +44,6 @@ class Book extends Model
         $stmt->bindParam(':description', $this->description);
         $stmt->bindParam(':quantity', $this->quantity);
         $stmt->bindParam(':available_quantity', $this->available_quantity);
-        $stmt->bindParam(':price', $this->price);
         $stmt->bindParam(':status', $this->status);
         $stmt->bindParam(':cover_image', $this->cover_image);
 
