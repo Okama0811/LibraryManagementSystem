@@ -25,8 +25,8 @@ class Book extends Model
 
     public function create() {
         $query = "INSERT INTO {$this->table_name} 
-        (publisher_id, title, publication_year, edition, pages, language, description, quantity, available_quantity, price, status, cover_image) 
-        VALUES (:publisher_id, :title, :publication_year, :edition, :pages, :language, :description, :quantity, :available_quantity, :price, :status, :cover_image)";
+        (publisher_id, title, publication_year, edition, pages, language, description, quantity, available_quantity, status, cover_image) 
+        VALUES (:publisher_id, :title, :publication_year, :edition, :pages, :language, :description, :quantity, :available_quantity, :status, :cover_image)";
 
         $stmt = $this->conn->prepare($query);
 

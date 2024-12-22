@@ -19,17 +19,27 @@
  
 <!-- Thông báo lỗi -->
 <?php if (isset($_SESSION['message'])): ?>
-    <div id="alert-message" class="alert alert-<?= $_SESSION['message_type']; ?> alert-dismissible fade show" role="alert">
-        <?= $_SESSION['message']; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
-    <script>
-        setTimeout(() => {
-            document.getElementById('alert-message')?.classList.add('fade');
-        }, 2000);
-    </script>
-<?php endif; ?>
+        <div id="alert-message" class="alert alert-<?= $_SESSION['message_type']; ?> alert-dismissible fade show"
+            role="alert">
+            <?= $_SESSION['message']; ?>
+        </div>
+        <?php
+        unset($_SESSION['message']);
+        unset($_SESSION['message_type']);
+        ?>
+        <script>
+            setTimeout(function () {
+                var alert = document.getElementById('alert-message');
+                if (alert) {
+                    alert.classList.remove('show');
+                    alert.classList.add('fade');
+                    setTimeout(function () {
+                        alert.style.display = 'none';
+                    }, 150);
+                }
+            }, 2000);
+        </script>
+    <?php endif; ?>
 
 
 <div class="container-fluid">
@@ -88,39 +98,66 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        // Initialize DataTable
+     $(document).ready(function() {
         var table = $('#dataTable').DataTable({
-            dom: 'rtp',
-            language: {
-                processing: "Đang xử lý...",
-                search: '<i class="fas fa-search"></i>',
-                lengthMenu: "Hiển thị _MENU_ dòng",
-                info: "Đang hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
-                infoEmpty: "Không có dữ liệu",
-                infoFiltered: "(Được lọc từ _MAX_ bản ghi)",
-                zeroRecords: "Không tìm thấy sách nào",
-                emptyTable: "Không có dữ liệu trong bảng",
-                paginate: {
-                    first: "Đầu",
-                    previous: "Trước",
-                    next: "Tiếp",
-                    last: "Cuối"
-                }
+        dom: 'rtp',
+        language: {
+            processing: "Đang xử lý...",
+            search:'<i class="fas fa-search"></i>',
+            lengthMenu: "Hiển thị _MENU_ dòng",
+            info: "Đang hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+            infoEmpty: "Không có dữ liệu",
+            infoFiltered: "(Được lọc từ _MAX_ bản ghi)",
+            infoPostFix: "",
+            loadingRecords: "Đang tải...",
+            zeroRecords: "Không tìm thấy bản ghi nào",
+            emptyTable: "Không có dữ liệu trong bảng",
+            paginate: {
+                first: "Đầu",
+                previous: "Trước",
+                next: "Tiếp",
+                last: "Cuối"
             },
-            columnDefs: [
-                { targets: -1, orderable: false, searchable: false }
-            ]
-        });
-
-        // Search functionality
-        $('#searchInput').on('keyup', function() {
-            table.search(this.value).draw();
-        });
-
-        // Confirm delete
-        window.confirmDelete = function() {
-            return confirm('Bạn có chắc muốn xóa sách này?');
-        };
+            aria: {
+                sortAscending: ": Sắp xếp tăng dần",
+                sortDescending: ": Sắp xếp giảm dần"
+            }
+        },
+        columnDefs: [
+            {
+                targets: -1, 
+                orderable: false, 
+                searchable: false 
+            }
+        ]
     });
+
+    $('#dataTable tbody').on('click', 'tr', function(e) {
+        if ($(e.target).closest('button').length || $(e.target).closest('form').length) {
+            return;
+        }
+        
+        var condition_id = $(this).find('td:first').text().trim();
+        
+        window.location.href = 'index.php?model=book_condition&action=edit&id=' + condition_id;
+    });
+
+    $('#searchInput').on('keyup', function() {
+        table.search(this.value).draw();
+    });
+
+    $('#dataTable tbody').on('click', 'tr', function(e) {
+        if ($(e.target).closest('button').length || $(e.target).closest('form').length) {
+            return;
+        }
+        
+        var condition_id = $(this).find('td:first').text().trim();
+        
+        window.location.href = 'index.php?model=book_condition&action=edit&id=' + condition_id;
+    });
+});
+
+function confirmDelete() {
+    return confirm('Bạn có chắc muốn xóa sách này?');
+}
 </script>

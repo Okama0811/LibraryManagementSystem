@@ -61,15 +61,12 @@
                     <!-- Tình trạng trước khi mượn -->
                     <div class="mb-3">
                         <label for="condition_before" class="form-label">Tình trạng trước khi mượn:</label>
-                        <input type="text" class="form-control" id="condition_before" readonly value="<?= htmlspecialchars($book_condition['condition_before']); ?>"></input>
+                        <input type="text" class="form-control" id="condition_before"  value="<?= htmlspecialchars($book_condition['condition_before']); ?>"></input>
                     </div>
 
                     <div class="mb-3">
                         <label for="condition_after" class="form-label">Tình trạng sau khi mượn:</label>
-                        <select name="condition_after" id="condition_after" class="form-control" required onchange="toggleDamageDescription()">
-                            <option value="Intact" <?= $book_condition['condition_after'] == 'Intact' ? 'selected' : ''; ?>>Intact</option>
-                            <option value="Damaged" <?= $book_condition['condition_after'] == 'Damaged' ? 'selected' : ''; ?>>Damaged</option>
-                        </select>
+                        <input type="text" class="form-control" id="condition_after"  value="<?= htmlspecialchars($book_condition['condition_after']); ?>"></input>
                     </div>
 
                     <!-- Chi tiết hư hại -->
@@ -92,26 +89,19 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="assessed_by" class="form-label">Người kiểm tra:</label>
-                        <input name="assessed_by_display" id="assessed_by" class="form-control" 
-                            value="<?= htmlspecialchars($_SESSION['full_name'] ?? 'Chưa đăng nhập'); ?>" 
-                            disable>
                         <input type="hidden" name="assessed_by" value="<?= htmlspecialchars($_SESSION['user_id']); ?>">
                     </div>
 
-                            <div class="card-footer d-flex justify-content-between">
+                </div> <!--chân thẻ body-->
+                <div class="card-footer d-flex justify-content-between">
                             <a href="index.php?model=book_condition&action=index" class="btn btn-secondary">
-                                <i class="fa-solid fa-arrow-left"></i> Trở lại
+                                <i class="fa-solid fa-arrow-left"></i> Quay lại
                             </a>
-                            <button type="button" id="toggleEdit" class="btn btn-primary">
-                                <i class="fa-solid fa-pencil"></i>
-                            </button>
                             <button type="submit" class="btn btn-success">
                                 <i class="fa-regular fa-floppy-disk"></i> Cập nhật
                             </button>
                         </div>
                     </form>
-                </div>
             </div>
         </div>
     </div>

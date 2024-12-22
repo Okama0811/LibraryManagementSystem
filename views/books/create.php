@@ -30,146 +30,186 @@
                     <?php endif; ?>
                     <form action="index.php?model=book&action=create" method="POST" enctype="multipart/form-data">
 
-                        <div class="avatar-wrapper mb-3">
-                                    <img id="image-preview" class="rounded-circle img-thumbnail" 
-                                        src="assets/images/default-avatar.png" 
-                                        alt="Avatar" style="width: 200px; height: 200px; object-fit: cover;">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="cover_image" class="form-label">Hình ảnh bìa</label>
-                                    <input type="file" class="form-control" id="cover_image" name="cover_image" accept="image/*" >
-                                    <small class="text-muted">Cho phép: JPG, JPEG, PNG. Tối đa 2MB</small>
-                                </div>
-                              
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Tên sách:</label>
-                            <input type="text" name="title" id="title" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Danh sách tác giả đã chọn:</label>
-                            <table id="authorsTable" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Tác giả</th>
-                                        <th>Hành động</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Các dòng tác giả sẽ được thêm tại đây -->
-                                </tbody>
-                            </table>
-                            <button type="button" class="btn btn-primary" onclick="addAuthor()">Thêm tác giả</button>
-                        </div>
-                        <div class="mb-3">
-                            <label for="author_id" class="form-label">Chọn tác giả:</label>
-                            <select id="author_id" class="form-control">
-                                <option value="">Chọn tác giả</option>
-                                <?php if (empty($authors)): ?>
-                                    <option value="">Không có tác giả nào</option>
-                                <?php else: ?>
-                                    <?php foreach ($authors as $author): ?>
-                                        <option value="<?= htmlspecialchars($author['author_id']); ?>">
-                                            <?= htmlspecialchars($author['name']); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                                <option value="new_author">+ Đăng ký tác giả mới</option>
-                            </select>
-                        </div>
+                    <div class="row mb-4">
+                        <div class="col-md-5">
 
-                        <div class="mb-3">
-                            <label for="publisher_id" class="form-label">Nhà xuất bản:</label>
-                            
-                            <select name="publisher_id" id="publisher_id" class="form-control" required>
-                                <option value="">Chọn nhà xuất bản</option>
-                                 <?php if (empty($publishers)): ?>
-                                    <option value="">Không có nhà xuất bản nào</option>
-                                <?php else: ?>
-                                    <?php foreach ($publishers as $publisher): ?>
-                                        <option value="<?= htmlspecialchars($publisher['publisher_id']); ?>">
-                                            <?= htmlspecialchars($publisher['name']); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Danh sách thể loại đã chọn:</label>
-                            <table id="categoriesTable" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Thể loại</th>
-                                        <th>Hành động</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Các dòng thể loại sẽ được thêm tại đây -->
-                                </tbody>
-                            </table>
-                            <button type="button" class="btn btn-primary" onclick="addCategory()">Thêm thể loại</button>
-                        </div>
-                        <div class="mb-3">
-                            <label for="category_id" class="form-label">Chọn thể loại:</label>
-                            <select id="category_id" class="form-control">
-                                <option value="">Chọn thể loại</option>
-                                <?php if (empty($categories)): ?>
-                                    <option value="">Không có thể loại nào</option>
-                                <?php else: ?>
-                                    <?php foreach ($categories as $category): ?>
-                                        <option value="<?= htmlspecialchars($category['category_id']); ?>">
-                                            <?= htmlspecialchars($category['name']); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                                <option value="new_category">+ Đăng ký thể loại mới</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="publication_year" class="form-label">Năm xuất bản:</label>
-                            <input type="number" name="publication_year" id="publication_year" class="form-control" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="edition" class="form-label">Tái bản:</label>
-                            <input type="text" name="edition" id="edition" class="form-control" maxlength="50" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="pages" class="form-label">Số trang:</label>
-                            <input type="number" name="pages" id="pages" class="form-control" min="1" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="language" class="form-label">Ngôn ngữ:</label>
-                            <select name="language" id="language" class="form-control" required>
-                                <option value="" disabled selected>Chọn ngôn ngữ</option>
-                                <option value="English">Tiếng Anh</option>
-                                <option value="Vietnamese">Tiếng Việt</option>
-                            </select>
-                        </div>
-                
-                        <div class="mb-3">
-                            <label for="quantity" class="form-label">Số lượng:</label>
-                            <input type="number" name="quantity" id="quantity" class="form-control" min="0" value="0" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="available_quantity" class="form-label">Số lượng có sẵn:</label>
-                            <input type="number" name="available_quantity" id="available_quantity" class="form-control" min="0" value="0"readonly>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="price" class="form-label">Giá:</label>
-                            <input type="number" name="price" id="price" class="form-control" step="0.01" min="0" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Mô tả:</label>
-                            <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+                            <div class="avatar-wrapper mb-3">
+                                <img id="image-preview" class="img-fluid img-thumbnail" 
+                                src="assets/images/eror.jpg" 
+                                alt="Avatar" style="width: 100%; height: 600px; object-fit: cover;">
                             </div>
-                            <div class="card-footer d-flex justify-content-between">
+                            
+                            <div class="mb-3">
+                                <label for="cover_image" class="form-label">Hình ảnh bìa</label>
+                                <input type="file" class="form-control" id="cover_image" name="cover_image" accept="image/*" >
+                                <small class="text-muted">Cho phép: JPG, JPEG, PNG. Tối đa 2MB</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="title" class="form-label">Tên sách:</label>
+                                    <input type="text" name="title" id="title" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="publication_year" class="form-label">Năm xuất bản:</label>
+                                    <input type="number" name="publication_year" id="publication_year" class="form-control" required   max="<?php echo date('Y'); ?>">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="edition" class="form-label">Tái bản:</label>
+                                    <input type="text" name="edition" id="edition" class="form-control" maxlength="50" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="pages" class="form-label">Số trang:</label>
+                                    <input type="number" name="pages" id="pages" class="form-control" min="1" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="quantity" class="form-label">Số lượng:</label>
+                                    <input type="number" name="quantity" id="quantity" class="form-control" 
+                                         required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="available_quantity" class="form-label">Số lượng có sẵn:</label>
+                                    <input type="number" name="available_quantity" id="available_quantity" class="form-control" min="0" value="0"readonly>
+                                </div>
+                                <div class="col-md-6">
+                                <label for="language" class="form-label">Ngôn ngữ:</label>
+                                    <select name="language" id="language" class="form-control" required>
+                                        <option value="" disabled selected>Chọn ngôn ngữ</option>
+                                        <option value="English">Tiếng Anh</option>
+                                        <option value="Vietnamese">Tiếng Việt</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                <label for="publisher_id" class="form-label">Nhà xuất bản:</label>
+                                    <select name="publisher_id" id="publisher_id" class="form-control" required>
+                                        <option value="">Chọn nhà xuất bản</option>
+                                        <?php if (empty($publishers)): ?>
+                                            <option value="">Không có nhà xuất bản nào</option>
+                                        <?php else: ?>
+                                            <?php foreach ($publishers as $publisher): ?>
+                                                <option value="<?= htmlspecialchars($publisher['publisher_id']); ?>">
+                                                    <?= htmlspecialchars($publisher['name']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                <label class="form-label">Danh sách tác giả :</label>
+                                    <div class="table-responsive" style="max-height: 160px; overflow-y: auto;">
+                                        <table id="authorsTable" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tác giả</th>
+                                                    <th>Hành động</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php if (!empty($selectedauthors)): ?>
+                                                    <?php foreach ($selectedauthors as $author): ?>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="hidden" name="authors[]" value="<?= htmlspecialchars($author['author_id']); ?>">
+                                                                <?= htmlspecialchars($author['name']); ?>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-danger btn-sm" onclick="removeAuthor(this)">Xóa</button>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                
+                                    <div class="d-flex align-items-center">
+                                    <select id="author_id" class="form-control" onchange="handleAuthorChange(this)">
+                                        <option value="">-- Chọn tác giả --</option>
+                                        <?php foreach ($authors as $author): ?>
+                                            <option value="<?= htmlspecialchars($author['author_id']); ?>">
+                                                <?= htmlspecialchars($author['name']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                        <option value="new_author">+ Thêm tác giả mới</option>
+                                    </select>
+
+                                    <button type="button" class="btn btn-primary ml-2 d-flex align-items-center" onclick="addAuthor()">
+                                        <i class="bi bi-plus-lg mr-1"></i> +
+                                    </button>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Danh sách thể loại đã chọn:</label>
+                                    <div class="table-responsive" style="max-height: 160px; overflow-y: auto;">
+                                        <table id="categoriesTable" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Thể loại</th>
+                                                    <th>Hành động</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php if (!empty($selectedcategories)): ?>
+                                                    <?php foreach ($selectedcategories as $category): ?>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="hidden" name="categories[]" value="<?= htmlspecialchars($category['category_id']); ?>">
+                                                                <?= htmlspecialchars($category['name']); ?>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-danger btn-sm" onclick="removeCategory(this)">Xóa</button>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                
+                                    <div class="d-flex align-items-center">
+                                    <select id="category_id" class="form-control" onchange="handleCategoryChange(this)">
+                                        <option value="">-- Chọn thể loại --</option>
+                                        <?php foreach ($categories as $category): ?>
+                                            <option value="<?= htmlspecialchars($category['category_id']); ?>">
+                                                <?= htmlspecialchars($category['name']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                        <option value="new_category">+ Thêm thể loại mới</option>
+                                    </select>
+
+                                    <button type="button" class="btn btn-primary ml-2 d-flex align-items-center" onclick="addCategory()">
+                                        <i class="bi bi-plus-lg mr-1"></i> +
+                                    </button>
+                                    </div>
+
+                                </div>     
+                                
+                                <div class="col-md-12">
+                                    <label for="description" class="form-label">Mô tả:</label>
+                                    <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+                                </div>
+
+                                <div class="col-md-6">
+                                <label for="status" class="form-label">Trạng thái:</label>
+                                    <select name="status" id="status" class="form-control" required>
+                                        <option>Chọn trạng thái</option>
+                                        <option value="available" >available</option>
+                                        <option value="unavailable" >unavailable</option>
+                                    </select>
+                                </div>           
+
+                            </div>
+
+                        </div>
+                    </div> 
+
+                </div> <!--Chân thẻ body-->
+                <div class="card-footer d-flex justify-content-between">
                             <a href="index.php?model=book&action=index" class="btn btn-secondary">
                                 <i class="fa-solid fa-arrow-left"></i> Trở lại
                             </a>
@@ -178,47 +218,9 @@
                             </button>
                         </div>
                     </form>
-                </div>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Modal (for new author registration prompt) -->
-<div class="modal fade" id="newAuthorModal" tabindex="-1" aria-labelledby="newAuthorModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">s
-        <h5 class="modal-title" id="newAuthorModalLabel">Thông báo</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Bạn cần đăng ký tác giả trước. Bạn có muốn đến trang đăng ký tác giả không?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Không</button>
-        <a href="index.php?model=author&action=create" class="btn btn-primary">Có, đến trang đăng ký</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="newCategoryModal" tabindex="-1" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="newCategoryModalLabel">Thông báo</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Bạn cần đăng ký thể loại trước. Bạn có muốn đến trang đăng ký thể loại không?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Không</button>
-        <a href="index.php?model=category&action=create" class="btn btn-primary">Có, đến trang đăng ký</a>
-      </div>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -277,13 +279,17 @@ function removeAuthor(button) {
     row.parentNode.removeChild(row);
 }
 
-document.getElementById('author_id').addEventListener('change', function () {
-    if (this.value === "new_author") {
-        const newAuthorModal = new bootstrap.Modal(document.getElementById('newAuthorModal'));
-        newAuthorModal.show();
-        this.value = ""; // Reset lại dropdown
+function handleCategoryChange(select) {
+    if (select.value === 'new_category') {
+        var confirmRedirect = confirm("Bạn có muốn đến trang đăng ký thể loại mới không?");
+        if (confirmRedirect) {
+            window.location.href = 'index.php?model=category&action=create';
+        } else {
+            // Đặt lại select box về lựa chọn đầu tiên
+            select.value = "";
+        }
     }
-});
+}
 
 function addCategory() {
     const categoriesSelect = document.getElementById('category_id'); // Lấy dropdown danh sách thể loại
@@ -325,14 +331,17 @@ function removeCategory(button) {
     row.parentNode.removeChild(row);
 }
 
-document.getElementById('category_id').addEventListener('change', function () {
-    if (this.value === "new_category") {
-        const newCategoryModal = new bootstrap.Modal(document.getElementById('newCategoryModal'));
-        newCategoryModal.show();
-        this.value = ""; // Reset lại dropdown
+function handleAuthorChange(select) {
+    if (select.value === 'new_author') {
+        var confirmRedirect = confirm("Bạn có muốn đến trang đăng ký tác giả mới không?");
+        if (confirmRedirect) {
+            window.location.href = 'index.php?model=author&action=create';
+        } else {
+            // Đặt lại select box về lựa chọn đầu tiên
+            select.value = "";
+        }
     }
-});
-
+}
 
 document.getElementById('cover_image').addEventListener('change', function () {
     const file = this.files[0];

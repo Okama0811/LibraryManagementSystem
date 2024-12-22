@@ -131,7 +131,7 @@
             return;
         }
         
-        var userId = $(this).find('td:first').text().trim();
+        var publisher_id = $(this).find('td:first').text().trim();
         
         window.location.href = 'index.php?model=publisher&action=edit&id=' + publisher_id;
     });
@@ -145,7 +145,7 @@
             return;
         }
         
-        var userId = $(this).find('td:first').text().trim();
+        var publisher_id = $(this).find('td:first').text().trim();
         
         window.location.href = 'index.php?model=publisher&action=edit&id=' + publisher_id;
     });

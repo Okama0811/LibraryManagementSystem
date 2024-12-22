@@ -44,49 +44,52 @@
                     <?php endif; ?>
 
                     <form action="index.php?model=publisher&action=edit&id=<?php echo $publisher['publisher_id']; ?>" method="POST"enctype="multipart/form-data">
-                        <div class="row mb-3">
-                        <div class="avatar-wrapper mb-3">
-                                    <img id="avatar-preview" class="rounded-circle img-thumbnail" 
-                                        src="<?php echo !empty($publisher['avatar_url']) ? 'uploads/avatars/' . $publisher['avatar_url'] : 'assets/images/default-avatar.png'; ?>" 
-                                        alt="Avatar" style="width: 200px; height: 200px; object-fit: cover;">
+                        
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+
+                            <div class="avatar-wrapper mb-3">
+                                <img id="avatar-preview" class="rounded-circle img-thumbnail" 
+                                    src="<?php echo !empty($publisher['avatar_url']) ? 'uploads/avatars/' . $publisher['avatar_url'] : 'assets/images/default-avatar.png'; ?>" 
+                                    alt="Avatar" style="width: 200px; height: 200px; object-fit: cover;">
+                            </div>
+                            <div class="mb-3">
+                                <label for="avatar" class="form-label">Thay đổi ảnh đại diện</label>
+                                <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*" disabled>
+                                <small class="text-muted">Cho phép: JPG, JPEG, PNG. Tối đa 2MB</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">Tên nhà xuất bản:</label>
+                                    <input type="text" name="name" id="name" class="form-control" 
+                                        value="<?php echo htmlspecialchars($publisher['name']); ?>" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="avatar" class="form-label">Thay đổi ảnh đại diện</label>
-                                    <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*" disabled>
-                                    <small class="text-muted">Cho phép: JPG, JPEG, PNG. Tối đa 2MB</small>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email:</label>
+                                    <input type="email" name="email" id="email" class="form-control" 
+                                        value="<?php echo htmlspecialchars($publisher['email']); ?>" required>
                                 </div>
-                            <div class="col-md-6">
-                                <label for="name" class="form-label">Tên nhà xuất bản:</label>
-                                <input type="text" name="name" id="name" class="form-control" 
-                                    value="<?php echo htmlspecialchars($publisher['name']); ?>" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="email" class="form-label">Email:</label>
-                                <input type="email" name="email" id="email" class="form-control" 
-                                    value="<?php echo htmlspecialchars($publisher['email']); ?>" required>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="phone" class="form-label">Số điện thoại:</label>
-                                <input type="tel" name="phone" id="phone" class="form-control" 
-                                    value="<?php echo htmlspecialchars($publisher['phone']); ?>">
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">Số điện thoại:</label>
+                                    <input type="tel" name="phone" id="phone" class="form-control" 
+                                        value="<?php echo htmlspecialchars($publisher['phone']); ?>">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="address" class="form-label">Địa chỉ:</label>
+                                    <input type="text" name="address" id="address" class="form-control" 
+                                        value="<?php echo htmlspecialchars($publisher['address']); ?>">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="website" class="form-label">Địa chỉ Website:</label>
+                                    <textarea name="website" id="note" class="form-control" rows="3"><?php echo htmlspecialchars($publisher['website']); ?></textarea>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Địa chỉ:</label>
-                            <input type="text" name="address" id="address" class="form-control" 
-                                value="<?php echo htmlspecialchars($publisher['address']); ?>">
-                        </div>
-
-
-                        <div class="mb-3">
-                            <label for="website" class="form-label">Địa chỉ Website:</label>
-                            <textarea name="website" id="note" class="form-control" rows="3"><?php echo htmlspecialchars($publisher['website']); ?></textarea>
-                        </div>
-                </div>
+                    </div> 
+                </div> <!--Chân thẻ body-->
                 <div class="card-footer d-flex justify-content-between">
                     <a href="index.php?model=publisher&action=index" class="btn btn-secondary">
                         <i class="fa-solid fa-arrow-left"></i>
