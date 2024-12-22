@@ -191,6 +191,65 @@
 				width: 100%;
 			}
 		}
+		/* Căn chỉnh container */
+.searchbox-desktop {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0px;
+}
+
+/* Tùy chỉnh ô input */
+.searchbox-desktop .form-control {
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    width: 250px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.searchbox-desktop .form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+}
+
+.searchbox-desktop .form-control::placeholder {
+    color: #999;
+}
+
+/* Tùy chỉnh nút search */
+.searchbox-desktop #searchBtn {
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.searchbox-desktop #searchBtn i {
+    color: #007bff;
+    font-size: 16px;
+}
+
+.searchbox-desktop #searchBtn:hover i {
+    color: #0056b3;
+}
+
+/* Loại bỏ outline khi focus vào nút */
+.searchbox-desktop #searchBtn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Đảm bảo responsive */
+@media (max-width: 768px) {
+    .searchbox-desktop .form-control {
+        width: 200px;
+    }
+}
 	</style>
 
 </head>
@@ -216,7 +275,7 @@
 				?>
 				<img class="img-profile rounded-circle" src="<?php echo $avatar; ?>"
 					style="width: 40px; height: 40px; object-fit: cover;">
-				<li><a onclick="$('#user-setting').toggle()" id="s-s">Chào <?php echo $_SESSION['full_name'] ?></a>
+				<li><a class="" onclick="$('#user-setting').toggle()" id="s-s">Chào <?php echo $_SESSION['full_name'] ?></a>
 					<div class='mn-ef'></div>
 				</li>
 				<div id='user-setting'>
@@ -243,7 +302,7 @@
 				</div>
 			<?php }
 			?>
-			<li><a href="client/viewcart"><i class="glyphicon glyphicon-shopping-cart"></i> Giỏ sách</a>
+			<li><a href="client/viewcart"><i class="fa-solid fa-basket-shopping"></i> Giỏ sách</a>
 				<div class="mn-ef"></div>
 			</li>
 		</ul>
@@ -270,7 +329,7 @@
 						<input type="text" class="form-control input-lg" placeholder="Bạn tìm gì?" id='src-v' />
 						<span class="input-group-btn">
 							<button class="btn btn-info btn-lg" type="button">
-								<i class="glyphicon glyphicon-search"></i>
+							<i class="fa-solid fa-magnifying-glass"></i>
 							</button>
 						</span>
 					</div>
@@ -301,19 +360,24 @@
 					<li class="menu-name" id="mntq"><a href="product/List/BestSelling">Top sách tuần qua</a></li>
 
 				</ul>
-				<div style="cursor: pointer;"><a href="client/viewcart" style="color: blue"><i
-							class="glyphicon glyphicon-shopping-cart navbar-right btn-lg" id="cart_count">
+				<div class="navbar-right" style="cursor: pointer; padding-top: 5px; display: inline-block;">
+					<a href="client/viewcart" style="color: #007bff">
+						<i class="fa-solid fa-basket-shopping navbar-right btn-lg" id="cart_count">
 							<?php if (isset($_SESSION['cart'])) {
 								echo count($_SESSION['cart']);
 							} else
 								echo "0"; ?>
-						</i></a></div>
+						</i>
+					</a>
+				</div>
+				<div class="navbar-right"style="display: inline-block; border-right: 2px solid #ccc; height: 30px; margin: 7px 0px; vertical-align: middle;"></div>
 				<div class="navbar-form navbar-right searchbox-desktop">
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="Bạn tìm gì?" id='srch-val'>
 					</div>
-					<span class="btn btn-primary" id="searchBtn">Tìm</span>
+					<span class="btn btn-primary" id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></span>
 				</div>
+				
 			</div><!-- /.navbar-collapse -->
 		</div>
 	</nav>

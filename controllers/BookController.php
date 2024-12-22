@@ -217,5 +217,6 @@ class BookController extends Controller
     {
         include('views/books/book_detail.php');
     }
+    
 }
 ?>

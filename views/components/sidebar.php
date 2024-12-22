@@ -73,6 +73,12 @@
                 </div>   
             </div>
         </li>
+        <li class="nav-item <?= ($current_model == 'publisher' ) ? 'active' : '' ?>">       
+        <a class="nav-link" href="route.php?model=statistic&action=index" >
+                <i class="fa-solid fa-chart-simple"style="color: #423b8e; font-size: 1.1rem; margin-right: 0.75rem;"></i>
+                <span style="color: #423b8e; font-size: 0.9rem;">Thống kê</span>
+            </a>
+        </li>
         <?php
      } else {         
          echo "<li class='nav-item' style='color: #423b8e; font-size: 1rem;'>Không có quyền truy cập</li>";     

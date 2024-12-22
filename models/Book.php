@@ -222,4 +222,40 @@ class Book extends Model
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getTotalCount() 
+    {
+        $query = "SELECT COUNT(*) as total FROM {$this->table_name}";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    }
+
+    public function getCategoryStats() 
+    {
+        $query = "SELECT c.name, COUNT(bc.book_id) as book_count
+                FROM category c
+                LEFT JOIN book_category bc ON c.category_id = bc.category_id
+                GROUP BY c.category_id, c.name";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMostPopularBooks() 
+    {
+        $query = "SELECT b.title, 
+                        GROUP_CONCAT(a.name) as authors,
+                        COUNT(l.loan_id) as borrow_count
+                FROM book b
+                LEFT JOIN book_author ba ON b.book_id = ba.book_id
+                LEFT JOIN author a ON ba.author_id = a.author_id
+                LEFT JOIN loan_detail ld ON b.book_id = ld.book_id
+                LEFT JOIN loan l ON ld.loan_id = l.loan_id
+                GROUP BY b.book_id, b.title
+                ORDER BY borrow_count DESC
+                LIMIT 5";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

@@ -14,6 +14,7 @@ require 'controllers/PublisherController.php';
 require 'controllers/ReservationController.php';
 require 'controllers/RoleController.php';
 require 'controllers/DefaultController.php';
+require 'controllers/StatisticsController.php';
 
 
 $model = isset($_GET['model']) ? $_GET['model'] : 'default';
@@ -40,6 +41,9 @@ if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3) {
 }
 
 switch ($model) {
+    case 'statistic':
+        $controller = new StatisticsController();
+        break;
     case 'default':
         $controller = new DefaultController();
         break;

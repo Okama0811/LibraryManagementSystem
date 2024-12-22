@@ -4,12 +4,18 @@ include_once 'models/Role.php';
 
 class DefaultController extends Controller
 {
+    private $book;
+    private $loan;
+    private $member;
+
     private $user;
     private $role;
 
     public function __construct()
     {
-       
+        $this->book = new Book();
+        $this->loan = new Loan();
+        $this->member = new User();
     }
     public function index() {
         $book = new Book();
@@ -34,6 +40,20 @@ class DefaultController extends Controller
     }
     
     public function admin_dashboard(){
+        $totalBooks = $this->book->getTotalCount();
+        $activeMembers = $this->member->getActiveCount();
+        $activeLoans = $this->loan->getActiveLoanCount();
+        $overdueLoans = $this->loan->getOverdueCount();
+
+        // Thống kê theo tháng
+        $monthlyStats = $this->loan->getMonthlyStats();
+
+        // Thống kê theo danh mục
+        $categoryStats = $this->book->getCategoryStats();
+
+        // Sách phổ biến
+        $popularBooks = $this->book->getMostPopularBooks(5);
+
         $content = 'views/default/adminDashboard.php';
         include('views/layouts/base.php');
     }

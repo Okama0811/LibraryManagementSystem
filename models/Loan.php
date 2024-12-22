@@ -76,72 +76,72 @@ class Loan extends Model
                 FROM loan l
                 LEFT JOIN user u ON l.user_id = u.user_id
                 WHERE l.loan_id = :id";
-    
+
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-    
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getBooksByLoanId($loanId)
-{
-    $query = "
+    {
+        $query = "
         SELECT ld.book_id, b.title AS book_title, b.quantity as book_quantity, ld.status, ld.quantity, ld.notes
         FROM loan_detail ld
         JOIN book b ON ld.book_id = b.book_id
         WHERE ld.loan_id = :loan_id
     ";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':loan_id', $loanId, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-  // Cập nhật trạng thái phiếu mượn (issued, returned, overdue)
-  public function updateStatus($loanId, $status, $returnDate = null)
-{
-    $validStatuses = ['issued', 'returned', 'overdue'];
-    if (!in_array($status, $validStatuses)) {
-        return false; // Trạng thái không hợp lệ
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':loan_id', $loanId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    $query = "UPDATE {$this->table_name} 
+    // Cập nhật trạng thái phiếu mượn (issued, returned, overdue)
+    public function updateStatus($loanId, $status, $returnDate = null)
+    {
+        $validStatuses = ['issued', 'returned', 'overdue'];
+        if (!in_array($status, $validStatuses)) {
+            return false; // Trạng thái không hợp lệ
+        }
+
+        $query = "UPDATE {$this->table_name} 
               SET status = :status, 
                   updated_at = NOW()";
 
-    if ($status === 'returned' && $returnDate) {
-        $query .= ", returned_date = :returned_date";
+        if ($status === 'returned' && $returnDate) {
+            $query .= ", returned_date = :returned_date";
+        }
+
+        $query .= " WHERE loan_id = :loan_id";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+        $stmt->bindParam(':loan_id', $loanId, PDO::PARAM_INT);
+
+        if ($status === 'returned' && $returnDate) {
+            $stmt->bindParam(':returned_date', $returnDate, PDO::PARAM_STR);
+        }
+
+        return $stmt->execute();
     }
 
-    $query .= " WHERE loan_id = :loan_id";
-
-    $stmt = $this->conn->prepare($query);
-
-    $stmt->bindParam(':status', $status, PDO::PARAM_STR);
-    $stmt->bindParam(':loan_id', $loanId, PDO::PARAM_INT);
-
-    if ($status === 'returned' && $returnDate) {
-        $stmt->bindParam(':returned_date', $returnDate, PDO::PARAM_STR);
-    }
-
-    return $stmt->execute();
-}
-
-public function delete($id)
+    public function delete($id)
     {
         return parent::delete($id);
     }
 
     public function updateBookStatusInLoanDetail($loanId, $bookId, $status)
-{
-    $sql = "UPDATE loan_detail SET status = :status WHERE loan_id = :loanId AND book_id = :bookId";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bindParam(':status', $status,  PDO::PARAM_STR);
-    $stmt->bindParam(':loanId', $loanId, PDO::PARAM_INT);
-    $stmt->bindParam(':bookId', $bookId, PDO::PARAM_INT);
-    return $stmt->execute();
-}
+    {
+        $sql = "UPDATE loan_detail SET status = :status WHERE loan_id = :loanId AND book_id = :bookId";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+        $stmt->bindParam(':loanId', $loanId, PDO::PARAM_INT);
+        $stmt->bindParam(':bookId', $bookId, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 
     // 2. Chuyển sách vào bảng reservations
     public function reserveBook($loanId, $bookId)
@@ -151,13 +151,13 @@ public function delete($id)
         $userStmt->bindParam(':loan_id', $loanId, PDO::PARAM_INT);
         $userStmt->execute();
         $userData = $userStmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if (!$userData) {
             return false; // Không tìm thấy user_id
         }
-        
+
         $userId = $userData['user_id'];
-    
+
         $query = "INSERT INTO reservation (
             book_id, 
             user_id, 
@@ -169,12 +169,12 @@ public function delete($id)
             NOW(), 
             'pending'
         )";
-        
+
         $stmt = $this->conn->prepare($query);
-        
+
         $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        
+
         return $stmt->execute();
     }
 
@@ -190,26 +190,54 @@ public function delete($id)
     }
 
     public function updateBookAvailability($bookId, $status)
-{
-    $query = "";
-    switch($status) {
-        case 'returned':
-            $query = "UPDATE book SET status = 'available', quantity = quantity + 1 WHERE book_id = :book_id";
-            break;
-        case 'lost':
-            $query = "UPDATE book SET status = 'lost' WHERE book_id = :book_id";
-            break;
-        case 'damaged':
-            $query = "UPDATE book SET status = 'damaged' WHERE book_id = :book_id";
-            break;
-    }
+    {
+        $query = "";
+        switch ($status) {
+            case 'returned':
+                $query = "UPDATE book SET status = 'available', quantity = quantity + 1 WHERE book_id = :book_id";
+                break;
+            case 'lost':
+                $query = "UPDATE book SET status = 'lost' WHERE book_id = :book_id";
+                break;
+            case 'damaged':
+                $query = "UPDATE book SET status = 'damaged' WHERE book_id = :book_id";
+                break;
+        }
 
-    if (!empty($query)) {
+        if (!empty($query)) {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+            return $stmt->execute();
+        }
+
+        return false;
+    }
+    public function getActiveLoanCount()
+    {
+        $query = "SELECT COUNT(*) as total FROM {$this->table_name} WHERE status = 'issued'";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
-        return $stmt->execute();
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     }
 
-    return false;
-}
+    public function getOverdueCount()
+    {
+        $query = "SELECT COUNT(*) as total FROM {$this->table_name} WHERE status = 'overdue'";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    }
+
+    public function getMonthlyStats()
+    {
+        $query = "SELECT DATE_FORMAT(issued_date, '%Y-%m') as month,
+                    COUNT(*) as loan_count
+            FROM {$this->table_name}
+            GROUP BY DATE_FORMAT(issued_date, '%Y-%m')
+            ORDER BY month DESC
+            LIMIT 12";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

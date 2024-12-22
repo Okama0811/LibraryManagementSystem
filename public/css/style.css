@@ -81,7 +81,7 @@ a{cursor: pointer!important;}
 a:hover{text-decoration: none!important}
 .navbar-default{background-color: white!important; color: white; border: none!important;}
 .navbar-default .navbar-nav>li>a{color: black!important;}
-.logo{color: blue!important; font-family: 'Kaushan Script', cursive;}
+.logo{color: #007bff!important; font-family: 'Kaushan Script', cursive;}
 .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover{
 	background-color: #1595a9!important;
 }
@@ -518,8 +518,8 @@ footer{
 	padding-bottom: 45px;
 }
 #like_count:before{color:red;}
-#cart_count:before{color:blue;}
-#cart_count:hover{transform: scale(1.3); transition: .3s;}
+#cart_count:before{color:#007bff;}
+#cart_count:hover{ transform: scale(1.3); transition: .3s; -webkit-transform: scale(1.3); -moz-transform: scale(1.3); -ms-transform: scale(1.3); -o-transform: scale(1.3); }
 #cart_count{transition: .3s; position: relative;}
 #like_count:hover{transform: scale(1.3); transition: .3s;}
 #like_count{transition: .3s;}
@@ -733,7 +733,7 @@ a.snip0050.hover:before {
     font-size: 23px;
 }
 .rate{
-	color: blue;
+	color: #007bff;
 	position: absolute;
 	top: 30px;
 	width: 100%;

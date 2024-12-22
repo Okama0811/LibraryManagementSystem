@@ -124,5 +124,16 @@ class User extends Model
         $count = $stmt->fetchColumn();
         return $count > 0;
     }
-    
+    public function getActiveCount() {
+        $query = "SELECT COUNT(*) as count 
+                  FROM {$this->table_name} 
+                  WHERE status = 'active' 
+                  AND role_id = 3"; 
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $result['count'];
+    }
 }
