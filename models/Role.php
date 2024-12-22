@@ -29,7 +29,17 @@ class Role extends Model
 
     public function create() 
     {
-        return parent::create();
+        $query = "INSERT INTO role (name, description) VALUES (:name, :description)";
+        $stmt = $this->conn->prepare($query);
+        
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':description', $this->description);
+        
+        if($stmt->execute()) {
+            $this->role_id = $this->conn->lastInsertId(); // Lưu ID ngay sau khi insert
+            return true;
+        }
+        return false;
     }
     
     public function read() 
@@ -55,6 +65,14 @@ class Role extends Model
     }
     
     // Lấy tất cả permissions của role
+    public function getPermissionIDs($role_id) 
+    {
+        $query = "SELECT permission_id FROM role_permission p  
+                  WHERE p.role_id = :role_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':role_id', $role_id);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     public function getPermissions() 
     {
         $query = "SELECT p.* FROM permission p 
@@ -65,7 +83,6 @@ class Role extends Model
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
     // Gán permission cho role
     public function assignPermission($permission_id) 
     {
