@@ -36,6 +36,9 @@
         if (in_array('manage_members', $permissions)) {
             include 'views/components/manage_member_sidebar.php';
         }  
+        if (in_array('manage_publishers', $permissions)) {
+            include 'views/components/manage_publisher_sidebar.php';
+        } 
         if (in_array('manage_authors', $permissions)) {
             include 'views/components/manage_author_sidebar.php';
         }   
@@ -45,9 +48,7 @@
         if (in_array('manage_categories', $permissions)) {
             include 'views/components/manage_category_sidebar.php';
         }  
-        if (in_array('manage_publishers', $permissions)) {
-            include 'views/components/manage_publisher_sidebar.php';
-        }  
+         
         ?>
         <li class="nav-item ">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour" 

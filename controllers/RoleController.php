@@ -20,23 +20,26 @@ class RoleController extends Controller
         include('views/layouts/base.php');
     }
 
-    public function create()
-    {
+    public function create() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                $_SESSION['form_data'] = $_POST;
-                
-                foreach ($_POST as $key => $value) {
-                    if (property_exists($this->role, $key)) {
-                        $this->role->$key = strip_tags(trim($value));
+                // Lưu trữ dữ liệu form vào session để giữ lại khi có lỗi
+                $_SESSION['form_data'] = [
+                    'name' => $_POST['name'] ?? '',
+                    'description' => $_POST['description'] ?? '',
+                    'permissions' => $_POST['permissions'] ?? []
+                ];
+    
+                // Xử lý dữ liệu cơ bản của role
+                foreach (['name', 'description'] as $field) {
+                    if (property_exists($this->role, $field) && isset($_POST[$field])) {
+                        $this->role->$field = strip_tags(trim($_POST[$field]));
                     }
                 }
-
                 if ($this->role->create()) {
-                    if (isset($_POST['permissions']) && is_array($_POST['permissions'])) {
-                        $this->role->updatePermissions($_POST['permissions']);
+                    foreach ($_POST['permissions'] as $permission_id) {
+                        $this->permission->assignPermission($this->role->role_id,$permission_id);
                     }
-
                     $_SESSION['message'] = 'Role created successfully!';
                     $_SESSION['message_type'] = 'success';
                     unset($_SESSION['form_data']);
@@ -45,23 +48,25 @@ class RoleController extends Controller
                 } else {
                     throw new Exception('Failed to create role');
                 }
+    
             } catch (Exception $e) {
-                $_SESSION['message'] = 'Role creation failed. Please try again!';
+                $_SESSION['message'] = 'Role creation failed: ' . $e->getMessage();
                 $_SESSION['message_type'] = 'danger';
-                $permissions = $this->permission->read();
+                
+                $data = $this->permission->read();
                 $content = 'views/roles/create.php';
                 include('views/layouts/base.php');
                 return;
             }
         }
-
-        $permissions = $this->permission->read();
+        $data = $this->permission->read();
         $content = 'views/roles/create.php';
         include('views/layouts/base.php');
     }
 
-    public function edit($id)
+    public function edit($id) 
     {
+        // First check if the role exists
         $role = $this->role->readById($id);
         if (!$role) {
             $_SESSION['message'] = 'Role not found!';
@@ -69,7 +74,7 @@ class RoleController extends Controller
             header("Location: index.php?model=role&action=index");
             exit();
         }
-
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 foreach ($_POST as $key => $value) {
@@ -77,12 +82,14 @@ class RoleController extends Controller
                         $this->role->$key = strip_tags(trim($value));
                     }
                 }
-
                 if ($this->role->update($id)) {
-                    if (isset($_POST['permissions'])) {
-                        $this->role->updatePermissions($_POST['permissions']);
+                    $this->role->removeAllPermissions($id);
+                    // Check if permissions were selected
+                    if (isset($_POST['permissions']) && is_array($_POST['permissions'])) {
+                        foreach ($_POST['permissions'] as $permission_id) {
+                            $this->permission->assignPermission($id, $permission_id);
+                        }
                     }
-
                     $_SESSION['message'] = 'Role updated successfully!';
                     $_SESSION['message_type'] = 'success';
                     header("Location: index.php?model=role&action=index");
@@ -91,17 +98,22 @@ class RoleController extends Controller
                     throw new Exception('Failed to update role');
                 }
             } catch (Exception $e) {
-                $_SESSION['message'] = 'Role update failed. Please try again!';
+                $_SESSION['message'] = 'Role update failed. Please try again!' . $e->getMessage();
                 $_SESSION['message_type'] = 'danger';
             }
         }
-
-        $permissions = $this->permission->read();
-        $rolePermissions = $this->role->getPermissions();
+    
+        $_SESSION['form_data'] = [
+            'role_id'=>$id,
+            'name' => $role['name'] ?? '',
+            'description' => $role['description'] ?? '',
+            'permissions' => $this->role->getPermissionIds($id) ?? []
+        ];
+        
+        $data = $this->permission->read();
         $content = 'views/roles/edit.php';
         include('views/layouts/base.php');
     }
-
     public function delete($id)
     {
         try {
