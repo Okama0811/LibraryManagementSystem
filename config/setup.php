@@ -37,8 +37,8 @@ try {
     $updateFile = 'G:\XAMPP\htdocs\LibraryManagementSystem\database\migrations\update.sql';
 
     // $setup->runSQLFromFile($schemaFile);
-    // $setup->runSQLFromFile($dataFile);
-    $setup->runSQLFromFile($updateFile);
+    $setup->runSQLFromFile($dataFile);
+    // $setup->runSQLFromFile($updateFile);
   
 } catch(Exception $e) {
     echo "Lỗi khởi tạo: " . $e->getMessage() . "\n";

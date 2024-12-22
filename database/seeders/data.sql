@@ -1,23 +1,23 @@
 
--- Insert roles
-INSERT INTO Role (role_id, name, description, created_at, updated_at) 
-VALUES 
-(1, 'Admin', 'Quản trị viên hệ thống với quyền truy cập đầy đủ', NOW(), NOW()),
-(2, 'Librarian', 'Thủ thư phụ trách quản lý sách và xử lý yêu cầu của người dùng', NOW(), NOW()),
-(3, 'Member', 'Người dùng thông thường với quyền mượn sách', NOW(), NOW());
+-- -- Insert roles
+-- INSERT INTO Role (role_id, name, description, created_at, updated_at) 
+-- VALUES 
+-- (1, 'Admin', 'Quản trị viên hệ thống với quyền truy cập đầy đủ', NOW(), NOW()),
+-- (2, 'Librarian', 'Thủ thư phụ trách quản lý sách và xử lý yêu cầu của người dùng', NOW(), NOW()),
+-- (3, 'Member', 'Người dùng thông thường với quyền mượn sách', NOW(), NOW());
 
--- Insert all permissions
-INSERT INTO Permission (permission_id, name, description, created_at, updated_at) 
-VALUES 
-(1, 'manage_users', 'Quyền quản lý tài khoản người dùng', NOW(), NOW()),
-(2, 'manage_authors', 'Quyền quản lý thông tin tác giả', NOW(), NOW()),
-(3, 'manage_books', 'Quyền quản lý sách', NOW(), NOW()),
-(4, 'manage_loans', 'Quyền quản lý mượn trả sách', NOW(), NOW()),
-(5, 'manage_categories', 'Quyền quản lý danh mục sách', NOW(), NOW()),
-(6, 'manage_publishers', 'Quyền quản lý nhà xuất bản', NOW(), NOW()),
-(7, 'manage_reservations', 'Quyền quản lý đặt sách', NOW(), NOW()),
-(8, 'manage_bookConditions', 'Quyền quản lý tình trạng sách', NOW(), NOW()),
-(9, 'manage_members', 'Quyền quản lý thành viên', NOW(), NOW());;
+-- -- Insert all permissions
+-- INSERT INTO Permission (permission_id, name, description, created_at, updated_at) 
+-- VALUES 
+-- (1, 'manage_users', 'Quyền quản lý tài khoản người dùng', NOW(), NOW()),
+-- (2, 'manage_authors', 'Quyền quản lý thông tin tác giả', NOW(), NOW()),
+-- (3, 'manage_books', 'Quyền quản lý sách', NOW(), NOW()),
+-- (4, 'manage_loans', 'Quyền quản lý mượn trả sách', NOW(), NOW()),
+-- (5, 'manage_categories', 'Quyền quản lý danh mục sách', NOW(), NOW()),
+-- (6, 'manage_publishers', 'Quyền quản lý nhà xuất bản', NOW(), NOW()),
+-- (7, 'manage_reservations', 'Quyền quản lý đặt sách', NOW(), NOW()),
+-- (8, 'manage_bookConditions', 'Quyền quản lý tình trạng sách', NOW(), NOW()),
+-- (9, 'manage_members', 'Quyền quản lý thành viên', NOW(), NOW());
 
 -- Assign permissions to roles
 INSERT INTO Role_Permission (role_id, permission_id, created_at) 

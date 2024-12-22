@@ -82,7 +82,6 @@ CREATE TABLE IF NOT EXISTS book (
     cover_image VARCHAR(255),
     quantity INT DEFAULT 0,
     available_quantity INT DEFAULT 0,
-    price DECIMAL(10,2),
     status ENUM('available', 'unavailable') DEFAULT 'available',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
