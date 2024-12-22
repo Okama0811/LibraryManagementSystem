@@ -1,106 +1,130 @@
-
 <div id="content">
-	<div id="carousel-id" class="carousel slide" data-ride="carousel">
-		<div class="carousel-inner" id="headerSlide">
-			<?php 
-			$i = 0;
-			for ($j=0; $j < count($data[0]); $j++) {
-				if($i == 3){ ?>
-				<div class='item active'>
-					<a data-toggle='modal' href='product/PrdDetail/<?php echo $data[0][$i]['masp'] ?>' data-target='#modal-id' onclick="Display_PrdDetail('<?php echo $data[0][$i]['masp'] ?>')">
-						<!-- <img src="uploads/covers/<?php echo $data[0][$i]['cover_image'] ?>"> -->
-						<?php echo $data[0][$i]['cover_image'] ?>
-					</a>
-				</div>
-				<?php } else { ?>
-				<div class='item'>
-					<a data-toggle='modal' href='product/PrdDetail/<?php echo $data[0][$i]['masp'] ?>' data-target='#modal-id' onclick="Display_PrdDetail('<?php echo $data[0][$i]['masp'] ?>')">
-						<img src="<?php echo $data[0][$i]['anhchinh'] ?>">
-					</a>
-				</div>
-				<?php }
-				$i++;
-			}
-			?>
-		</div>
-		<a class="left carousel-control" href="#carousel-id" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
-		<a class="right carousel-control" href="#carousel-id" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-	</div>
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-12 all-product">
-				<a href="product/List/BestSelling">
-					<h2 title="" class="content-menu">Top sách tuần qua
-						<span class="glyphicon glyphicon-menu-right" style="font-size: 18px"></span>
-					</h2>
-				</a>
-				<?php
-				for ($i=0; $i < count($data[2]); $i++) { 
-					?>
-					<div class='product-container' onclick="Display_PrdDetail('<?php echo $data[2][$i]['masp'] ?>')">
-						<a data-toggle='modal' href='product/PrdDetail/<?php echo $data[2][$i]['masp'] ?>' data-target='#modal-id'>
-							<div style="text-align: center;" class='product-img'>
-								<img src='<?php echo $data[2][$i]['anhchinh'] ?>'>
-							</div>
-							<div class='product-info'>
-								<h4><b><?php echo $data[2][$i]['tensp'] ?></b></h4>
-								<b class='price'>Giá: <?php echo $data[2][$i]['gia'] ?> VND</b>
-								<div class='buy'>
-									<a class='btn btn-primary btn-md cart-container 
-									<?php 
-									if(isset($_SESSION['cart'])){
-										if(array_search($data[2][$i]['masp'], $_SESSION['cart']) !== false){
-											echo 'cart-ordered';
-										}
-									}
-									?>
-									' data-masp='<?php echo $data[2][$i]['masp'] ?>'>
-									<i title='Thêm vào giỏ hàng' class='glyphicon glyphicon-shopping-cart cart-item'></i>
-								</a>
-								<a href="client/buynow/<?php echo $data[2][$i]['masp'] ?>" class="snip0050" href='order.php?masp=<?php echo $data[2][$i]['masp'] ?>'><span>Mua ngay</span><i class="glyphicon glyphicon-ok"></i>
-								</a>
-							</div>
-						</div>
-					</a>
-				</div>
-				<?php } ?>
+    <!-- Carousel Section -->
+    <div id="carousel-id" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner" id="headerSlide">
+            <?php 
+            $featured_books = array_slice($data_book, 0, 5); 
+            // var_dump($data_book);
+            // exit();// Lấy 5 cuốn sách đầu tiên cho carousel
+            foreach($featured_books as $index => $book) { ?>
+                <div class="item <?php echo $index === 0 ? 'active' : ''; ?>">
+                    <a data-toggle="modal" href="#" data-target="#modal-id" onclick="Display_BookDetail('<?php echo $book['book_id'] ?>')">
+                        <?php if($book['cover_image']): ?>
+                            <img src="uploads/covers/<?php echo $book['cover_image'] ?>" alt="<?php echo $book['title'] ?>">
+                        <?php else: ?>
+                            <img src="uploads/covers/default-book.jpg" alt="Default Cover">
+                        <?php endif; ?>
+                    </a>
+                </div>
+            <?php } ?>
+        </div>
+        <a class="left carousel-control" href="#carousel-id" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" href="#carousel-id" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
 
-				<a href="product/List/Newest">
-					<h2 title="Những sản phẩm mới nhất" class="content-menu">Sách mới
-						<span class="glyphicon glyphicon-menu-right" style="font-size: 18px"></span>
-					</h2>
-				</a>
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 all-product">
+                <!-- Latest Books Section -->
+                <h2 class="content-menu">Sách Mới
+                    <span class="glyphicon glyphicon-menu-right" style="font-size: 18px"></span>
+                </h2>
+                
+                <?php
+                $latest_books = array_slice($data_book, 0, 8); // Lấy 8 cuốn sách mới nhất
+                foreach($latest_books as $book) { ?>
+                    <div class="product-container" onclick="Display_BookDetail('<?php echo $book['book_id'] ?>')">
+                        <a data-toggle="modal" href="#" data-target="#modal-id">
+                            <div class="product-img text-center">
+                                <?php if($book['cover_image']): ?>
+                                    <img src="uploads/covers/<?php echo $book['cover_image'] ?>" alt="<?php echo $book['title'] ?>">
+                                <?php else: ?>
+                                    <img src="uploads/covers/default-book.jpg" alt="Default Cover">
+                                <?php endif; ?>
+                            </div>
+                            <div class="product-info">
+                                <h4><b><?php echo $book['title'] ?></b></h4>
+                                <p>Tác giả: <?php echo $book['authors'] ?></p>
+                                <p>Thể loại: <?php echo $book['categories'] ?></p>
+                                <p>NXB: <?php echo $book['publisher_name'] ?></p>
+                                <div class="status">
+                                    <?php if($book['available_quantity'] > 0): ?>
+                                        <span class="label label-success">Còn sách</span>
+                                    <?php else: ?>
+                                        <span class="label label-danger">Hết sách</span>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="buy">
+                                    <?php if($book['available_quantity'] > 0): ?>
+                                        <a href="loan/request/<?php echo $book['book_id'] ?>" 
+                                           class="btn btn-primary">
+                                            <i class="glyphicon glyphicon-book"></i> Mượn sách
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <?php } ?>
 
-				<?php
-				for ($i=0; $i < count($data[1]); $i++) { 
-					?>
-					<div class='product-container' onclick="Display_PrdDetail('<?php echo $data[1][$i]['masp'] ?>')">
-						<a data-toggle='modal' href='product/PrdDetail/<?php echo $data[1][$i]['masp'] ?>' data-target='#modal-id'>
-							<div style="text-align: center;" class='product-img'>
-								<img src='<?php echo $data[1][$i]['anhchinh'] ?>'>
-							</div>
-							<div class='product-info'>
-								<h4><b><?php echo $data[1][$i]['tensp'] ?></b></h4>
-								<b class='price'>Giá: <?php echo $data[1][$i]['gia'] ?> VND</b>
-								<div class='buy'>
-									<a class='btn btn-primary btn-md cart-container 
-									<?php
-									if(isset($_SESSION['cart'])){
-										if(array_search($data[1][$i]['masp'], $_SESSION['cart']) !== false){
-											echo 'cart-ordered';
-										}
-									}
-									 ?>' data-masp='<?php echo $data[1][$i]['masp'] ?>'>
-									<i title='Thêm vào giỏ hàng' class='glyphicon glyphicon-shopping-cart cart-item'></i>
-								</a>
-								<a href="client/buynow/<?php echo $data[1][$i]['masp'] ?>" class="snip0050" href='order.php?masp=<?php echo $data[1][$i]['masp'] ?>'><span>Mua ngay</span><i class="glyphicon glyphicon-ok"></i>
-								</a>
-							</div>
-						</div>
-					</a>
-				</div>
-				<?php } ?>
-			</div>
-		</div>
-	</div>
+                <!-- Available Books Section -->
+                <h2 class="content-menu">Sách Có Sẵn
+                    <span class="glyphicon glyphicon-menu-right" style="font-size: 18px"></span>
+                </h2>
+                
+                <?php
+                $available_books = array_filter($data_book, function($book) {
+                    return $book['available_quantity'] > 0;
+                });
+                $available_books = array_slice($available_books, 0, 8);
+                
+                foreach($available_books as $book) { ?>
+                    <div class="product-container" onclick="Display_BookDetail('<?php echo $book['book_id'] ?>')">
+                        <a data-toggle="modal" href="#" data-target="#modal-id">
+                            <div class="product-img text-center">
+                                <?php if($book['cover_image']): ?>
+                                    <img src="uploads/covers/<?php echo $book['cover_image'] ?>" alt="<?php echo $book['title'] ?>">
+                                <?php else: ?>
+                                    <img src="uploads/covers/default-book.jpg" alt="Default Cover">
+                                <?php endif; ?>
+                            </div>
+                            <div class="product-info">
+                                <h4><b><?php echo $book['title'] ?></b></h4>
+                                <p>Tác giả: <?php echo $book['authors'] ?></p>
+                                <p>Thể loại: <?php echo $book['categories'] ?></p>
+                                <p>NXB: <?php echo $book['publisher_name'] ?></p>
+                                <p>Số lượng có sẵn: <?php echo $book['available_quantity'] ?></p>
+                                <div class="buy">
+                                    <a href="loan/request/<?php echo $book['book_id'] ?>" 
+                                       class="btn btn-primary">
+                                        <i class="glyphicon glyphicon-book"></i> Mượn sách
+                                    </a>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Detail Modal -->
+    <div class="modal fade" id="modal-id">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Chi tiết sách</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
