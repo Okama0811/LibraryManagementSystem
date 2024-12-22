@@ -1,6 +1,6 @@
 *{margin:0; padding: 0}
 .edit-userinfo{color: #c1c1c1; cursor: pointer;}
-.edit-userinfo:hover{color: black;}
+.edit-userinfo:hover{color: #f0f0f0;}
 .btn{border-radius: 0!important}
 .searchbox-desktop .btn.btn-primary, .form-group .form-control{border-radius: 0px;}
 .goTop{
@@ -32,7 +32,7 @@
 	background-color: #2ea22e;
 	opacity: 0;
 }
-.callBtn:hover p{opacity: 1; transition: .4s;}
+.callBtn:hover p{opacity: 0.5; transition: .4s;}
 .callBtn:hover{
 	right: 164px;
 	transition: .5s;
@@ -87,7 +87,7 @@ a:hover{text-decoration: none!important}
 }
 .km{padding: 5px 10px; background-color: green; border-radius: 15px; color: white;}
 .navbar{bottom: 23px; margin: 0!important;}
-.menu-name:hover{background-color: rgba(150, 143, 143, 0.119)}
+.menu-name:hover{background-color: #f0f0f0}
 /* .content-menu:hover{letter-spacing: 5px; transition: .5s} */
 .content-menu{transition: .5s; text-align: left;}
 header{
@@ -284,7 +284,7 @@ ul.header-menu li:hover .mn-ef{
 	.product-container{filter: brightness(90%);}
 	.product-img{margin-left: auto;}
 	.product-img{transform: scale(1.374); transition: .35s;}
-	.product-img:hover{background-color: rgba(44, 62, 80, 0.74);}
+	.product-img:hover{background-color: #f0f0f0;}
 	.product-img:before, .product-img:after{
 		position: absolute;
 		top: 0;
@@ -459,7 +459,7 @@ footer{
 	z-index: 1;
 }
 #user-setting li:hover{
-	background-color: #2c3e50;
+	background-color: #f0f0f0;
 }
 #user-setting li{
 	padding: 5px 10px;
@@ -620,7 +620,7 @@ a.snip0050:before {
 }
 a.snip0050:hover,
 a.snip0050.hover {
-	color: #000000;
+	color: #f0f0f0;
 }
 a.snip0050:hover span,
 a.snip0050.hover span {

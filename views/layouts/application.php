@@ -191,72 +191,152 @@
 				width: 100%;
 			}
 		}
+
 		/* Căn chỉnh container */
-.searchbox-desktop {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0px;
-}
+		.searchbox-desktop {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 0px;
+		}
 
-/* Tùy chỉnh ô input */
-.searchbox-desktop .form-control {
-    border: 1px solid #e0e0e0;
-    border-radius: 20px;
-    padding: 8px 16px;
-    font-size: 14px;
-    width: 250px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+		/* Tùy chỉnh ô input */
+		.searchbox-desktop .form-control {
+			border: 1px solid #e0e0e0;
+			border-radius: 20px;
+			padding: 8px 16px;
+			font-size: 14px;
+			width: 250px;
+			transition: all 0.3s ease;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+		}
 
-.searchbox-desktop .form-control:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 2px 8px rgba(0,123,255,0.1);
-}
+		.searchbox-desktop .form-control:focus {
+			outline: none;
+			border-color: #007bff;
+			box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+		}
 
-.searchbox-desktop .form-control::placeholder {
-    color: #999;
-}
+		.searchbox-desktop .form-control::placeholder {
+			color: #999;
+		}
 
-/* Tùy chỉnh nút search */
-.searchbox-desktop #searchBtn {
-    background: none;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+		/* Tùy chỉnh nút search */
+		.searchbox-desktop #searchBtn {
+			background: none;
+			border: none;
+			padding: 8px 12px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
 
-.searchbox-desktop #searchBtn i {
-    color: #007bff;
-    font-size: 16px;
-}
+		.searchbox-desktop #searchBtn i {
+			color: #007bff;
+			font-size: 16px;
+		}
 
-.searchbox-desktop #searchBtn:hover i {
-    color: #0056b3;
-}
+		.searchbox-desktop #searchBtn:hover i {
+			color: #0056b3;
+		}
 
-/* Loại bỏ outline khi focus vào nút */
-.searchbox-desktop #searchBtn:focus {
-    outline: none;
-    box-shadow: none;
-}
+		/* Loại bỏ outline khi focus vào nút */
+		.searchbox-desktop #searchBtn:focus {
+			outline: none;
+			box-shadow: none;
+		}
 
-/* Đảm bảo responsive */
-@media (max-width: 768px) {
-    .searchbox-desktop .form-control {
-        width: 200px;
-    }
-}
+		/* Đảm bảo responsive */
+		@media (max-width: 768px) {
+			.searchbox-desktop .form-control {
+				width: 200px;
+			}
+		}
+
+		#user-setting {
+			position: absolute;
+			top: 100%;
+			right: 0;
+			background: white;
+			border-radius: 8px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			min-width: 160px;
+			z-index: 1000;
+			margin-top: 5px;
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			overflow: hidden;
+		}
+
+		#user-setting ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		#user-setting ul a {
+			text-decoration: none;
+			color: #333 !important;
+			display: block;
+			padding: 10px 15px;
+			transition: all 0.2s ease;
+		}
+
+		#user-setting ul a:hover {
+			background-color: #f0f0f0;
+			/* Màu xám khi hover */
+			color: #333 !important;
+			/* Giữ nguyên màu chữ */
+		}
+
+		#user-setting ul li {
+			border-bottom: 1px solid #eee;
+			margin: 0;
+			color: #333;
+			font-size: 14px;
+		}
+
+		#user-setting ul li:last-child {
+			border-bottom: none;
+		}
+
+		#user-setting ul li i {
+			color: #666;
+			margin-right: 8px;
+			width: 16px;
+			text-align: center;
+		}
+
+		#user-setting::before {
+			content: '';
+			position: absolute;
+			top: -8px;
+			right: 20px;
+			width: 12px;
+			height: 12px;
+			background: white;
+			transform: rotate(45deg);
+			border-left: 1px solid rgba(0, 0, 0, 0.1);
+			border-top: 1px solid rgba(0, 0, 0, 0.1);
+		}
+
+		/* Ẩn ban đầu */
+		#user-setting {
+			display: none;
+		}
+
+		.avatar-circle {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			object-fit: cover;
+			border: 2px solid #fff;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
 	</style>
-
 </head>
 
 <body>
 	<header id='header'>
-		<a class="mx-3" href=""><img src="assets/images/header_ic.png">
+		<a class="mx-3" href="index.php"><img src="assets/images/header_ic.png">
 			<h2 class="logo">E-LIBRARY</h2>
 		</a>
 		<ul class="header-menu">
@@ -271,33 +351,47 @@
 				</li>
 			<?php } else { ?>
 				<?php
-				$avatar = isset($_SESSION['avatar_url']) ? 'uploads/avatars/' . $_SESSION['avatar_url'] : 'assets/images/default-avatar.png';
+				// Kiểm tra và lấy đường dẫn avatar
+				$avatar = isset($_SESSION['avatar_url'])
+					? 'uploads/avatars/' . $_SESSION['avatar_url']
+					: 'assets/images/default-avatar.png';
 				?>
-				<img class="img-profile rounded-circle" src="<?php echo $avatar; ?>"
-					style="width: 40px; height: 40px; object-fit: cover;">
-				<li><a class="" onclick="$('#user-setting').toggle()" id="s-s">Chào <?php echo $_SESSION['full_name'] ?></a>
+
+				<img class="avatar-circle" src="<?php echo htmlspecialchars($avatar); ?>" alt="Profile Avatar">
+				<li style="position: relative;"><a class="" onclick="$('#user-setting').toggle()" id="s-s">Chào
+						<?php echo $_SESSION['full_name'] ?></a>
 					<div class='mn-ef'></div>
 				</li>
 				<div id='user-setting'>
 					<ul>
+						
+						<?php if (($_SESSION['role_id'] != 3)) { ?>
+							<a href="index.php?model=default&action=admin_dashboard">
+								<li>
+									<i class="fas fa-user-shield"></i>
+									Trang Admin
+								</li>
+							</a>
+						<?php } else { ?>
+							<a href="index.php?model=member&action=edit&id=<?php echo $_SESSION['user_id'] ?>">
+								<li>
+									<i class="fas fa-user"></i>
+									Thông tin tài khoản
+								</li>
+							</a>
+							<a href="index.php?model=member&action=change_password&id=<?php echo $_SESSION['user_id'] ?>">
+								<li>
+									<i class="fas fa-key"></i>
+									Đổi mật khẩu
+								</li>
+							</a>
+						<?php } ?>
 						<a href="index.php?model=auth&action=logout">
-							<li>Đăng xuất</li>
+							<li>
+								<i class="fas fa-sign-out-alt"></i>
+								Đăng xuất
+							</li>
 						</a>
-						<?php
-							if (($_SESSION['role_id']!=3)) { ?>
-								<a href="index.php?model=default&action=admin_dashboard">
-								<li>Trang Admin</li>
-						</a>
-						<?php }else {
-						?>
-						<a href="user/viewinfo">
-							<li onclick="$('#user-setting').toggle()">Thông tin tài khoản</li>
-						</a>
-						<a href="user/vieweditpassword">
-							<li>Đổi mật khẩu</li>
-						</a>
-						<?php }
-						?>
 					</ul>
 				</div>
 			<?php }
@@ -323,13 +417,13 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand logo" href="">E-library</a>
+				<a class="navbar-brand logo" href="index.php">E-library</a>
 				<div id="custom-search-input">
 					<div class="input-group col-md-12" style="background-color: white;">
 						<input type="text" class="form-control input-lg" placeholder="Bạn tìm gì?" id='src-v' />
 						<span class="input-group-btn">
 							<button class="btn btn-info btn-lg" type="button">
-							<i class="fa-solid fa-magnifying-glass"></i>
+								<i class="fa-solid fa-magnifying-glass"></i>
 							</button>
 						</span>
 					</div>
@@ -370,14 +464,16 @@
 						</i>
 					</a>
 				</div>
-				<div class="navbar-right"style="display: inline-block; border-right: 2px solid #ccc; height: 30px; margin: 7px 0px; vertical-align: middle;"></div>
+				<div class="navbar-right"
+					style="display: inline-block; border-right: 2px solid #ccc; height: 30px; margin: 7px 0px; vertical-align: middle;">
+				</div>
 				<div class="navbar-form navbar-right searchbox-desktop">
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="Bạn tìm gì?" id='srch-val'>
 					</div>
 					<span class="btn btn-primary" id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></span>
 				</div>
-				
+
 			</div><!-- /.navbar-collapse -->
 		</div>
 	</nav>
@@ -451,5 +547,33 @@
 	</a>
 </body>
 <script src="https://kit.fontawesome.com/1b233c9fdd.js" crossorigin="anonymous"></script>
+<script>
+	$(document).ready(function () {
+		// Store references to elements
+		const userSetting = $('#user-setting');
+		const userMenuButton = $('[onclick="$(\'#user-setting\').toggle()"]');
+
+		// Handle clicks on the document
+		$(document).on('click', function (event) {
+			// Check if click target is outside menu and menu button
+			if (!userSetting.is(event.target) &&
+				!userSetting.has(event.target).length &&
+				!userMenuButton.is(event.target) &&
+				!userMenuButton.has(event.target).length) {
+
+				// Hide menu if it's visible
+				if (userSetting.is(':visible')) {
+					userSetting.hide();
+				}
+			}
+		});
+
+		// Remove the inline onclick attribute and handle click with jQuery
+		userMenuButton.removeAttr('onclick').on('click', function (event) {
+			event.stopPropagation(); // Prevent document click from immediately closing menu
+			userSetting.toggle();
+		});
+	});
+</script>
 
 </html>

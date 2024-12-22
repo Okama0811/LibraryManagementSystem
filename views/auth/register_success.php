@@ -91,7 +91,7 @@
 
     <script>
         // Countdown timer
-        let timeLeft = 3;
+        let timeLeft = 2;
         const countdownElement = document.getElementById('countdown');
         
         const countdownTimer = setInterval(() => {

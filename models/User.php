@@ -136,4 +136,17 @@ class User extends Model
         
         return $result['count'];
     }
+    public function updatePassword($id, $newPassword) {
+        try {
+            $sql = "UPDATE users SET password = :password, updated_at = :updated_at WHERE user_id = :id";
+            $stmt = $this->conn->prepare($sql);
+            return $stmt->execute([
+                ':password' => $newPassword,
+                ':updated_at' => date('Y-m-d H:i:s'),
+                ':id' => $id
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }

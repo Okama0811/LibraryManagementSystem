@@ -14,6 +14,7 @@ require 'controllers/PublisherController.php';
 require 'controllers/ReservationController.php';
 require 'controllers/RoleController.php';
 require 'controllers/DefaultController.php';
+require 'controllers/MemberController.php';
 require 'controllers/StatisticsController.php';
 
 
@@ -34,7 +35,7 @@ if (!isset($_SESSION['user_id']) && !$is_public_route) {
 }
 
 if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3) {
-    if ($model !== 'default' && $model !== 'auth') {
+    if ($model !== 'default' && $model !== 'auth' && $model!== 'member') {
         header('Location: index.php?model=default&action=index');
         exit();
     }
@@ -83,6 +84,9 @@ switch ($model) {
     case 'category':
         $controller = new CategoryController();
         break;
+    case 'member':
+        $controller = new MemberController();
+        break;
     default:
         $controller = new DefaultController();
         break;
@@ -110,10 +114,10 @@ switch ($action) {
         $controller->member();
         break;
     case 'edit':
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
-            header('Location: index.php?model=default&action=index');
-            exit();
-        }
+        // if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
+        //     header('Location: index.php?model=default&action=index');
+        //     exit();
+        // }
         $controller->edit($id);
         break;
     case 'delete':
@@ -125,6 +129,9 @@ switch ($action) {
         break;
     case 'show':
         $controller->show($id);
+        break;
+    case 'change_password':
+        $controller->change_password($id);
         break;
     case 'detail':
         $controller->show($id);

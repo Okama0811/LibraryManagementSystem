@@ -53,5 +53,8 @@ class Controller {
     public function member(){
         
     }
+    public function change_password($id){
+
+    }
 }
 ?>
