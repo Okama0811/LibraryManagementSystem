@@ -44,4 +44,16 @@ class Permission extends Model
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function assignPermission($role_id,$permission_id): bool
+    {
+        $query = "INSERT INTO role_permission (role_id, permission_id) VALUES (:role_id, :permission_id)";
+    
+        $stmt = $this->conn->prepare($query);
+    
+        $stmt->bindParam(':role_id', $role_id);
+        $stmt->bindParam(':permission_id', $permission_id);
+        
+        // Thực thi câu lệnh
+        return $stmt->execute();
+    }
 }

@@ -82,7 +82,6 @@ CREATE TABLE IF NOT EXISTS book (
     cover_image VARCHAR(255),
     quantity INT DEFAULT 0,
     available_quantity INT DEFAULT 0,
-    price DECIMAL(10,2),
     status ENUM('available', 'unavailable') DEFAULT 'available',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -129,6 +128,18 @@ CREATE TABLE IF NOT EXISTS loan (
     FOREIGN KEY (book_id) REFERENCES book(book_id),
     FOREIGN KEY (issued_by) REFERENCES user(user_id),
     FOREIGN KEY (returned_to) REFERENCES user(user_id)
+);
+
+CREATE TABLE loan_detail (
+    detail_id INT PRIMARY KEY AUTO_INCREMENT,
+    loan_id INT NOT NULL,
+    book_id INT NOT NULL,
+    quantity INT DEFAULT 1,
+    status ENUM('issued', 'returned', 'lost', 'damaged') DEFAULT 'issued',
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (loan_id) REFERENCES loan(loan_id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES book(book_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS fine (
