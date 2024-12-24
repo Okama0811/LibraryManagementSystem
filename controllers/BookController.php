@@ -41,11 +41,6 @@ class BookController extends Controller
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                //    echo '<pre>';
-                //     var_dump($_POST);
-                //     var_dump($_FILES);
-                //     echo '</pre>';
-                //     die();
 
                     $authors = $_POST['authors']; // Mảng author_id
                     $categories = $_POST['categories']; // Mảng category_id
@@ -106,10 +101,6 @@ class BookController extends Controller
         $publishers = $this->book->getPublishers();
         $authors = $this->book->getAuthors();
         $categories = $this->book->getCategories();
-        // var_dump($publishers);
-        // var_dump($authors);
-        // var_dump($categories);
-        // die();
 
         $content = 'views/books/create.php';
         include('views/layouts/base.php');
@@ -119,11 +110,6 @@ class BookController extends Controller
      {
          $this->book = new Book();
          $bookData = $this->book->readById($id);
-
-            //  echo '<pre>';
-            //         var_dump($bookData);
-            //         echo '</pre>';
-            //         die();
 
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               try {

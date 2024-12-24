@@ -88,13 +88,6 @@ class BookConditionController extends Controller
             exit();
         }
 
-        // Kiểm tra quyền của người dùng hiện tại
-        if ($_SESSION['user_id'] != $conditionData['assessed_by']) {
-            $_SESSION['message'] = "Bạn không có quyền chỉnh sửa phiếu này.";
-            $_SESSION['message_type'] = 'danger';
-            header("Location: index.php?model=book_condition&action=index");
-            exit();
-        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
@@ -139,11 +132,6 @@ class BookConditionController extends Controller
     public function delete($id)
     {
         try {
-            // Kiểm tra quyền của người dùng hiện tại
-            if ($_SESSION['role_id'] !== 1) {
-                throw new Exception('Bạn không có quyền xóa sách.');
-            }
-
             // Thực hiện xóa sách nếu người dùng là admin
             if ($this->book_condition->delete($id)) {
                 $_SESSION['message'] = 'Xóa phiếu thành công!';

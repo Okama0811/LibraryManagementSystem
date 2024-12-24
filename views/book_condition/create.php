@@ -58,23 +58,17 @@
 
                         <div class="mb-3">
                             <label for="condition_before" class="form-label">Tình trạng sách trước khi mượn:</label>
-                            <select name="condition_before" id="condition_before" class="form-control" required>
-                                <option value="Perfect">Perfect</option>
-                                <option value="Damaged">Damaged</option>
-                            </select>
+                            <input type="text" name="condition_before" id="condition_before" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="condition_after" class="form-label">Tình trạng sách sau khi mượn:</label>
-                            <select name="condition_after" id="condition_after" class="form-control" required onchange="toggleDamageDescription()">
-                                <option value="Intact">Intact</option>
-                                <option value="Damaged">Damaged</option>
-                            </select>
+                            <input type="text" name="condition_after" id="condition_after" class="form-control" >
                         </div>
 
                         <div class="mb-3">
                             <label for="damage_description" class="form-label">Chi tiết hư hại:</label>
-                            <textarea name="damage_description" id="damage_description" class="form-control" rows="3" disabled></textarea>
+                            <textarea name="damage_description" id="damage_description" class="form-control" rows="3" ></textarea>
                             </div>
                         
                         <div class="mb-3">
@@ -84,7 +78,7 @@
                                 id="assessed_date" 
                                 name="assessed_date" 
                                 value="<?php echo date('Y-m-d'); ?>" 
-                                readonly
+                                min="<?php echo date('Y-m-d'); ?>"
                             >
                         </div>
 
@@ -94,10 +88,6 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="assessed_by" class="form-label">Người kiểm tra:</label>
-                                <input name="assessed_by" id="assessed_by" class="form-control" 
-                                    placeholder="<?= htmlspecialchars($_SESSION['full_name'] ?? 'Chưa đăng nhập'); ?>" 
-                                    readonly>
                                 <input type="hidden" name="assessed_by" value="<?= htmlspecialchars($_SESSION['user_id']); ?>">
                             </div>
 
@@ -143,22 +133,6 @@ document.getElementById('book_id').addEventListener('change', function() {
     // Tìm loan_id tương ứng
     loanSelect.value = bookLoanMap[selectedBookId] || '';
 });
-
-function toggleDamageDescription() {
-    const conditionAfter = document.getElementById("condition_after").value;
-    const damageDescription = document.getElementById("damage_description");
-
-    // Kích hoạt trường nhập nếu tình trạng là 'Damaged', ngược lại vô hiệu hóa
-    if (conditionAfter === "Damaged") {
-        damageDescription.disabled = false; // Bật trường nhập
-        damageDescription.required = true; // Yêu cầu người dùng nhập
-    } else {
-        damageDescription.disabled = true; // Tắt trường nhập
-        damageDescription.required = false; // Không bắt buộc nhập
-        damageDescription.value = ""; // Xóa nội dung nếu có
-    }
-}
-
 
 
 document.getElementById('book_id').addEventListener('change', function () {
