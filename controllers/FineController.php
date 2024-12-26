@@ -119,7 +119,7 @@ class FineController extends Controller
     public function delete($id)
     {
         try {
-            if ($this->book->delete($id)) {
+            if ($this->fine->delete($id)) {
                 $_SESSION['message'] = 'Xóa sách thành công!';
                 $_SESSION['message_type'] = 'success';
             } else {
@@ -129,12 +129,8 @@ class FineController extends Controller
             $_SESSION['message'] = $e->getMessage();
             $_SESSION['message_type'] = 'danger';
         }
-        header("Location: index.php?model=book&action=index");
+        header("Location: index.php?model=fine&action=index");
         exit();
-    }
-    public function detail($id)
-    {
-        include('views/books/book_detail.php');
     }
     
 }

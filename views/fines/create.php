@@ -6,7 +6,7 @@
         <div class="col">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.php?model=book_condition&action=index">Quản lý phiếu phạt</a></li>
+                    <li class="breadcrumb-item"><a href="index.php?model=fine&action=index">Quản lý phiếu phạt</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Tạo phiếu mới</li>
                 </ol>
             </nav>
