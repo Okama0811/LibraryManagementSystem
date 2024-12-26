@@ -192,17 +192,11 @@
                                 <div class="col-md-12">
                                     <label for="description" class="form-label">Mô tả:</label>
                                     <textarea name="description" id="description" class="form-control" rows="3"></textarea>
-                                </div>
+                                </div>     
 
                                 <div class="col-md-6">
-                                <label for="status" class="form-label">Trạng thái:</label>
-                                    <select name="status" id="status" class="form-control" required>
-                                        <option>Chọn trạng thái</option>
-                                        <option value="available" >available</option>
-                                        <option value="unavailable" >unavailable</option>
-                                    </select>
-                                </div>           
-
+                                    <input type="text" name="status" id="status"  value="available" class="form-control" hidden>
+                                </div>
                             </div>
 
                         </div>
@@ -272,6 +266,9 @@
     `;
 
     tableBody.appendChild(newRow);
+
+    // Reset select về giá trị mặc định
+    authorsSelect.value = "";
 }
 
 function removeAuthor(button) {
@@ -324,6 +321,9 @@ function addCategory() {
     `;
 
     tableBody.appendChild(newRow);
+
+    // Reset select về giá trị mặc định
+    categoriesSelect.value = "";
 }
 
 function removeCategory(button) {
