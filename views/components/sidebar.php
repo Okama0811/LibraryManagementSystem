@@ -69,6 +69,9 @@
         if (in_array('manage_bookConditions', $permissions)) {
             include 'views/components/manage_bookCondition_sidebar.php';
         }   
+        if (in_array('manage_fines', $permissions)) {
+            include 'views/components/manage_fines_sidebar.php';
+        }   
         ?>
                 </div>   
             </div>
