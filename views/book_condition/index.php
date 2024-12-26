@@ -60,12 +60,12 @@
                 <table id="dataTable" class="table table-striped table-bordered text-center">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID phiếu</th>
+                            <th>ID</th>
                             <th>Tên sách</th>
                             <th>Ngày kiểm tra</th>
                             <th>Tình trạng trả về</th>
                             <th>Người kiểm tra</th>
-                            <th>Hành động</th>
+                            <th class="text-center align-middle"><i class="fas fa-cog"></i></th>
                         </tr>
                     </thead>
                     <tbody>

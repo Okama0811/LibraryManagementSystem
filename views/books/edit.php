@@ -303,6 +303,9 @@ document.getElementById('publisher_id').addEventListener('change', function () {
     `;
 
     tableBody.appendChild(newRow);
+
+    // Reset select về giá trị mặc định
+    authorsSelect.value = "";
 }
 
 function removeAuthor(button) {
@@ -356,6 +359,9 @@ function addCategory() {
     `;
 
     tableBody.appendChild(newRow);
+
+    // Reset select về giá trị mặc định
+    categoriesSelect.value = "";
 }
 
 function removeCategory(button) {
