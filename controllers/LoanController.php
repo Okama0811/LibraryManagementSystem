@@ -4,15 +4,22 @@ include_once 'models/Loan.php';
 class LoanController extends Controller
 {
     private $loan;
+    private $authModel;
 
     public function __construct()
     {
         $this->loan = new Loan();
+        $this->authModel = new User();
     }
 
     // Hiển thị danh sách phiếu mượn
     public function index()
     {
+        // $loans = $this->loan->getAllLoans(
+        //     $_SESSION['user']['user_id'], 
+        //     $_SESSION['user']['role_id']
+        // );
+        $userData = $this->authModel->readById($_SESSION['user_id']);
         $loans = $this->loan->getAllandUserName();
         $content = 'views/loans/index.php';
         include('views/layouts/base.php');
@@ -38,12 +45,61 @@ class LoanController extends Controller
             header('Location: index.php?model=loan&action=index');
             exit;
         }
-
+        $userData = $this->authModel->readById($_SESSION['user_id']);
         $content = 'views/loans/show.php';
         include('views/layouts/base.php');
     }
 
-    // Cập nhật trạng thái phiếu mượn và trạng thái sách
+    public function create()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                // Xử lý dữ liệu từ form
+                $this->loan->issued_by = null;
+                $this->loan->user_id =  $_POST['user_borrow_id'];
+                $this->loan->issued_date = $_POST['issued_date'];
+                $this->loan->due_date = $_POST['due_date'];
+                $this->loan->status = 'pending';
+                $this->loan->notes = $_POST['notes'] ?? '';
+                $this->loan->books = [];
+    
+                // Xử lý các sách được chọn
+                if (isset($_POST['selected_books']) && is_array($_POST['selected_books'])) {
+                    foreach ($_POST['selected_books'] as $bookId) {
+                        $this->loan->books[] = [
+                            'book_id' => $bookId,
+                            'quantity' => $_POST['book_quantity'][$bookId],
+                            'status' => 'pending',
+                            'notes' => $_POST['book_notes'][$bookId] ?? ''
+                        ];
+                    }
+                }
+    
+                // Gọi phương thức tạo phiếu mượn
+                $loanId = $this->loan->createLoan();
+    
+                if ($loanId) {
+                    $_SESSION['message'] = 'Tạo phiếu mượn thành công!';
+                    $_SESSION['message_type'] = 'success';
+                    header('Location: index.php?model=loan&action=show&id=' . $loanId);
+                } else {
+                    throw new Exception('Tạo phiếu mượn thất bại');
+                }
+                exit;
+            } catch (Exception $e) {
+                $_SESSION['message'] = $e->getMessage();
+                $_SESSION['message_type'] = 'danger';
+                header('Location: index.php?model=loan&action=create');
+                exit;
+            }
+        }
+
+        $availableBooks = $this->loan->getAvailableBooks();
+        $userData = $this->authModel->readById($_SESSION['user_id']);
+        $content = 'views/loans/create.php';
+        include('views/layouts/base.php');
+    }
+
 public function update_status($status = null, $returnDate = null)
 {
     if (!isset($_GET['id'])) {

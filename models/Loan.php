@@ -15,7 +15,8 @@ class Loan extends Model
     public $issued_by;
     public $created_at;
     public $updated_at;
-
+    public $books = [];
+    public $user_id;
     public function __construct()
     {
         parent::__construct();
@@ -44,6 +45,30 @@ class Loan extends Model
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllLoans($user_id = null, $role_id = null) {
+        
+        if ($role_id == 2) {
+            $sql = "SELECT l.*, u.username as user_name
+                    FROM loan l
+                    JOIN user u ON l.user_id = u.user_id
+                    ORDER BY l.created_at DESC";
+            $stmt = $this->conn->prepare($sql);
+        } 
+        // Nếu là độc giả (role_id = 3) thì chỉ lấy phiếu của chính mình
+        else {
+            $sql = "SELECT l.*, u.username as user_name
+                    FROM loan l
+                    JOIN user u ON l.user_id = u.user_id
+                    WHERE l.user_id = :user_id
+                    ORDER BY l.created_at DESC";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getAllandUserName()
@@ -210,8 +235,112 @@ class Loan extends Model
             return $stmt->execute();
         }
 
+    return false;
+}
+
+public function createLoan()
+{
+    try {
+        $this->conn->beginTransaction();
+
+        $query = "INSERT INTO loan (
+            issued_by, 
+            issued_date, 
+            due_date, 
+            status, 
+            notes, 
+            created_at, 
+            updated_at, 
+            user_id
+        ) VALUES (
+            :issued_by, 
+            :issued_date, 
+            :due_date, 
+            :status, 
+            :notes, 
+            NOW(), 
+            NOW(), 
+            :user_id
+        )";
+
+        $stmt = $this->conn->prepare($query);
+        
+        // Bind parameters
+        $stmt->bindParam(':issued_by', $this->issued_by);
+        $stmt->bindParam(':issued_date', $this->issued_date);
+        $stmt->bindParam(':due_date', $this->due_date);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':notes', $this->notes);
+        $stmt->bindParam(':user_id', $this->user_id);
+
+        $stmt->execute();
+
+        $loan_id = $this->conn->lastInsertId();
+
+        $detail_query = "INSERT INTO loan_detail (
+            loan_id, 
+            book_id, 
+            quantity, 
+            status, 
+            notes, 
+            created_at
+        ) VALUES (
+            :loan_id, 
+            :book_id, 
+            :quantity, 
+            :status, 
+            :notes, 
+            NOW()
+        )";
+
+        $detail_stmt = $this->conn->prepare($detail_query);
+
+        if (isset($this->books) && is_array($this->books)) {
+            foreach ($this->books as $book) {
+                $detail_stmt->bindParam(':loan_id', $loan_id);
+                $detail_stmt->bindParam(':book_id', $book['book_id']);
+                $detail_stmt->bindParam(':quantity', $book['quantity']);
+                $detail_stmt->bindParam(':status', $book['status']);
+                $detail_stmt->bindParam(':notes', $book['notes']);
+                $detail_stmt->execute();
+            }
+        }
+
+        $this->conn->commit();
+
+        return $loan_id;
+    } catch (PDOException $e) {
+        $this->conn->rollBack();
+        error_log("Loan creation failed: " . $e->getMessage());
         return false;
     }
+}
+
+public function getAllandUserNameByUser($userId)
+{
+    $query = "
+        SELECT loan.*, user.username AS user_name
+        FROM {$this->table_name} AS loan
+        JOIN user ON loan.user_id = user.user_id
+        WHERE loan.user_id = :user_id
+    ";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+public function getAvailableBooks() {
+    $sql = "SELECT book_id, title, quantity 
+            FROM book
+            WHERE quantity > 0";
+    
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
     public function getActiveLoanCount()
     {
         $query = "SELECT COUNT(*) as total FROM {$this->table_name} WHERE status = 'issued'";

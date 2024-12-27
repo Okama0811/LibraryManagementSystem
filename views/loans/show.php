@@ -134,10 +134,10 @@
                 </div>
             </div>
             <div class="d-flex justify-content-center gap-4 mt-3">
-                <?php if ($loan['status'] != 'issued'and $loan['status'] != 'overdue' and $loan['status'] != 'returned'): ?>
+                <?php if ($loan['status'] != 'issued'and $loan['status'] != 'overdue' and $loan['status'] != 'returned' and $userData['role_id']!=3): ?>
                     <button class="btn btn-warning btn-lg" onclick="handleAction('issued', <?= $loan['loan_id']; ?>)">Phê duyệt</button>
                  <?php endif; ?>
-                <?php if ($loan['status'] === 'issued'): ?>
+                <?php if ($loan['status'] === 'issued' and $userData['role_id']!=3): ?>
                     <button class="btn btn-success btn-lg" onclick="handleAction('returned', <?= $loan['loan_id']; ?>)">Đã trả</button>
                     <button class="btn btn-danger btn-lg" onclick="handleAction('overdue', <?= $loan['loan_id']; ?>)">Quá hạn</button>
                 <?php endif; ?>
