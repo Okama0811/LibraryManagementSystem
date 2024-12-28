@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">Tạo chức vụ mới</h5>
+                        <h5 class="card-title mb-0">Sửa chức vụ</h5>
                     </div>
                 </div>
                 <form action="index.php?model=role&action=edit&id=<?php echo $_SESSION['form_data']['role_id']; ?>" method="POST">

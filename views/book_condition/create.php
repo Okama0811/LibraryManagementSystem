@@ -90,8 +90,8 @@
                             <div class="mb-3">
                                 <input type="hidden" name="assessed_by" value="<?= htmlspecialchars($_SESSION['user_id']); ?>">
                             </div>
-
-                            <div class="card-footer d-flex justify-content-between">
+                </div><!--Chân thẻ body-->
+                <div class="card-footer d-flex justify-content-between">
                             <a href="index.php?model=book&action=index" class="btn btn-secondary">
                                 <i class="fa-solid fa-arrow-left"></i> Trở lại
                             </a>
@@ -100,7 +100,6 @@
                             </button>
                         </div>
                     </form>
-                </div>
             </div>
         </div>
     </div>

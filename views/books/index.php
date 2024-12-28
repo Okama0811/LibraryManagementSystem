@@ -55,14 +55,14 @@
                 <table id="dataTable" class="table table-striped table-bordered text-center">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID Sách</th>
+                            <th>ID</th>
                             <th>Tiêu đề</th>
                             <th>Tác giả</th>
                             <th>Thể loại</th>
                             <th>Nhà xuất bản</th>
                             <th>Trạng thái</th>
                             <th>Số lượng có sẵn</th>
-                            <th>Hành động</th>
+                            <th class="text-center align-middle"><i class="fas fa-cog"></i></th>
                         </tr>
                     </thead>
                     <tbody>

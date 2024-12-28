@@ -102,14 +102,15 @@ class RoleController extends Controller
                 $_SESSION['message_type'] = 'danger';
             }
         }
-    
+        $this->role->role_id=$id;
         $_SESSION['form_data'] = [
             'role_id'=>$id,
             'name' => $role['name'] ?? '',
             'description' => $role['description'] ?? '',
-            'permissions' => $this->role->getPermissionIds($id) ?? []
+            'permissions' => $this->role->getPermissions() ?? []
         ];
-        
+        // var_dump($this->role->getPermissions());
+        // exit();
         $data = $this->permission->read();
         $content = 'views/roles/edit.php';
         include('views/layouts/base.php');
