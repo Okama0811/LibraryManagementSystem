@@ -5,22 +5,23 @@ include_once 'models/Role.php';
 class DefaultController extends Controller
 {
     private $book;
+    private $category;
     private $loan;
     private $member;
 
     private $user;
     private $role;
-
     public function __construct()
     {
         $this->book = new Book();
+        $this->category = new Category();
         $this->loan = new Loan();
         $this->member = new User();
     }
     public function index() {
-        $book = new Book();
-        $data_book = $book->read(); // Lấy tất cả sách với thông tin liên quan
         
+        $data_book = $this -> book ->read(); // Lấy tất cả sách với thông tin liên quan
+        $categories = $this->category->read();
         // Sắp xếp theo ngày tạo mới nhất
         usort($data_book, function($a, $b) {
             return strtotime($b['created_at']) - strtotime($a['created_at']);
@@ -30,13 +31,6 @@ class DefaultController extends Controller
         // exit();
         $content = 'views/default/index.php';
         include('views/layouts/application.php');
-    }
-    
-    public function detail($id) {
-        $book = new Book();
-        $book_detail = $book->readById($id);
-        // Return book detail view for modal
-        include('views/default/book_detail.php');
     }
     
     public function admin_dashboard(){

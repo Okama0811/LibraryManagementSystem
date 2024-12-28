@@ -16,7 +16,6 @@ class CategoryController extends Controller
         $content = 'views/categories/index.php';
         include('views/layouts/base.php');
     }
-
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
