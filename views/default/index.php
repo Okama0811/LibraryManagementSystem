@@ -4,8 +4,6 @@
         <div class="carousel-inner" id="headerSlide">
             <?php 
             $featured_books = array_slice($data_book, 0, 5); 
-            // var_dump($data_book);
-            // exit();// Lấy 5 cuốn sách đầu tiên cho carousel
             foreach($featured_books as $index => $book) { ?>
                 <div class="item <?php echo $index === 0 ? 'active' : ''; ?>">
                     <a data-toggle="modal" href="#" data-target="#modal-id" onclick="Display_BookDetail('<?php echo $book['book_id'] ?>')">
@@ -112,19 +110,23 @@
             </div>
         </div>
     </div>
-
-    <!-- Book Detail Modal -->
-    <div class="modal fade" id="modal-id">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Chi tiết sách</h4>
-                </div>
-                <div class="modal-body">
-                    <!-- Content will be loaded dynamically -->
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
+
+<script>
+function Display_BookDetail(book_id){
+    $('#modal-id').attr('data-remote','index.php?model=default&action=show&id='+book_id);
+    $('#modal-book').empty();
+
+    $.ajax({
+        url : "index.php?model=default&action=show&id="+book_id,
+        type : "post",
+        dataType:"text",
+        data : {
+        book_id
+        },
+        success : function (result){
+        $('#modal-book').html(result);
+        }
+    });
+}
+</script>

@@ -487,7 +487,7 @@
 
 	<div class="modal fade" id="modal-id" data-remote="" style="display: none;">
 		<div class="modal-dialog">
-			<div class="modal-content" id="modal-sanpham">
+			<div class="modal-content" id="modal-book">
 
 
 				<div class="modal-footer">

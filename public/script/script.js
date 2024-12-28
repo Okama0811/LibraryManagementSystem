@@ -40,19 +40,19 @@
   })
 
 });
-function Display_PrdDetail(book_id){
-  $('#modal-id').attr('data-remote','index.php?model=book&action=detail&id='+book_id);
-  $('#modal-sanpham').empty();
+function Display_BookDetail(book_id){
+  $('#modal-id').attr('data-remote','index.php?model=default&action=show&id='+book_id);
+  $('#modal').empty();
 
   $.ajax({
-    url : "index.php?model=book&action=detail&id="+book_id,
+    url : "index.php?model=default&action=show&id="+book_id,
     type : "post",
     dataType:"text",
     data : {
       book_id
     },
     success : function (result){
-      $('#modal-sanpham').html(result);
+      $('#modal').html(result);
     }
   });
 }

@@ -10,7 +10,6 @@ class DefaultController extends Controller
 
     private $user;
     private $role;
-
     public function __construct()
     {
         $this->book = new Book();
@@ -18,8 +17,8 @@ class DefaultController extends Controller
         $this->member = new User();
     }
     public function index() {
-        $book = new Book();
-        $data_book = $book->read(); // Lấy tất cả sách với thông tin liên quan
+        
+        $data_book = $this -> book ->read(); // Lấy tất cả sách với thông tin liên quan
         
         // Sắp xếp theo ngày tạo mới nhất
         usort($data_book, function($a, $b) {
@@ -32,11 +31,10 @@ class DefaultController extends Controller
         include('views/layouts/application.php');
     }
     
-    public function detail($id) {
-        $book = new Book();
-        $book_detail = $book->readById($id);
+    public function show($id) {
+        $book_detail = $this -> book->readById($id);
         // Return book detail view for modal
-        include('views/default/book_detail.php');
+        include('views/default/BookDetail.php');
     }
     
     public function admin_dashboard(){
