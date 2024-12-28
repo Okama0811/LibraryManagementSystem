@@ -436,22 +436,20 @@
 						<a class="dropdown-toggle" data-toggle="dropdown" style="cursor: pointer;">Danh mục sách <b
 								class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="product/List/All">Tất cả danh mục</a></li>
-							<?php
-							require_once 'models/Category.php';
-							$md = new Category;
-							$data = $md->read();
-							for ($i = 0; $i < count($data); $i++) {
-								$shortname = preg_replace('/\s+/', '', ucfirst($data[$i]['name']));
-								?>
-								<li><a href="product/List/<?php echo $shortname ?>"><?php echo $data[$i]['name'] ?> </a>
+							<li><a href="index.php?model=book&action=list&id=All">Tất cả danh mục</a></li>
+							<?php 
+							include_once 'models/Category.php';
+							$data = new Category();
+							$categories = $data->read();
+							foreach ($categories as $category): ?>
+								<li>
+									<a href="index.php?model=book&action=list&id=<?php echo $category['category_id']; ?>"><?php echo $category['name']; ?></a>
 								</li>
-							<?php } ?>
+							<?php endforeach; ?>
 						</ul>
 					</li>
-					<li class="menu-name" id="dgg"><a href="product/List/OnSale">Đang giảm giá</a></li>
-					<li class="menu-name" id="spm"><a href="product/List/Newest">Sách mới</a></li>
-					<li class="menu-name" id="mntq"><a href="product/List/BestSelling">Top sách tuần qua</a></li>
+					<li class="menu-name" id="spm"><a href="index.php?model=book&action=list&id=Newest">Sách mới</a></li>
+					<li class="menu-name" id="mntq"><a href="index.php?model=book&action=list&id=TopWeek">Top sách trong tuần</a></li>
 
 				</ul>
 				<div class="navbar-right" style="cursor: pointer; padding-top: 5px; display: inline-block;">

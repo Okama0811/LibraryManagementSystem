@@ -46,17 +46,9 @@
                                 <?php endif; ?>
                             </div>
                             <div class="product-info">
-                                <h4><b><?php echo $book['title'] ?></b></h4>
+                                <h3 style="word_color: white"><b><?php echo $book['title'] ?></b></h3>
                                 <p>Tác giả: <?php echo $book['authors'] ?></p>
                                 <p>Thể loại: <?php echo $book['categories'] ?></p>
-                                <p>NXB: <?php echo $book['publisher_name'] ?></p>
-                                <div class="status">
-                                    <?php if($book['available_quantity'] > 0): ?>
-                                        <span class="label label-success">Còn sách</span>
-                                    <?php else: ?>
-                                        <span class="label label-danger">Hết sách</span>
-                                    <?php endif; ?>
-                                </div>
                                 <div class="buy">
                                     <?php if($book['available_quantity'] > 0): ?>
                                         <a href="loan/request/<?php echo $book['book_id'] ?>" 
@@ -81,7 +73,8 @@
                 });
                 $available_books = array_slice($available_books, 0, 8);
                 
-                foreach($available_books as $book) { ?>
+                foreach($available_books as $book) { 
+                    if($book['available_quantity'] > 0): ?>
                     <div class="product-container" onclick="Display_BookDetail('<?php echo $book['book_id'] ?>')">
                         <a data-toggle="modal" href="#" data-target="#modal-id">
                             <div class="product-img text-center">
@@ -92,21 +85,19 @@
                                 <?php endif; ?>
                             </div>
                             <div class="product-info">
-                                <h4><b><?php echo $book['title'] ?></b></h4>
+                                <h3><b><?php echo $book['title'] ?></b></h3>
                                 <p>Tác giả: <?php echo $book['authors'] ?></p>
                                 <p>Thể loại: <?php echo $book['categories'] ?></p>
-                                <p>NXB: <?php echo $book['publisher_name'] ?></p>
-                                <p>Số lượng có sẵn: <?php echo $book['available_quantity'] ?></p>
                                 <div class="buy">
                                     <a href="loan/request/<?php echo $book['book_id'] ?>" 
                                        class="btn btn-primary">
-                                        <i class="glyphicon glyphicon-book"></i> Mượn sách
+                                        <i class="fa-solid fa-basket-shopping"></i></i> Mượn sách
                                     </a>
                                 </div>
                             </div>
                         </a>
                     </div>
-                <?php } ?>
+                <?php endif;} ?>
             </div>
         </div>
     </div>
@@ -114,11 +105,11 @@
 
 <script>
 function Display_BookDetail(book_id){
-    $('#modal-id').attr('data-remote','index.php?model=default&action=show&id='+book_id);
+    $('#modal-id').attr('data-remote','index.php?model=book&action=show&id='+book_id);
     $('#modal-book').empty();
 
     $.ajax({
-        url : "index.php?model=default&action=show&id="+book_id,
+        url : "index.php?model=book&action=show&id="+book_id,
         type : "post",
         dataType:"text",
         data : {

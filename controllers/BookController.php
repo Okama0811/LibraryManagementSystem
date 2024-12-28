@@ -35,7 +35,6 @@ class BookController extends Controller
         include('views/layouts/base.php');
     }
 
-
     public function create()
     {
         
@@ -199,10 +198,81 @@ class BookController extends Controller
         header("Location: index.php?model=book&action=index");
         exit();
     }
-    public function detail($id)
+    public function show($id)
     {
-        include('views/books/book_detail.php');
+        $book_detail = $this -> book->readById($id);
+        include ('views/books/BookDetail.php');
     }
     
+    function List($type){
+		$allCtgrs = $this->category->read();
+		switch ($type) {
+			case 'TopWeek':
+                $books = $this->book->getTopBook(0,8);
+                $title = "<span id='contentTitle' data-type='bestselling'>Top sách trong tuần</span>";
+                break;
+			case 'Newest':
+                $books = $this->book->getBook('created_at',0,8);
+                $title = "<span id='contentTitle' data-type='newest'>Sách mới</span>";
+                break;
+			case 'All':
+                $books = $this->book->getBook('title',0,8);
+                $title = "<span id='contentTitle' data-type='all'>Tất cả sách</span>";
+                break;
+			case '':
+                $books = $this->book->getBook('gia',0,8);
+                $title = "<span id='contentTitle' data-type='all'>Sản phẩm đang giảm giá</span>";
+                break;
+			default:
+                foreach ($allCtgrs as $category) {
+                    switch ($type) {
+                        case $category['category_id']:
+                            $books = $this->book->getBook('title',0,8,$category['category_id']);
+                            $title = "<span id='contentTitle' data-type='".$category['name']."'>Thể loại: ".$category['name']."</span>";
+                            break;
+                    }
+                }
+		}
+        // var_dump($books);
+        // exit();
+		$content = 'views/books/Books.php';
+        include('views/layouts/application.php');
+	}
+
+    function loadmore(){
+		$allCtgrs = $this->category->read();
+		$md = new Book();
+		if(isset($_GET['q'])){$q = $_GET['q'];}
+		if(isset($_GET['start'])){$st = $_GET['start'];}
+		if(isset($_GET['type'])){$type = $_GET['type'];}
+		switch ($type) {
+			case 'bestselling':
+                $data_tmp = $md->getTopBook($st,8);
+                break;
+			case 'newest':
+                $data_tmp = $md->getBook('created_at',$st,8);
+                break;
+			case 'all':
+                $data_tmp = $md->getBook('title',$st,8);
+                break;
+			case 'search':
+                $data_tmp = $md->getBook('title',$st,8,"tensp like '%".$q."%'");
+                break;
+			default:
+			foreach ($allCtgrs as $category) {
+                switch ($type) {
+					case $category['category_id']:
+                        $data_tmp = $md->getBook('title',$st,8,$category['category_id']);
+                        break;
+				}
+			}
+		}
+        if(empty($data_tmp)){
+            return 0;
+        }
+        // var_dump($data_tmp);
+        // exit();
+		require 'views/books/loadBooks.php';
+	}
 }
 ?>
