@@ -47,21 +47,23 @@ class Fine extends Model
 
 
     public function readById($id) {
-        $query = "SELECT f.fine_id,
-        l.loan_id,
-        u.username AS user_name,
-        r.username AS returned_to,
-        f.issued_date,
-        f.due_date,
-        f.returned_date,
-        f.status,
-        f.notes FROM fine f
+        $query = "SELECT 
+            f.fine_id,
+            f.loan_id,
+            u.full_name AS user_name,
+            r.full_name AS returned_to,
+            f.issued_date,
+            f.due_date,
+            f.returned_date,
+            f.status,
+            f.notes
+        FROM fine f
         LEFT JOIN user u ON f.user_id = u.user_id
         LEFT JOIN user r ON f.returned_to = r.user_id
-        LEFT JOIN loan l ON f.loan_id = l.loan_id
-        WHERE fine_id = :id";
+        WHERE f.fine_id = :id";
+    
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
