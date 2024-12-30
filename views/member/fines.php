@@ -31,8 +31,61 @@
         top: 5px;
         right: 10px;
     }
+    .container-body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+            width: 1690px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        .user-info, .book-list, .appointment-card {
+            margin-bottom: 20px;
+        }
+        .border {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        table th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
 </style>
-<div class="container-fluid ">
+<div class="container-body ">
     <!-- Thông báo lỗi -->
     <?php if (isset($_SESSION['message']) || isset($_SESSION['alert'])): ?>
         <div id="alert-message" 

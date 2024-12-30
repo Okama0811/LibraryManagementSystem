@@ -68,5 +68,8 @@ class Controller {
     public function pay(){
 
     }
+    public function member_create(){
+
+    }
 }
 ?>

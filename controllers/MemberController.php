@@ -257,9 +257,11 @@ class MemberController extends Controller {
     }
 
     public function pay() {
+        $fineId = isset($_POST['fine_id']) ? htmlspecialchars($_POST['fine_id']) : null;
         // Kiểm tra xem người dùng đã gửi form thanh toán chưa
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_fines'])) {
             $selectedFines = $_POST['selected_fines']; // Các ID của hóa đơn được chọn
+            
             
             if (isset($_FILES['payment_image']) && $_FILES['payment_image']['error'] === UPLOAD_ERR_OK) {
                 $file = $_FILES['payment_image'];

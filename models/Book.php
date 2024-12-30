@@ -81,6 +81,7 @@ class Book extends Model
         $query = "
         SELECT 
             b.*, 
+            MIN(loan.due_date) + INTERVAL 1 DAY AS expected_date,
             p.name AS publisher_name, 
             GROUP_CONCAT(DISTINCT a.name SEPARATOR ', ') AS authors,
             GROUP_CONCAT(DISTINCT c.name SEPARATOR ', ') AS categories
@@ -96,6 +97,10 @@ class Book extends Model
             book_category bc ON b.book_id = bc.book_id
         LEFT JOIN 
             category c ON bc.category_id = c.category_id
+        LEFT JOIN 
+            loan_detail ON b.book_id = loan_detail.book_id
+        LEFT JOIN 
+            loan ON loan.loan_id = loan_detail.loan_id
         WHERE b.book_id = :id
         GROUP BY 
             b.book_id
@@ -109,11 +114,17 @@ class Book extends Model
     public function readWithExpectedDate()
     {
         $query = "
-            SELECT book.book_id, book.title, MIN(loan.due_date) + INTERVAL 1 DAY AS expected_date
-            FROM book
-            LEFT JOIN loan_detail ON book.book_id = loan_detail.book_id
+            SELECT b.*, 
+                MIN(loan.due_date) + INTERVAL 1 DAY AS expected_date,
+                GROUP_CONCAT(DISTINCT a.name SEPARATOR ', ') AS authors
+            FROM book b
+            LEFT JOIN 
+                book_author ba ON b.book_id = ba.book_id
+            LEFT JOIN 
+                author a ON ba.author_id = a.author_id
+            LEFT JOIN loan_detail ON b.book_id = loan_detail.book_id
             LEFT JOIN loan ON loan.loan_id = loan_detail.loan_id
-            GROUP BY book.book_id, book.title
+            GROUP BY b.book_id, b.title
         ";
 
         $stmt = $this->conn->prepare($query);

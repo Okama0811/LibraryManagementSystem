@@ -1,4 +1,57 @@
 <style>
+    .container-body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+            width: 1690px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        .user-info, .book-list, .appointment-card {
+            margin-bottom: 20px;
+        }
+        .border {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        table th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
     .custom-alert {
         position: fixed;
         top: 20px;
@@ -32,7 +85,8 @@
         right: 10px;
     }
 </style>
-<div class="row justify-content-center mt-4" style="margin: 0 15px 15px 15px;">
+<div class="container-body">
+    <div class="row justify-content-center mt-4" style="margin: 0 15px 15px 15px;">
      <?php if (isset($_SESSION['message']) || isset($_SESSION['alert'])): ?>
         <div id="alert-message" 
             class="custom-alert custom-alert-<?= isset($_SESSION['alert']) ? 'danger' : htmlspecialchars($_SESSION['message_type']); ?>">
@@ -76,8 +130,9 @@
                         unset($_SESSION['message']);
                         unset($_SESSION['message_type']);
                         ?>
-                    <?php endif; ?><
-                    <form action="index.php?model=member&action=pay&id=<?= htmlspecialchars($fine['fine_id']); ?>" method="POST">
+                    <?php endif; ?>
+                    <form action="index.php?model=member&action=pay" method="POST">
+                        <input type="hidden" name="fine_id" value="<?= htmlspecialchars($fine['fine_id']); ?>">
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="loan_id" class="form-label">Phiếu mượn:</label>
@@ -136,13 +191,13 @@
                             <input type="text" class="form-control <?= $statusClass ?>" value="<?= $statusText ?>" readonly>
                         </div>
 
-                        <div class="card-footer" style="margin-top: 15px; width: 100%;">
+                        <div class="card-footer" style="margin-top: 15px; width: 100%; ">
                             <a href="index.php?model=member&action=fines&id=<?php echo $_SESSION['user_id'] ?>" class="btn btn-secondary">
                                 <i class="fa-solid fa-arrow-left"></i> Quay lại
                             </a>
                             <?php if($fine['status'] == 'unpaid'): ?>
                                 
-                                <button type="submit" class="btn-primary" style="margin-left: 1370px; border-radius: 8px; width: 150px; height: 35px;">
+                                <button type="submit" class="btn-primary" style="margin-left: 1335px; border-radius: 5px; width: 150px; height: 40px;">
                                     <i class="fas fa-money-bill"></i> Thanh toán phiếu
                                 </button>
                             <?php endif; ?>
@@ -152,3 +207,4 @@
             </div>
         </div>
     </div>
+</div>

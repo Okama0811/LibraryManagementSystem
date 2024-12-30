@@ -1,4 +1,25 @@
 <div id="content">
+    <?php if (isset($_SESSION['message'])): ?>
+        <div id="alert-message" class="alert alert-<?= $_SESSION['message_type']; ?> alert-dismissible fade show" role="alert">
+            <?= $_SESSION['message']; ?>
+        </div>
+        <?php
+        unset($_SESSION['message']);
+        unset($_SESSION['message_type']);
+        ?>
+        <script>
+            setTimeout(function() {
+                var alert = document.getElementById('alert-message');
+                if (alert) {
+                    alert.classList.remove('show');
+                    alert.classList.add('fade');
+                    setTimeout(function() {
+                        alert.style.display = 'none';
+                    }, 150);
+                }
+            }, 2000);
+        </script>
+    <?php endif; ?>
     <!-- Carousel Section -->
     <div id="carousel-id" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner" id="headerSlide">

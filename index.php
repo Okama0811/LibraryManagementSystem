@@ -160,6 +160,9 @@ switch ($action) {
     case 'pay':
         $controller->pay();
         break;
+    case 'member_create':
+        $controller->member_create();
+        break;
     default:
         $controller->index();
         break;

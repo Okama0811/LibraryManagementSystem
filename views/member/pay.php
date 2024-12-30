@@ -6,13 +6,59 @@
     h4{
         font-size: 20px;
     }
-    .border{
-        border: solid 3px;
-        border-color: darkblue ;
-        padding: 10px;
-        margin: 5px;
-        width: 470px;
-    }
+    .container-body {
+            font-family: Arial, sans-serif;
+            margin: 0 20px;
+            background-color: #f8f9fa;
+            width: 1690px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        .user-info, .book-list, .appointment-card {
+            margin-bottom: 20px;
+        }
+        .border {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        table th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
     .payment{
         margin: 10px;
     }
@@ -43,7 +89,7 @@
         cursor: pointer;
     }
 </style>
-<div style="margin: 0 20px 15px 20px;">
+<div class="container-body">
     <?php if (isset($_SESSION['message']) || isset($_SESSION['alert'])): ?>
         <div id="alert-message" 
             class="custom-alert custom-alert-<?= isset($_SESSION['alert']) ? 'danger' : htmlspecialchars($_SESSION['message_type']); ?>">
@@ -73,15 +119,16 @@
             }
         </script>
     <?php endif; ?>
-    <div class="row justify-content-center mt-4">
+    <div class="header" style="text-align: center;">
+        <h2>Thanh toán phiếu phạt</h2>
+    </div>
+    <div class="row ">
         <div class="col-md-12">
-            <div class="card-header">
-                <h2>Thanh toán phiếu phạt</h2>
-            </div>
-            <div class="card-body">
+            
+            <div class="card-body" style="margin: 20px;">
                 <div class="row">
                 <!-- Thông tin người dùng -->
-                    <div class="col-md-8 border" >
+                    <div class="border" style="margin-bottom: 20px;">
                         <h4>Thông tin người dùng</h4>
                         <p><strong>Trường:</strong> Trường Đại học Công nghệ Giao thông vận tải</p>
                         <p><strong>Họ và tên:</strong> <?= htmlspecialchars($user['full_name']); ?></p>
@@ -91,7 +138,7 @@
                     
                     <!-- Danh sách phiếu phạt -->
                     <form action="index.php?model=member&action=pay" method="POST" enctype="multipart/form-data">
-                    <div class="col-md-8 border" style="width: 1150px;">
+                    <div class=" border">
                         <h4>Chi tiết phiếu phạt</h4>
                         <table class="table table-bordered">
                             <thead>
@@ -109,7 +156,7 @@
                                     <tr>
                                         <td class="text-center">
                                             <input type="checkbox" name="selected_fines[]" value="<?= $fine['fine_id']; ?>" 
-                                            data-amount="<?= $fine['amount']; ?>" class="fine-checkbox">
+                                            data-amount="<?= $fine['amount']; ?>" class="fine-checkbox" <?= ($fine['fine_id'] == $fineId) ? 'checked' : ''; ?>>
                                         </td>
                                         <td class="text-center"><?= htmlspecialchars($fine['fine_id']); ?></td>
                                         <td class="text-center"><?= number_format($fine['amount'], 0, ',', '.'); ?></td>
@@ -185,17 +232,23 @@
         const submitButton = document.getElementById("button[type='submit']");
         const errorMessage = document.getElementById("alert-message");
 
-        // Cập nhật tổng tiền
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener("change", function () {
-                let total = 0;
-                checkboxes.forEach(cb => {
-                    if (cb.checked) {
-                        total += parseFloat(cb.getAttribute("data-amount"));
-                    }
-                });
-                totalAmountElement.textContent = total.toLocaleString("vi-VN");
+        // Hàm tính tổng tiền
+        function calculateTotal() {
+            let total = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    total += parseFloat(cb.getAttribute("data-amount"));
+                }
             });
+            totalAmountElement.textContent = total.toLocaleString("vi-VN");
+        }
+
+        // Cập nhật tổng tiền khi trang tải
+        calculateTotal();
+
+        // Lắng nghe sự thay đổi checkbox để cập nhật tổng tiền
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", calculateTotal);
         });
 
         // Hiển thị ảnh sau khi tải lên và kích hoạt nút thanh toán
@@ -232,5 +285,5 @@
                     e.preventDefault();
                 }
         });
-    });
+    });  
 </script>
