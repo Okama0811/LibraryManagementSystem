@@ -258,4 +258,56 @@ class Book extends Model
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getBooksByCategoryId($id) {
+        $query = 
+            "SELECT b.*
+            FROM book_category bc
+            JOIN ".$this->table_name." b 
+            ON bc.book_id = b.book_id
+            WHERE bc.category_id = :category_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':category_id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    function getBook($orderBy, $start, $last, $where = null){
+		if($where == null){
+			$sql = "SELECT DISTINCT b.*
+                    FROM book_category bc
+                    JOIN ".$this->table_name." b 
+                    ON bc.book_id = b.book_id
+                    ORDER BY ".$orderBy." desc LIMIT ".$start.",".$last;
+		} else {
+			$sql = "SELECT DISTINCT b.*
+                    FROM book_category bc
+                    JOIN ".$this->table_name." b 
+                    ON bc.book_id = b.book_id WHERE 
+                    bc.category_id = ".$where." 
+                    ORDER BY ".$orderBy." asc LIMIT ".$start.",".$last;
+		}
+		$stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+    function getTopBook($start, $last){
+		$sql = "SELECT b.*, ld.created_at, COUNT(ld.book_id) AS borrow_count
+                FROM book_category bc
+                JOIN ".$this->table_name." b 
+                ON bc.book_id = b.book_id
+                JOIN loan_detail ld
+                ON bc.book_id = ld.book_id
+                WHERE ld.created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                GROUP BY b.book_id
+                ORDER BY borrow_count DESC
+                LIMIT :start, :last";
+	    $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':start', $start, PDO::PARAM_INT);
+        $stmt->bindParam(':last', $last, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
