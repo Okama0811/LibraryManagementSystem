@@ -148,6 +148,19 @@ switch ($action) {
     case 'register_success':
         $controller->register_success();
         break;
+    case 'handle_reservation':
+        $controller->handle_reservation();
+        break;
+     case 'cart':
+         $controller->cart();
+        break;
+    case 'update_status':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
+            header('Location: index.php?model=default&action=index');
+            exit();
+        }
+        $controller->update_status($status = null, $returnDate = null);
+        break;
     default:
         $controller->index();
         break;

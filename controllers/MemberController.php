@@ -239,5 +239,11 @@ class MemberController extends Controller {
         $content = 'views/member/change-password.php';
         include('views/layouts/application.php');
     }
+
+    public function cart()
+    {
+        $content = 'views/default/cart.php';
+        include('views/layouts/application.php');
+    }
 }
 ?>

@@ -455,7 +455,7 @@
 
 				</ul>
 				<div class="navbar-right" style="cursor: pointer; padding-top: 5px; display: inline-block;">
-					<a href="client/viewcart" style="color: #007bff">
+					<a href="index.php?model=member&action=cart" style="color: #007bff">
 						<i class="fa-solid fa-basket-shopping navbar-right btn-lg" id="cart_count">
 							<?php if (isset($_SESSION['cart'])) {
 								echo count($_SESSION['cart']);

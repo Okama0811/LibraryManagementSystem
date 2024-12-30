@@ -25,10 +25,12 @@
      <!-- Heading -->     
      <div class="sidebar-heading" style="color: #423b8e; font-size: 0.8rem; font-weight: bold;">         
          Công cụ     
-     </div>      
+     </div>    
+       
      
      <?php     
-     if (isset($_SESSION['permissions'])) {     
+     if (isset($_SESSION['permissions'])) {   
+
         $permissions = $_SESSION['permissions'];
         if (in_array('manage_users', $permissions)) {
             include 'views/components/manage_user_sidebar.php';
