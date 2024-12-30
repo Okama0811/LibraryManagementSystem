@@ -35,7 +35,7 @@ if (!isset($_SESSION['user_id']) && !$is_public_route) {
 }
 
 if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3) {
-    if ($model !== 'default' && $model !== 'auth' && $model!== 'member') {
+    if ($model !== 'default' && $model !== 'auth' && $model!== 'member' && $model!== 'book' && $model!== 'loan' && $model!== 'fine' && $model!== 'reservation') {
         header('Location: index.php?model=default&action=index');
         exit();
     }
@@ -147,6 +147,18 @@ switch ($action) {
         break;
     case 'register_success':
         $controller->register_success();
+        break;
+    case 'list':
+        $controller->List($id);
+        break;
+    case 'loadmore':
+        $controller->loadmore();
+        break;
+    case 'fines':
+        $controller->fines($id);
+         break;
+    case 'pay':
+        $controller->pay();
         break;
     default:
         $controller->index();
