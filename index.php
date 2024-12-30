@@ -148,6 +148,12 @@ switch ($action) {
     case 'register_success':
         $controller->register_success();
         break;
+    case 'list':
+        $controller->List($id);
+        break;
+    case 'loadmore':
+        $controller->loadmore();
+        break;
     case 'handle_reservation':
         $controller->handle_reservation();
         break;

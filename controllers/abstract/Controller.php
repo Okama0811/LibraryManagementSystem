@@ -56,5 +56,11 @@ class Controller {
     public function change_password($id){
 
     }
+    public function List($type){
+
+    }
+    public function loadmore(){
+
+    }
 }
 ?>
