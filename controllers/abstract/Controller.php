@@ -62,5 +62,11 @@ class Controller {
     public function loadmore(){
 
     }
+    public function fines($id){
+
+    }
+    public function pay(){
+
+    }
 }
 ?>

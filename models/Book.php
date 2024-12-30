@@ -106,6 +106,21 @@ class Book extends Model
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function readWithExpectedDate()
+    {
+        $query = "
+            SELECT book.book_id, book.title, MIN(loan.due_date) + INTERVAL 1 DAY AS expected_date
+            FROM book
+            LEFT JOIN loan_detail ON book.book_id = loan_detail.book_id
+            LEFT JOIN loan ON loan.loan_id = loan_detail.loan_id
+            GROUP BY book.book_id, book.title
+        ";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function update($id) {
         return parent::update($id);
     }
@@ -273,17 +288,34 @@ class Book extends Model
     }
     function getBook($orderBy, $start, $last, $where = null){
 		if($where == null){
-			$sql = "SELECT DISTINCT b.*
+			$sql = "SELECT DISTINCT b.*,
+                    p.name AS publisher_name, 
+                    GROUP_CONCAT(DISTINCT a.name SEPARATOR ', ') AS authors,
+                    GROUP_CONCAT(DISTINCT c.name SEPARATOR ', ') AS categories
+                    FROM book_category bc
+                    JOIN ".$this->table_name." b 
+                    LEFT JOIN 
+                        publisher p ON b.publisher_id = p.publisher_id
+                    LEFT JOIN 
+                        book_author ba ON b.book_id = ba.book_id
+                    LEFT JOIN 
+                        author a ON ba.author_id = a.author_id
+                    LEFT JOIN 
+                        category c ON bc.category_id = c.category_id  
+                    GROUP BY 
+                        b.book_id
+                    ORDER BY ".$orderBy." desc LIMIT ".$start.",".$last;
+		} else {
+			$sql = "SELECT DISTINCT b.*,
+                    a.name AS authors
                     FROM book_category bc
                     JOIN ".$this->table_name." b 
                     ON bc.book_id = b.book_id
-                    ORDER BY ".$orderBy." desc LIMIT ".$start.",".$last;
-		} else {
-			$sql = "SELECT DISTINCT b.*
-                    FROM book_category bc
-                    JOIN ".$this->table_name." b 
-                    ON bc.book_id = b.book_id WHERE 
-                    bc.category_id = ".$where." 
+                    LEFT JOIN 
+                        book_author ba ON b.book_id = ba.book_id
+                    LEFT JOIN 
+                        author a ON ba.author_id = a.author_id
+                    WHERE bc.category_id = ".$where." 
                     ORDER BY ".$orderBy." asc LIMIT ".$start.",".$last;
 		}
 		$stmt = $this->conn->prepare($sql);
@@ -293,14 +325,24 @@ class Book extends Model
 	}
 
     function getTopBook($start, $last){
-		$sql = "SELECT b.*, ld.created_at, COUNT(ld.book_id) AS borrow_count
+		$sql = "SELECT b.*, ld.created_at, COUNT(ld.book_id) AS borrow_count,
+                p.name AS publisher_name, 
+                GROUP_CONCAT(DISTINCT a.name SEPARATOR ', ') AS authors,
+                GROUP_CONCAT(DISTINCT c.name SEPARATOR ', ') AS categories
                 FROM book_category bc
                 JOIN ".$this->table_name." b 
                 ON bc.book_id = b.book_id
-                JOIN loan_detail ld
-                ON bc.book_id = ld.book_id
-                WHERE ld.created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-                GROUP BY b.book_id
+                LEFT JOIN 
+                    publisher p ON b.publisher_id = p.publisher_id
+                LEFT JOIN 
+                    book_author ba ON b.book_id = ba.book_id
+                LEFT JOIN 
+                    author a ON ba.author_id = a.author_id
+                LEFT JOIN 
+                    category c ON bc.category_id = c.category_id
+                LEFT JOIN loan_detail ld ON b.book_id = ld.book_id  
+                GROUP BY 
+                    b.book_id
                 ORDER BY borrow_count DESC
                 LIMIT :start, :last";
 	    $stmt = $this->conn->prepare($sql);
