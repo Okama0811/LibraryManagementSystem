@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS reservation (
     reservation_date DATE NOT NULL,
     expiry_date DATE NOT NULL,
     fulfilled_date DATE,
-    status ENUM('pending', 'fulfilled', 'cancelled', 'expired') DEFAULT 'pending',
+    status ENUM('pending', 'confirmed','fulfilled', 'cancelled', 'expired') DEFAULT 'pending',
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

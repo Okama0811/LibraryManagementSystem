@@ -24,11 +24,21 @@ class Reservation_Detail extends Model
     }
 
     public function readById($id) {
-        $query = "SELECT * FROM reservation_detail WHERE reservation_id = :id";
+        $query = "SELECT rd.reservation_id, rd.book_id, b.book_id, b.title, b.status,
+                  GROUP_CONCAT(DISTINCT a.name SEPARATOR ', ') AS authors,
+                  GROUP_CONCAT(DISTINCT c.name SEPARATOR ', ') AS categories 
+                  FROM reservation_detail rd
+                  JOIN book b ON b.book_id = rd.book_id
+                  LEFT JOIN book_author ba ON b.book_id = ba.book_id
+                  LEFT JOIN author a ON ba.author_id = a.author_id
+                  LEFT JOIN book_category bc ON b.book_id = bc.book_id
+                  LEFT JOIN category c ON bc.category_id = c.category_id
+                  WHERE rd.reservation_id = :id
+                  GROUP BY b.book_id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function update($id) {

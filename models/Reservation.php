@@ -29,7 +29,8 @@ class Reservation extends Model
     }
 
     public function read() {
-        $query = "SELECT r.*, b.book_id, GROUP_CONCAT(DISTINCT b.title SEPARATOR ', ') AS titles, u.user_id, u.username, u.full_name FROM {$this->table_name} r 
+        $query = "SELECT r.*, b.book_id, GROUP_CONCAT(DISTINCT b.title SEPARATOR ', ') AS titles, u.user_id, u.username, u.full_name 
+                  FROM {$this->table_name} r 
                   JOIN user u ON u.user_id = r.user_id
                   JOIN reservation_detail rd ON rd.reservation_id = r.reservation_id
                   JOIN book b ON b.book_id = rd.book_id
@@ -40,11 +41,10 @@ class Reservation extends Model
     }
 
     public function readById($id) {
-        $query = "SELECT r.*, b.book_id, b.title, b.status as book_status, u.user_id, u.username, u.full_name FROM {$this->table_name} r 
+        $query = "SELECT r.*, u.user_id, u.username, u.full_name, u.email, u.phone, u.address, u.date_of_birth, u.gender
+                  FROM {$this->table_name} r 
                   JOIN user u ON u.user_id = r.user_id
-                  JOIN book b ON b.book_id = rd.book_id
-                  JOIN reservation_detail rd ON rd.reservation_id = r.reservation_id
-                  WHERE reservation_id = :id";
+                  HAVING r.reservation_id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();

@@ -87,60 +87,81 @@ class ReservationController extends Controller
         include('views/layouts/base.php');
     }
 
-    public function edit($id)
-    {
-        $reservationData = $this->reservation->readById($id);
-
+    public function edit($id) {
+        // Đọc thông tin phiếu đặt sách và chi tiết
+        $reservation = $this->reservation->readById($id);
+        $reservationDetails = $this->reservationDetail->readById($id);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Lấy dữ liệu từ form
+            $status = $_POST['status'];
+    
+            // Danh sách trạng thái hợp lệ
+            $validStatuses = ['confirmed', 'fulfilled', 'canceled'];
+    
+            // Kiểm tra tính hợp lệ của trạng thái
+            if (!in_array($status, $validStatuses)) {
+                $_SESSION['message'] = 'Trạng thái không hợp lệ.';
+                $_SESSION['message_type'] = 'danger';
+                header('Location: index.php?model=reservation&action=edit&id=' . $id);
+                exit;
+            }
+    
             try {
-                foreach ($_POST as $key => $value) {
-                    if (property_exists($this->reservation, $key)) {
-                        $this->reservation->$key = strip_tags(trim($value));
-                    }
+                if (!$this->reservation->updateStatus( $id,$status)) {
+                    throw new Exception('Không thể cập nhật trạng thái phiếu đặt.');
                 }
-
-                $this->reservation->user_id = $_SESSION['user_id'];
-                $this->reservation->reservation_date = $_POST['reservation_date'];
-                $this->reservation->expiry_date = date('Y-m-d', strtotime($_POST['reservation_date'] . ' +3 days'));
-                $this->reservation->notes = $_POST['notes'];
-                $this->reservation->status = $_POST['status'];
-
-                if ($this->reservation->update($id)) {
-                    $_SESSION['message'] = 'Cập nhật phiếu đặt sách thành công!';
-                    $_SESSION['message_type'] = 'success';
-                    header("Location: index.php?model=reservation&action=index");
-                    exit();
-                } else {
-                    throw new Exception('Không thể cập nhật phiếu đặt sách');
-                }
+    
+                // Đặt thông báo thành công
+                $_SESSION['message'] = 'Cập nhật trạng thái thành công.';
+                $_SESSION['message_type'] = 'success';
             } catch (Exception $e) {
+                // Đặt thông báo lỗi
                 $_SESSION['message'] = $e->getMessage();
                 $_SESSION['message_type'] = 'danger';
             }
+    
+            // Chuyển hướng sau khi xử lý
+            header('Location: index.php?model=reservation&action=index');
+            exit;
         }
-
-        $reservation = $reservationData;
+    
+        // Truyền dữ liệu cho view
+        $data = [
+            'reservation' => $reservation,
+            'reservationDetails' => $reservationDetails
+        ];
+    
         $content = 'views/reservations/edit.php';
         include('views/layouts/base.php');
-    }
+    }    
 
     public function delete($id)
-    {
-        try {
-            if ($this->reservation->delete($id)) {
-                $_SESSION['message'] = 'Xóa phiếu đặt sách thành công!';
-                $_SESSION['message_type'] = 'success';
-            } else {
-                throw new Exception('Không thể xóa phiếu đặt sách');
-            }
-        } catch (Exception $e) {
-            $_SESSION['message'] = $e->getMessage();
-            $_SESSION['message_type'] = 'danger';
+{
+    try {
+        // Xóa các chi tiết phiếu đặt trong bảng reservation_detail
+        if (!$this->reservationDetail->delete($id)) {
+            throw new Exception('Không thể xóa chi tiết phiếu đặt sách.');
         }
 
-        header("Location: index.php?model=reservation&action=index");
-        exit();
+        // Xóa phiếu đặt trong bảng reservation
+        if (!$this->reservation->delete($id)) {
+            throw new Exception('Không thể xóa phiếu đặt sách.');
+        }
+
+        // Commit giao dịch nếu tất cả đều thành công
+        $_SESSION['message'] = 'Xóa phiếu đặt sách và chi tiết thành công!';
+        $_SESSION['message_type'] = 'success';
+    } catch (Exception $e) {
+        // Rollback giao dịch nếu có lỗi xảy ra
+        $_SESSION['message'] = $e->getMessage();
+        $_SESSION['message_type'] = 'danger';
     }
+
+    // Chuyển hướng về trang danh sách
+    header("Location: index.php?model=reservation&action=index");
+    exit();
+}
+
 
     public function statistics()
     {
