@@ -379,6 +379,12 @@
 									Thông tin tài khoản
 								</li>
 							</a>
+							<a href="index.php?model=member&action=fines&id=<?php echo $_SESSION['user_id'] ?>">
+								<li>
+									<i class="fa-solid fa-file"></i>
+									Kiểm tra phiếu phạt
+								</li>
+							</a>
 							<a href="index.php?model=member&action=change_password&id=<?php echo $_SESSION['user_id'] ?>">
 								<li>
 									<i class="fas fa-key"></i>
@@ -544,6 +550,23 @@
 		<i class="fas fa-arrow-up"></i>
 	</a>
 </body>
+<!-- Bootstrap core JavaScript-->
+<script src="./vendor/jquery/jquery.min.js"></script>
+<script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="./vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="./assets/js/myscript.js"></script>
+
+<!-- Page level plugins -->
+<script src="./vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="./vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+    
+<script src="https://kit.fontawesome.com/1b233c9fdd.js" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/1b233c9fdd.js" crossorigin="anonymous"></script>
 <script>
 	$(document).ready(function () {

@@ -70,7 +70,7 @@
                             <tr>
                                 <td class="text-center align-middle"><?= $reservation['reservation_id'] ?></td>
                                 <td class="align-middle"><?= htmlspecialchars($reservation['full_name']) ?></td>
-                                <td class="align-middle"><?= htmlspecialchars($reservation['title']) ?></td>
+                                <td class="align-middle"><?= htmlspecialchars($reservation['titles']) ?></td>
                                 <td class="align-middle"><?= htmlspecialchars((new DateTime($reservation['reservation_date']))->format('d/m/Y')) ?></td>
                                 <td class="align-middle"><?= htmlspecialchars((new DateTime($reservation['expiry_date']))->format('d/m/Y')) ?></td>
                                 <td class="align-middle">

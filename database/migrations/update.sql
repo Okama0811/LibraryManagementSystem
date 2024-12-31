@@ -1,8 +1,20 @@
 
 USE library_management_system;
 
-ALTER TABLE book
-DROP COLUMN price;
+ALTER TABLE reservation
+status ENUM('pending', 'confirmed','fulfilled', 'cancelled', 'expired') DEFAULT 'pending'
+-- CREATE TABLE IF NOT EXISTS reservation_detail (
+--     reservation_id INT,
+--     book_id INT,
+--     quantity INT DEFAULT 1,
+--     PRIMARY KEY (reservation_id, book_id),
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--     FOREIGN KEY (reservation_id) REFERENCES reservation(reservation_id),
+--     FOREIGN KEY (book_id) REFERENCES book(book_id),
+-- );
+-- ALTER TABLE book
+-- DROP COLUMN price;
 -- -- Thêm dữ liệu cho bảng book_author
 -- INSERT INTO book_author (book_id, author_id, role) VALUES
 -- (1, 1, 'Tác giả chính'),
