@@ -107,9 +107,11 @@ class LoanController extends Controller
         exit;
     }
 
-    public function update_status($status = null, $returnDate = null)
+    public function update_status($id)
 {
-    if (!isset($_GET['id'])) {
+    // var_dump($_POST);
+    // exit();
+    if (!isset($_POST)) {
         $this->jsonResponse([
             'success' => false,
             'message' => 'Không tìm thấy mã phiếu!'
@@ -117,8 +119,8 @@ class LoanController extends Controller
         return;
     }
 
-    $loanId = $_GET['id'];
-    $status = $_GET['status'] ?? null;
+    $loanId = $_POST['loan_id'];
+    $status = $_POST['action_status'] ?? null;
 
     if ($status === null) {
         $this->jsonResponse([
@@ -204,38 +206,35 @@ class LoanController extends Controller
         }
     }
 
-    else if ($status === 'returned') {
+    else if($status === 'returned') {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $booksInLoan = $this->loan->getBooksByLoanId($loanId);
             $returnDate = date('Y-m-d H:i:s');
-            
+    
             try {
                 foreach ($booksInLoan as $book) {
                     $bookId = $book['book_id'];
-                    $bookQuantity = $book['book_quantity']; 
-                    $loanDetailQuantity = $book['loan_detail_quantity']; 
-
-                    $bookStatus = $_POST['book_status'][$bookId] ?? 'returned';
-
-                    if ($bookStatus === 'returned') {
-                        $this->loan->updateBookAvailability($bookId, $bookStatus,  $loanDetailQuantity);
-                    } else if ($bookStatus === 'lost' || $bookStatus === 'damaged') {
-                        $this->loan->updateBookAvailability($bookId, $bookStatus,  $loanDetailQuantity);
+                    $loanDetailQuantity = $book['loan_detail_quantity'];
+                    $bookStatus = $_POST['book_status'][$bookId] ?? null;
+    
+                    if ($bookStatus !== null) {
+                        $this->loan->updateBookAvailability($bookId, $bookStatus, $loanDetailQuantity);
+                        $this->loan->updateBookStatusInLoanDetail($loanId, $bookId, $bookStatus);
                     }
-                    $this->loan->updateBookStatusInLoanDetail($loanId, $bookId, 'returned');
                 }
-
                 $this->loan->updateStatus($loanId, $status, $returnDate);
+    
+                $_SESSION['message'] = 'Cập nhật trạng thái trả sách thành công!';
+                $_SESSION['message_type'] = 'success';
             } catch (Exception $e) {
                 $_SESSION['message'] = 'Lỗi khi trả sách: ' . $e->getMessage();
                 $_SESSION['message_type'] = 'danger';
             }
-            
+    
             header('Location: index.php?model=loan&action=show&id=' . $loanId);
             exit;
         }
     }
-
    header('Location: index.php?model=loan&action=index');
     exit;
 }

@@ -72,7 +72,7 @@
                             <td class="text-center align-middle"><?= htmlspecialchars($loan['user_name']) ?></td>
                             <td class="text-center align-middle"><?= htmlspecialchars((new DateTime($loan['created_at']))->format('d/m/Y')) ?></td>
                             <td class="text-center align-middle">
-                            <?php 
+                            <?php
                                 echo $loan['status'] === 'issued' ? 'Đã phê duyệt' : 
                                     ($loan['status'] === 'returned' ? 'Đã trả' : 
                                     ($loan['status'] === 'overdue' ? 'Quá hạn' : 'Chờ xử lý'));

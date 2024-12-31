@@ -171,7 +171,7 @@ switch ($action) {
             header('Location: index.php?model=default&action=index');
             exit();
         }
-        $controller->update_status($status = null, $returnDate = null);
+        $controller->update_status($id);
         break;
     default:
         $controller->index();

@@ -34,7 +34,7 @@
                             <div>
                                 <input type="number" 
                                        name="book_quantity[<?php echo $item['book_id']; ?>]" 
-                                       value="<?php echo isset($item['borrow_quantity']) ? $item['borrow_quantity'] : 1; ?>" 
+                                       value="<?php echo htmlspecialchars($item['borrow_quantity']); ?>" 
                                        class="form-control" 
                                        style="width: 60px;" 
                                        min="1">

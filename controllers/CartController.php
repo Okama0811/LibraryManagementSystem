@@ -77,20 +77,15 @@ class CartController extends Controller
                 
                 $user_id = $_SESSION['user_id'];
                 $issued_date = date('Y-m-d');
-                // Tính ngày hẹn trả (ví dụ: 14 ngày sau)
                 $due_date = date('Y-m-d', strtotime('+14 days'));
-                
-                // Chuẩn bị dữ liệu cho loan
                 $this->loan->issued_by = $user_id;
                 $this->loan->issued_date = $issued_date;
                 $this->loan->due_date = $due_date;
                 $this->loan->status = 'issued';
                 $this->loan->notes = '';
                 
-                // Chuẩn bị danh sách sách cần mượn
                 $books = [];
                 foreach ($_POST['selected_books'] as $bookId) {
-                    // Kiểm tra số lượng sách có sẵn
                     $book = $this->cart->getBookAvailability($bookId);
                     $requestedQuantity = $_POST['book_quantity'][$bookId];
                     
