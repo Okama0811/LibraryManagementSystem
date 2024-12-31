@@ -19,8 +19,14 @@
                         <li>Số lượng: <?php echo $book_detail['quantity'] ?></li>
                         <li>Số lượng còn lại: <?php echo $book_detail['available_quantity'] ?></li>
                         <li>Tình trạng: <?php echo $book_detail['status'] ?></li>
-                        <br><a class="btn btn-primary" href="client/buynow/<?php echo $book_detail['book_id'] ?>">
-							<i class="fa-solid fa-basket-shopping"></i> Thêm vào giỏ hàng</a>
+                        <br>
+                        <form method="POST" action="index.php?model=cart&action=create">
+                            <input type="hidden" name="book_id" value="<?php echo $book_detail['book_id']; ?>">
+                            <input type="hidden" name="quantity" value="1"> 
+                            <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-basket-shopping"></i> Thêm vào giỏ hàng
+                            </button>
+                        </form>
                     </ul>
                 </div>
             </div>

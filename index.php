@@ -16,7 +16,7 @@ require 'controllers/RoleController.php';
 require 'controllers/DefaultController.php';
 require 'controllers/MemberController.php';
 require 'controllers/StatisticsController.php';
-
+require 'controllers/CartController.php';
 
 $model = isset($_GET['model']) ? $_GET['model'] : 'default';
 $action = isset($_GET['action']) ? $_GET['action'] : 'index';
@@ -87,6 +87,9 @@ switch ($model) {
     case 'member':
         $controller = new MemberController();
         break;
+    case 'cart':
+        $controller = new CartController();
+         break;
     default:
         $controller = new DefaultController();
         break;
@@ -154,11 +157,14 @@ switch ($action) {
     case 'loadmore':
         $controller->loadmore();
         break;
+    case 'checkout':
+         $controller->checkout();
+        break;
     case 'handle_reservation':
         $controller->handle_reservation();
         break;
-     case 'cart':
-         $controller->cart();
+    case 'delete_book':
+        $controller->delete_book($id);
         break;
     case 'update_status':
         if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {

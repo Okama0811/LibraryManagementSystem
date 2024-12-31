@@ -1,7 +1,7 @@
 <?php
 include_once 'models/User.php';
 include_once 'models/Role.php';
-
+include_once 'models/Cart.php';
 class AuthController extends Controller {
 
     private $authModel;
@@ -110,6 +110,14 @@ class AuthController extends Controller {
 
                 $permissions = $role->getPermissions();
                 $_SESSION['permissions'] = array_column($permissions, 'name');
+
+                $cartModel = new Cart();
+                $cart = $cartModel->getCartByUserId($_SESSION['user_id']);
+                if (!$cart) {
+                    $cartModel->user_id = $_SESSION['user_id'];
+                    $cartModel->create();
+                }
+    
             
                 header('Location: index.php?model=default');
                 exit();

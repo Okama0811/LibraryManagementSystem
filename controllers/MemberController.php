@@ -240,6 +240,8 @@ class MemberController extends Controller {
         include('views/layouts/application.php');
     }
 
+
+    
     public function cart()
     {
         $content = 'views/default/cart.php';

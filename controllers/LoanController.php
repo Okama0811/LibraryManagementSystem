@@ -77,7 +77,7 @@ class LoanController extends Controller
                 }
     
                 // Gọi phương thức tạo phiếu mượn
-                $loanId = $this->loan->createLoan();
+                $loanId = $this->loan->createLoan($this->loan->books);
     
                 if ($loanId) {
                     $_SESSION['message'] = 'Tạo phiếu mượn thành công!';
@@ -264,7 +264,7 @@ public function handle_reservation() {
             $this->loan->deleteBookFromLoan($loanId, $bookId);
         }
 
-        $_SESSION['message'] = 'Đã chuyển sách sang phiếu hẹn thành công!';
+        $_SESSION['message'] = 'Đã chuyển sách sang phiếu hẹn thành công';
         $_SESSION['message_type'] = 'success';
     } catch (Exception $e) {
         $_SESSION['message'] = 'Có lỗi xảy ra: ' . $e->getMessage();

@@ -248,80 +248,54 @@ class Loan extends Model
     return false;
 }
 
-public function createLoan()
-{
-    try {
-        $this->conn->beginTransaction();
-
-        $query = "INSERT INTO loan (
-            issued_by, 
-            issued_date, 
-            due_date, 
-            status, 
-            notes, 
-            created_at, 
-            updated_at, 
-        ) VALUES (
-            :issued_by, 
-            :issued_date, 
-            :due_date, 
-            :status, 
-            :notes, 
-            NOW(), 
-            NOW(), 
-        )";
-
-        $stmt = $this->conn->prepare($query);
-        
-        // Bind parameters
-        $stmt->bindParam(':issued_by', $this->issued_by);
-        $stmt->bindParam(':issued_date', $this->issued_date);
-        $stmt->bindParam(':due_date', $this->due_date);
-        $stmt->bindParam(':status', $this->status);
-        $stmt->bindParam(':notes', $this->notes);
-
-        $stmt->execute();
-
-        $loan_id = $this->conn->lastInsertId();
-
-        $detail_query = "INSERT INTO loan_detail (
-            loan_id, 
-            book_id, 
-            quantity, 
-            status, 
-            notes, 
-            created_at
-        ) VALUES (
-            :loan_id, 
-            :book_id, 
-            :quantity, 
-            :status, 
-            :notes, 
-            NOW()
-        )";
-
-        $detail_stmt = $this->conn->prepare($detail_query);
-
-        if (isset($this->books) && is_array($this->books)) {
-            foreach ($this->books as $book) {
-                $detail_stmt->bindParam(':loan_id', $loan_id);
-                $detail_stmt->bindParam(':book_id', $book['book_id']);
-                $detail_stmt->bindParam(':quantity', $book['quantity']);
-                $detail_stmt->bindParam(':status', $book['status']);
-                $detail_stmt->bindParam(':notes', $book['notes']);
-                $detail_stmt->execute();
+public function createLoan($books)
+    {
+        try {
+            $this->conn->beginTransaction();
+            
+            // Tạo phiếu mượn chính với cuốn sách đầu tiên
+            $firstBook = $books[0];
+            $query = "INSERT INTO loan (book_id, issued_by, issued_date, due_date, status, notes) 
+                     VALUES (:book_id, :issued_by, :issued_date, :due_date, :status, :notes)";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':book_id', $firstBook['book_id']);
+            $stmt->bindParam(':issued_by', $this->issued_by);
+            $stmt->bindParam(':issued_date', $this->issued_date);
+            $stmt->bindParam(':due_date', $this->due_date);
+            $stmt->bindValue(':status', 'issued');
+            $stmt->bindParam(':notes', $this->notes);
+            
+            $stmt->execute();
+            $loan_id = $this->conn->lastInsertId();
+            
+            // Thêm chi tiết cho tất cả các cuốn sách
+            foreach ($books as $book) {
+                $query = "INSERT INTO loan_detail (loan_id, book_id, quantity, status, notes) 
+                         VALUES (:loan_id, :book_id, :quantity, :status, :notes)";
+                         
+                $stmt = $this->conn->prepare($query);
+                $stmt->bindParam(':loan_id', $loan_id);
+                $stmt->bindParam(':book_id', $book['book_id']);
+                $stmt->bindParam(':quantity', $book['quantity']);
+                $stmt->bindValue(':status', 'issued');
+                $stmt->bindValue(':notes', '');
+                
+                $stmt->execute();
+                
+                // Cập nhật số lượng sách có sẵn
+                $this->updateBookQuantityBorrow($book['book_id'], $book['quantity']);
             }
+            
+            $this->conn->commit();
+            return $loan_id;
+            
+        } catch (Exception $e) {
+            $this->conn->rollBack();
+            throw $e;
         }
-
-        $this->conn->commit();
-
-        return $loan_id;
-    } catch (PDOException $e) {
-        $this->conn->rollBack();
-        error_log("Loan creation failed: " . $e->getMessage());
-        return false;
     }
-}
+    
 
 public function getAllandUserNameByUser($userId)
 {
@@ -391,4 +365,19 @@ public function getAvailableBooks() {
         return false;
     }
 }
+public function updateBookQuantityBorrow($bookId, $quantityChange)
+{
+    try {
+        $query = "UPDATE book SET quantity = quantity - :quantity_change WHERE book_id = :book_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':quantity_change', $quantityChange, PDO::PARAM_INT);
+        $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    } catch (Exception $e) {
+        // Handle exception (log error, rethrow, etc.)
+        return false;
+    }
+}
+
 }
