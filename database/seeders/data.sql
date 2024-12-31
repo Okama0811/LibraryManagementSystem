@@ -98,21 +98,21 @@ INSERT INTO author (name, biography, birth_date, nationality, created_at, update
 
 -- Thêm dữ liệu cho bảng book
 INSERT INTO book (publisher_id, title, publication_year, edition, pages, language, description, cover_image, quantity, available_quantity, status) VALUES
-(1, N'Mắt Biếc', 2019, N'Tái bản lần 5', 300, N'Tiếng Việt', N'Câu chuyện tình của tuổi học trò', 'mat_biec.jpg', 100, 95, 'available'),
-(2, N'Dế Mèn Phiêu Lưu Ký', 2020, N'Tái bản lần 20', 250, N'Tiếng Việt', N'Cuộc phiêu lưu của chú Dế Mèn', 'de_men_phieu_luu_ky.jpg', 150, 147, 'available'),
-(3, N'Cánh Đồng Bất Tận', 2018, N'Tái bản lần 3', 280, N'Tiếng Việt', N'Tập truyện ngắn về miền Tây Nam Bộ', 'canh_dong_bat_tan.jpg', 80, 75, 'available'),
-(4, N'Cho Tôi Xin Một Vé Đi Tuổi Thơ', 2021, N'Tái bản lần 2', 200, N'Tiếng Việt', N'Những kỷ niệm tuổi thơ đáng nhớ', 'cho_toi_xin_mot_ve_di_tuoi_tho.jpg', 120, 118, 'available'),
-(5, N'Tôi Thấy Hoa Vàng Trên Cỏ Xanh', 2021, N'Tái bản lần 8', 320, N'Tiếng Việt', N'Câu chuyện về tuổi thơ miền quê', 'toi_thay_hoa_vang_tren_co_xanh.jpg', 200, 190, 'available'),
-(6, N'Số Đỏ', 2020, N'Tái bản', 280, N'Tiếng Việt', N'Tác phẩm văn học hiện thực phê phán', 'so_do.jpg', 150, 145, 'available'),
+(1, N'Mắt biếc', 2019, N'Tái bản lần 5', 300, N'Tiếng Việt', N'Câu chuyện tình của tuổi học trò', 'mat_biec.jpg', 100, 95, 'available'),
+(2, N'Dế Mèn phiêu lưu ký', 2020, N'Tái bản lần 20', 250, N'Tiếng Việt', N'Cuộc phiêu lưu của chú Dế Mèn', 'de_men_phieu_luu_ky.jpg', 150, 147, 'available'),
+(3, N'Cánh đồng bất tận', 2018, N'Tái bản lần 3', 280, N'Tiếng Việt', N'Tập truyện ngắn về miền Tây Nam Bộ', 'canh_dong_bat_tan.jpg', 80, 75, 'available'),
+(4, N'Cho tôi xin một vé đi tuổi thơ', 2021, N'Tái bản lần 2', 200, N'Tiếng Việt', N'Những kỷ niệm tuổi thơ đáng nhớ', 'cho_toi_xin_mot_ve_di_tuoi_tho.jpg', 120, 118, 'available'),
+(5, N'Tôi thấy hoa vàng trên cỏ xanh', 2021, N'Tái bản lần 8', 320, N'Tiếng Việt', N'Câu chuyện về tuổi thơ miền quê', 'toi_thay_hoa_vang_tren_co_xanh.jpg', 200, 190, 'available'),
+(6, N'Số đỏ', 2020, N'Tái bản', 280, N'Tiếng Việt', N'Tác phẩm văn học hiện thực phê phán', 'so_do.jpg', 150, 145, 'available'),
 (7, N'Chí Phèo', 2019, N'Tái bản', 220, N'Tiếng Việt', N'Tác phẩm văn học hiện thực', 'chi_pheo.jpg', 100, 98, 'available'),
 (8, N'Truyện Kiều', 2021, N'Tái bản đặc biệt', 350, N'Tiếng Việt', N'Tác phẩm thơ Nôm kinh điển', 'truyen_kieu.jpg', 180, 175, 'available'),
-(9, N'Nhật Ký Trong Tù', 2018, N'Tái bản', 180, N'Tiếng Việt', N'Tập thơ về cuộc sống trong tù', 'nhat_ky_trong_tu.jpg', 90, 88, 'available'),
-(10, N'Bên Kia Sông Đuống', 2020, N'Tái bản', 200, N'Tiếng Việt', N'Tập thơ về quê hương', 'ben_kia_song_duong.jpg', 120, 115, 'available'),
-(11, N'Vang Bóng Một Thời', 2019, N'Tái bản', 280, N'Tiếng Việt', N'Tập truyện ngắn về văn hóa xưa', 'vang_bong_mot_thoi.jpg', 150, 148, 'available'),
-(12, N'Tắt Đèn', 2021, N'Tái bản', 240, N'Tiếng Việt', N'Tiểu thuyết về số phận người phụ nữ', 'tat_den.jpg', 130, 128, 'available'),
-(13, N'Người Mẹ Cầm Súng', 2020, N'Tái bản', 260, N'Tiếng Việt', N'Tiểu thuyết về thời kháng chiến', 'nguoi_me_cam_sung.jpg', 140, 137, 'available'),
-(14, N'Tuổi Thơ Dữ Dội', 2019, N'Tái bản', 300, N'Tiếng Việt', N'Hồi ký về thời chiến tranh', 'tuoi_tho_du_doi.jpg', 160, 155, 'available'),
-(15, N'Từ Ấy', 2021, N'Tái bản', 180, N'Tiếng Việt', N'Tập thơ tình yêu và cách mạng', 'tu_ay.jpg', 100, 98, 'available');
+(9, N'Nhật ký trong tù', 2018, N'Tái bản', 180, N'Tiếng Việt', N'Tập thơ về cuộc sống trong tù', 'nhat_ky_trong_tu.jpg', 90, 88, 'available'),
+(10, N'Bên kia sông đuống', 2020, N'Tái bản', 200, N'Tiếng Việt', N'Tập thơ về quê hương', 'ben_kia_song_duong.jpg', 120, 115, 'available'),
+(11, N'Vang bóng một thời', 2019, N'Tái bản', 280, N'Tiếng Việt', N'Tập truyện ngắn về văn hóa xưa', 'vang_bong_mot_thoi.jpg', 150, 148, 'available'),
+(12, N'Tắt đèn', 2021, N'Tái bản', 240, N'Tiếng Việt', N'Tiểu thuyết về số phận người phụ nữ', 'tat_den.jpg', 130, 128, 'available'),
+(13, N'Người mẹ cầm súng', 2020, N'Tái bản', 260, N'Tiếng Việt', N'Tiểu thuyết về thời kháng chiến', 'nguoi_me_cam_sung.jpg', 140, 137, 'available'),
+(14, N'Tuổi thơ dữ dội', 2019, N'Tái bản', 300, N'Tiếng Việt', N'Hồi ký về thời chiến tranh', 'tuoi_tho_du_doi.jpg', 160, 155, 'available'),
+(15, N'Từ ấy', 2021, N'Tái bản', 180, N'Tiếng Việt', N'Tập thơ tình yêu và cách mạng', 'tu_ay.jpg', 100, 98, 'available');
 
 -- Thêm dữ liệu cho bảng category
 INSERT INTO category (name, description) VALUES

@@ -71,7 +71,7 @@
                         <input type="hidden" name="status" value="unpaid">
                 </div>
                 <div class="card-footer d-flex justify-content-between">
-                    <a href="index.php?model=book&action=index" class="btn btn-secondary">
+                    <a href="index.php?model=fine&action=index" class="btn btn-secondary">
                         <i class="fa-solid fa-arrow-left"></i> Trở lại
                     </a>
                     <button type="submit" class="btn btn-success">
