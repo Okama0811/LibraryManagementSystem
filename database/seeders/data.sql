@@ -17,7 +17,8 @@ VALUES
 (6, 'manage_publishers', 'Quyền quản lý nhà xuất bản', NOW(), NOW()),
 (7, 'manage_reservations', 'Quyền quản lý đặt sách', NOW(), NOW()),
 (8, 'manage_bookConditions', 'Quyền quản lý tình trạng sách', NOW(), NOW()),
-(9, 'manage_members', 'Quyền quản lý thành viên', NOW(), NOW());
+(9, 'manage_members', 'Quyền quản lý thành viên', NOW(), NOW()),
+(10, 'manage_fines', 'Quyền quản lý phiếu phạt', NOW(), NOW());
 
 -- Assign permissions to roles
 INSERT INTO Role_Permission (role_id, permission_id, created_at) 
@@ -218,9 +219,16 @@ INSERT INTO book_condition (book_id, loan_id, condition_before, condition_after,
 (5, 5, N'Sách mới', N'Còn nguyên vẹn', 3, '2024-02-03');
 
 -- Insert dữ liệu cho bảng reservation
-INSERT INTO reservation (book_id, user_id, reservation_date, expiry_date, status) VALUES
-(1, 1, '2024-01-01', '2024-01-08', 'fulfilled'),
-(2, 2, '2024-01-05', '2024-01-12', 'pending'),
-(3, 3, '2024-01-10', '2024-01-17', 'cancelled'),
-(4, 3, '2024-01-15', '2024-01-22', 'expired'),
-(5, 3, '2024-01-20', '2024-01-27', 'pending');
+INSERT INTO reservation (user_id, reservation_date, expiry_date, status) VALUES
+(1, '2024-01-01', '2024-01-08', 'fulfilled'),
+(2, '2024-01-05', '2024-01-12', 'pending'),
+(3, '2024-01-10', '2024-01-17', 'cancelled'),
+(3, '2024-01-15', '2024-01-22', 'expired'),
+(3, '2024-01-20', '2024-01-27', 'pending');
+
+INSERT INTO reservation_detail (reservation_id, book_id, quantity) VALUES
+(1, 1, 2),
+(2, 2, 1),
+(3, 3, 2),
+(4, 4, 3),
+(5, 5, 1);

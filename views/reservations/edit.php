@@ -44,111 +44,145 @@
                     <?php endif; ?>
 
                     <form action="index.php?model=reservation&action=edit&id=<?= $reservation['reservation_id']; ?>" method="POST">
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label for="creator" class="form-label">Người tạo phiếu:</label>
-                                <input type="text" name="creator" id="creator" class="form-control" value="<?= htmlspecialchars($reservation['full_name']); ?>" >
+                        <!-- Thông tin người tạo -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="mb-0">Thông tin người tạo</h6>
                             </div>
-                            <div class="col-md-6">
-                                <label for="reservation_date" class="form-label">Ngày đặt:</label>
-                                <input type="date" name="reservation_date" id="reservation_date" class="form-control" value="<?= htmlspecialchars($reservation['reservation_date']); ?>" >
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="full_name" class="form-label"><strong>Họ và tên:</strong></label> <?= htmlspecialchars($reservation['full_name']); ?>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label for="phone" class="form-label"><strong>Số điện thoại:</strong></label> <?= htmlspecialchars($reservation['phone']); ?>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="email" class="form-label"><strong>Email:</strong></label> <?= htmlspecialchars($reservation['email']); ?>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="date_of_birth" class="form-label"><strong>Ngày sinh:</strong></label> <?= htmlspecialchars(date('d-m-Y', strtotime($reservation['date_of_birth']))); ?>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="gender" class="form-label"><strong>Giới tính:</strong></label>
+                                        <?php $gender = [
+                                                'male' => 'Nam',
+                                                'female' => 'Nữ',
+                                            ];
+                                            echo htmlspecialchars($gender[$reservation['gender']] ?? 'Khác');
+                                        ?>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="address" class="form-label"><strong>Địa chỉ:</strong></label> <?= htmlspecialchars($reservation['address']); ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label for="expiry_date" class="form-label">Ngày hết hạn:</label>
-                                <input type="date" name="expiry_date" id="expiry_date" class="form-control" value="<?= htmlspecialchars($reservation['expiry_date']); ?>">
+
+                        <!-- Thông tin phiếu đặt -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="mb-0">Thông tin phiếu đặt</h6>
                             </div>
-                            <div class="col-md-6">
-                                <label for="fulfilled_date" class="form-label">Ngày hoàn tất:</label>
-                                <input type="date" name="fulfilled_date" id="fulfilled_date" class="form-control" value="<?= htmlspecialchars($reservation['fulfilled_date']); ?>">
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="reservation_date" class="form-label"><strong>Ngày đặt:</strong></label> <?= htmlspecialchars(date('d-m-Y', strtotime($reservation['reservation_date']))); ?>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="expiry_date" class="form-label"><strong>Ngày hết hạn:</strong></label> <?= htmlspecialchars(date('d-m-Y', strtotime($reservation['expiry_date']))); ?>
+                                    </div>
+                                </div>
+                                <div class="row-md-6">
+                                    <label for="status" class="form-label"><strong>Tình trạng:</strong></label>
+                                        <?php 
+                                            $statusLabels = [
+                                                'pending' => 'Đang xử lý',
+                                                'confirmed' => 'Đã xác nhận',
+                                                'fulfilled' => 'Hoàn thành',
+                                                'expired' => 'Quá hạn',
+                                                'canceled' => 'Bị hủy',
+                                            ];
+                                            echo htmlspecialchars($statusLabels[$reservation['status']] ?? 'Không xác định');
+                                        ?>
+                                </div>
+                                <div class="row-md-6">
+                                    <label for="notes" class="form-label" ><strong>Ghi chú:</strong></label>
+                                    <textarea name="notes" id="notes" class="form-control" rows="3" readonly><?= htmlspecialchars($reservation['notes']); ?></textarea>
+                                </div>
                             </div>
                         </div>
-                        <div class="row-md-6">
-                            <label for="notes" class="form-label">Ghi chú:</label>
-                            <textarea name="notes" id="notes" class="form-control" rows="3"><?= htmlspecialchars($reservation['notes']); ?></textarea>
-                        </div>
-                        <div class="row-md-6" style = "margin-top: 20px">
-                            <h6>Danh sách sách đã đặt</h6>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Tên sách</th>
-                                        <th>Tình trạng</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><?= htmlspecialchars($reservation['title']); ?></td>
-                                        <td><?= htmlspecialchars($reservation['book_status'] === 'available' ? 'Có sẵn' : 'Hết sách'); ?></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row-md-6">
-                            <label for="status" class="form-label">Tình trạng:</label>
-                            <select name="status" id="status" class="form-control">
-                                <option value="pending" <?= $reservation['status'] === 'pending' ? 'selected' : '' ?>>Đang xử lý</option>
-                                <option value="confirmed" <?= $reservation['status'] === 'confirmed' ? 'selected' : '' ?>>Đã xác nhận</option>
-                                <option value="completed" <?= $reservation['status'] === 'fulfilled' ? 'selected' : '' ?>>Hoàn thành</option>
-                                <option value="expired" <?= $reservation['status'] === 'expired' ? 'selected' : '' ?>>Hết hạn</option>
-                                <option value="canceled" <?= $reservation['status'] === 'canceled' ? 'selected' : '' ?>>Bị hủy</option>
-                            </select>
+                        <!-- Danh sách sách đặt -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="mb-0">Danh sách sách đặt</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered text-center">
+                                        <thead>
+                                            <tr>
+                                                <th>Mã sách</th>
+                                                <th>Tên sách</th>
+                                                <th>Tác giả</th>
+                                                <th>Tình trạng sách</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($reservationDetails as $detail): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($detail['book_id']); ?></td>
+                                                    <td><?= htmlspecialchars($detail['title']); ?></td>
+                                                    <td><?= htmlspecialchars($detail['authors']); ?></td>
+                                                    <td>
+                                                    <?php 
+                                                        $statusLabels = [
+                                                            'available' => 'Còn sách',
+                                                            'unavailable' => 'Hết sách'
+                                                        ];
+                                                        echo htmlspecialchars($statusLabels[$detail['status']] ?? 'Không xác định');
+                                                        ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                     <div class="card-footer d-flex justify-content-between">
                         <a href="index.php?model=reservation&action=index" class="btn btn-secondary">
                             <i class="fa-solid fa-arrow-left"></i> Quay lại
                         </a>
-                        <button type="button" id="toggleEdit" class="btn btn-primary">
-                            <i class="fa-solid fa-pencil"></i>
-                        </button>
-                        <button type="submit" id="saveChanges" class="btn btn-success" style="display: none;"> 
-                            <i class="fa-regular fa-floppy-disk"></i>
-                        </button>
+                        <input type="hidden" name="status" id="status" value="<?= $reservation['status']; ?>">
+
+                        <?php if ($reservation['status'] === 'pending'): ?>
+                            <button type="submit" onclick="document.getElementById('status').value = 'confirmed';" class="btn btn-warning">
+                                Phê duyệt
+                            </button>
+                            <button type="submit" onclick="document.getElementById('status').value = 'canceled';" class="btn btn-danger">
+                                Hủy phiếu
+                            </button>
+                        <?php endif; ?>
+
+                        <?php if ($reservation['status'] === 'confirmed'): ?>
+                            <button type="submit" onclick="document.getElementById('status').value = 'fulfilled';" class="btn btn-success">
+                                Hoàn thành
+                            </button>
+                            <button type="submit" onclick="document.getElementById('status').value = 'canceled';" class="btn btn-danger">
+                                Hủy phiếu
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    const roleSelect = document.getElementById('role_id');
-    const toggleEditBtn = document.getElementById('toggleEdit');
-    const saveChangesBtn = document.getElementById('saveChanges');
-    const allInputs = document.querySelectorAll('input, select, textarea');
-
-    // Disable all inputs initially
-    allInputs.forEach(input => {
-        input.disabled = true;
-    });
-
-    // Toggle edit mode
-    toggleEditBtn.addEventListener('click', function() {
-        // Thay đổi logic kiểm tra trạng thái
-        const isDisabled = allInputs[0].disabled;
-        
-        if (isDisabled) {
-            // Chuyển sang chế độ edit
-            toggleEditBtn.style.display = 'none';
-            saveChangesBtn.style.display = 'block';
-            // Enable all inputs
-            allInputs.forEach(input => {
-                input.disabled = false;
-            });
-        } else {
-            // Chuyển sang chế độ view
-            toggleEditBtn.style.display = 'block';
-            saveChangesBtn.style.display = 'none';
-            // Disable all inputs
-            allInputs.forEach(input => {
-                input.disabled = true;
-            });
-        }
-    });
-});
-
-</script>
