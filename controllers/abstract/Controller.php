@@ -44,7 +44,7 @@ class Controller {
     public function register_success(){
         
     }
-    public function update_status($status, $returnDate = null){
+    public function update_status($id){
         
     }
     public function admin_dashboard(){
@@ -71,5 +71,6 @@ class Controller {
     public function member_create(){
 
     }
+
 }
 ?>

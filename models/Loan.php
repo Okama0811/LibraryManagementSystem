@@ -229,13 +229,13 @@ class Loan extends Model
         $query = "";
         switch ($status) {
             case 'returned':
-                $query = "UPDATE book SET status = 'available', quantity = quantity + $quantity WHERE book_id = :book_id";
+                $query = "UPDATE book SET status = 'returned', quantity = quantity + $quantity WHERE book_id = :book_id";
                 break;
             case 'lost':
                 $query = "UPDATE book SET status = 'lost' WHERE book_id = :book_id";
                 break;
             case 'damaged':
-                $query = "UPDATE book SET status = 'damaged' WHERE book_id = :book_id";
+                $query = "UPDATE book SET status = 'damaged', quantity = quantity + $quantity WHERE book_id = :book_id";
                 break;
         }
 
@@ -252,8 +252,7 @@ public function createLoan($books)
     {
         try {
             $this->conn->beginTransaction();
-            
-            // Tạo phiếu mượn chính với cuốn sách đầu tiên
+
             $firstBook = $books[0];
             $query = "INSERT INTO loan (book_id, issued_by, issued_date, due_date, status, notes) 
                      VALUES (:book_id, :issued_by, :issued_date, :due_date, :status, :notes)";
@@ -263,7 +262,7 @@ public function createLoan($books)
             $stmt->bindParam(':issued_by', $this->issued_by);
             $stmt->bindParam(':issued_date', $this->issued_date);
             $stmt->bindParam(':due_date', $this->due_date);
-            $stmt->bindValue(':status', 'issued');
+            $stmt->bindValue(':status', NULL);
             $stmt->bindParam(':notes', $this->notes);
             
             $stmt->execute();
@@ -278,7 +277,7 @@ public function createLoan($books)
                 $stmt->bindParam(':loan_id', $loan_id);
                 $stmt->bindParam(':book_id', $book['book_id']);
                 $stmt->bindParam(':quantity', $book['quantity']);
-                $stmt->bindValue(':status', 'issued');
+                $stmt->bindValue(':status', NULL);
                 $stmt->bindValue(':notes', '');
                 
                 $stmt->execute();

@@ -55,6 +55,7 @@
                 </div>
             </div>
             <div class="table-responsive">
+            <form action="index.php?model=loan&action=update_status&id=<?= $loan['loan_id']?>" method="POST">
                 <table id="dataTable" class="table table-hover table-striped table-bordered text-center">
                     <thead class="table-dark">
                         <tr>
@@ -78,9 +79,19 @@
                                             <option value="damaged" <?= $book_detail['status'] === 'damaged' ? 'selected' : '' ?>>Hư hỏng</option>
                                         </select>
                                     <?php endif; ?>
+                                    <?php if ( $loan['status'] === 'overdue'||$loan['status'] === 'returned' ): ?>
+                                        <?php
+                                            echo $book_detail['status'] === 'lost' ? 'Mất' : 
+                                                ($book_detail['status'] === 'damaged' ? 'Hỏng' : 
+                                                ($book_detail['status'] === 'returned' ? 'Đã trả' : 
+                                                ($book_detail['status'] === 'overdue' ? 'Quá hạn' : 'Chờ xử lý')));
+                                        ?>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
+                            <input type="hidden" name="book_detail_id[]" value="<?= htmlspecialchars($book_detail['book_id']); ?>">
                         <?php endforeach; ?>
+                        <input type="hidden" name="loan_id" value="<?= htmlspecialchars($loan['loan_id']); ?>">
                     </tbody>
                 </table>
             </div>
@@ -90,13 +101,18 @@
                 <i class="fas fa-arrow-left"></i> 
             </a>
             <?php if ($loan['status'] === 'issued' && $userData['role_id'] != 3): ?>
-                <button class="btn btn-success" onclick="handleAction('returned', <?= $loan['loan_id']; ?>)">Đã trả</button>
+                <input type="hidden" name="action_status" value="returned">
+                <button  type = "submit" class="btn btn-success">Đã trả</button>
             <?php endif; ?>   
             <?php if ($loan['status'] === NULL && $userData['role_id'] != 3): ?>
-                <button class="btn btn-primary" onclick="handleAction('issued', <?= $loan['loan_id']; ?>)">Phê duyệt</button>
-                <button class="btn btn-danger" onclick="handleAction('overdue', <?= $loan['loan_id']; ?>)">Quá hạn</button>
+                <input type="hidden" name="action_status" value="issued">
+                <button type = "submit" class="btn btn-primary" >Phê duyệt</button>
+
+                <input type="hidden" name="action_status" value="overdue">
+                <button  type = "submit" class="btn btn-danger" >Quá hạn</button>
             <?php endif; ?>
         </div>
+            </form>
     </div>
 </div>
 

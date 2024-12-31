@@ -34,7 +34,7 @@
                             <div>
                                 <input type="number" 
                                        name="book_quantity[<?php echo $item['book_id']; ?>]" 
-                                       value="<?php echo isset($item['borrow_quantity']) ? $item['borrow_quantity'] : 1; ?>" 
+                                       value="<?php echo htmlspecialchars($item['borrow_quantity']); ?>" 
                                        class="form-control" 
                                        style="width: 60px;" 
                                        min="1">
@@ -51,7 +51,7 @@
                         <hr>
                     <?php } ?>
                         <div class="cart-total d-flex">
-                            <button type = "button "class="btn btn-success" >Đặt mượn sách</button>
+                            <button type = "submit " onclick="confirmChoose();" class="btn btn-success" >Đặt mượn sách</button>
                         </div>
                     <?php } else { ?>
                         <p>Giỏ hàng của bạn trống.</p>
@@ -78,6 +78,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function confirmDelete() {
     return confirm("Bạn có chắc chắn muốn xóa sách này khỏi giỏ hàng?");
+}
+function confirmChoose() {
+    return confirm("Bạn có chắc chắn muốn đặt sách?");
 }
 </script>
 
