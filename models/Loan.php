@@ -15,7 +15,7 @@ class Loan extends Model
     public $issued_by;
     public $created_at;
     public $updated_at;
-
+    public $books = [];
     public function __construct()
     {
         parent::__construct();
@@ -46,12 +46,35 @@ class Loan extends Model
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getAllLoans($user_id = null, $role_id = null) {
+        
+        if ($role_id == 2) {
+            $sql = "SELECT l.*, u.username as user_name
+                    FROM loan l
+                    JOIN user u ON l.issued_by = u.user_id
+                    ORDER BY l.created_at DESC";
+            $stmt = $this->conn->prepare($sql);
+        } 
+        else {
+            $sql = "SELECT l.*, u.username as user_name
+                    FROM loan l
+                    JOIN user u ON l.issued_by = u.user_id
+                    WHERE l.issued_by = :user_id
+                    ORDER BY l.created_at DESC";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getAllandUserName()
     {
         $query = "
             SELECT loan.*, user.username AS user_name
             FROM {$this->table_name} AS loan
-            JOIN user ON loan.user_id = user.user_id
+            JOIN user ON loan.issued_by = user.user_id
         ";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -71,10 +94,9 @@ class Loan extends Model
                     l.notes,
                     l.created_at,
                     l.updated_at,
-                    l.user_id,
                     u.username AS borrower_name
                 FROM loan l
-                LEFT JOIN user u ON l.user_id = u.user_id
+                LEFT JOIN user u ON l.issued_by = u.user_id
                 WHERE l.loan_id = :id";
 
         $stmt = $this->conn->prepare($sql);
@@ -87,7 +109,7 @@ class Loan extends Model
     public function getBooksByLoanId($loanId)
     {
         $query = "
-        SELECT ld.book_id, b.title AS book_title, b.quantity as book_quantity, ld.status, ld.quantity, ld.notes
+        SELECT ld.book_id, b.title AS book_title, b.quantity as book_quantity, ld.status, ld.quantity as loan_detail_quantity, ld.notes
         FROM loan_detail ld
         JOIN book b ON ld.book_id = b.book_id
         WHERE ld.loan_id = :loan_id
@@ -98,12 +120,27 @@ class Loan extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Cập nhật trạng thái phiếu mượn (issued, returned, overdue)
+    public function checkBookAvailability($bookId, $requestedQuantity) {
+        $query = "SELECT quantity FROM book WHERE book_id = :book_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($result) {
+            return [
+                'available' => $result['quantity'] >= $requestedQuantity,
+                'remaining' => $result['quantity']
+            ];
+        }
+        return false;
+    }
+
     public function updateStatus($loanId, $status, $returnDate = null)
     {
         $validStatuses = ['issued', 'returned', 'overdue'];
         if (!in_array($status, $validStatuses)) {
-            return false; // Trạng thái không hợp lệ
+            return false; 
         }
 
         $query = "UPDATE {$this->table_name} 
@@ -143,20 +180,19 @@ class Loan extends Model
         return $stmt->execute();
     }
 
-    // 2. Chuyển sách vào bảng reservations
     public function reserveBook($loanId, $bookId)
     {
-        $getUserQuery = "SELECT user_id FROM loan WHERE loan_id = :loan_id";
+        $getUserQuery = "SELECT issued_by FROM loan WHERE loan_id = :loan_id";
         $userStmt = $this->conn->prepare($getUserQuery);
         $userStmt->bindParam(':loan_id', $loanId, PDO::PARAM_INT);
         $userStmt->execute();
         $userData = $userStmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$userData) {
-            return false; // Không tìm thấy user_id
+            return false; 
         }
 
-        $userId = $userData['user_id'];
+        $userId = $userData['issued_by'];
 
         $query = "INSERT INTO reservation (
             book_id, 
@@ -178,7 +214,6 @@ class Loan extends Model
         return $stmt->execute();
     }
 
-    // 3. Xóa sách khỏi loan_books
     public function deleteBookFromLoan($loanId, $bookId)
     {
         $query = "DELETE FROM loan_detail WHERE loan_id = :loan_id AND book_id = :book_id";
@@ -189,12 +224,12 @@ class Loan extends Model
         return $stmt->execute();
     }
 
-    public function updateBookAvailability($bookId, $status)
+    public function updateBookAvailability($bookId, $status, $quantity)
     {
         $query = "";
         switch ($status) {
             case 'returned':
-                $query = "UPDATE book SET status = 'available', quantity = quantity + 1 WHERE book_id = :book_id";
+                $query = "UPDATE book SET status = 'available', quantity = quantity + $quantity WHERE book_id = :book_id";
                 break;
             case 'lost':
                 $query = "UPDATE book SET status = 'lost' WHERE book_id = :book_id";
@@ -210,8 +245,83 @@ class Loan extends Model
             return $stmt->execute();
         }
 
-        return false;
+    return false;
+}
+
+public function createLoan($books)
+    {
+        try {
+            $this->conn->beginTransaction();
+            
+            // Tạo phiếu mượn chính với cuốn sách đầu tiên
+            $firstBook = $books[0];
+            $query = "INSERT INTO loan (book_id, issued_by, issued_date, due_date, status, notes) 
+                     VALUES (:book_id, :issued_by, :issued_date, :due_date, :status, :notes)";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':book_id', $firstBook['book_id']);
+            $stmt->bindParam(':issued_by', $this->issued_by);
+            $stmt->bindParam(':issued_date', $this->issued_date);
+            $stmt->bindParam(':due_date', $this->due_date);
+            $stmt->bindValue(':status', 'issued');
+            $stmt->bindParam(':notes', $this->notes);
+            
+            $stmt->execute();
+            $loan_id = $this->conn->lastInsertId();
+            
+            // Thêm chi tiết cho tất cả các cuốn sách
+            foreach ($books as $book) {
+                $query = "INSERT INTO loan_detail (loan_id, book_id, quantity, status, notes) 
+                         VALUES (:loan_id, :book_id, :quantity, :status, :notes)";
+                         
+                $stmt = $this->conn->prepare($query);
+                $stmt->bindParam(':loan_id', $loan_id);
+                $stmt->bindParam(':book_id', $book['book_id']);
+                $stmt->bindParam(':quantity', $book['quantity']);
+                $stmt->bindValue(':status', 'issued');
+                $stmt->bindValue(':notes', '');
+                
+                $stmt->execute();
+                
+                // Cập nhật số lượng sách có sẵn
+                $this->updateBookQuantityBorrow($book['book_id'], $book['quantity']);
+            }
+            
+            $this->conn->commit();
+            return $loan_id;
+            
+        } catch (Exception $e) {
+            $this->conn->rollBack();
+            throw $e;
+        }
     }
+    
+
+public function getAllandUserNameByUser($userId)
+{
+    $query = "
+        SELECT loan.*, user.username AS user_name
+        FROM {$this->table_name} AS loan
+        JOIN user ON loan.issued_by = user.user_id
+        WHERE loan.issued_by = :user_id
+    ";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+public function getAvailableBooks() {
+    $sql = "SELECT book_id, title, quantity 
+            FROM book
+            WHERE quantity > 0";
+    
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
     public function getActiveLoanCount()
     {
         $query = "SELECT COUNT(*) as total FROM {$this->table_name} WHERE status = 'issued'";
@@ -240,4 +350,34 @@ class Loan extends Model
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function updateBookQuantity($bookId, $quantityChange)
+{
+    try {
+        $query = "UPDATE book SET quantity = quantity + :quantity_change WHERE book_id = :book_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':quantity_change', $quantityChange, PDO::PARAM_INT);
+        $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    } catch (Exception $e) {
+        // Handle exception (log error, rethrow, etc.)
+        return false;
+    }
+}
+public function updateBookQuantityBorrow($bookId, $quantityChange)
+{
+    try {
+        $query = "UPDATE book SET quantity = quantity - :quantity_change WHERE book_id = :book_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':quantity_change', $quantityChange, PDO::PARAM_INT);
+        $stmt->bindParam(':book_id', $bookId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    } catch (Exception $e) {
+        // Handle exception (log error, rethrow, etc.)
+        return false;
+    }
+}
+
 }

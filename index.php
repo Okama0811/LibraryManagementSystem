@@ -16,7 +16,7 @@ require 'controllers/RoleController.php';
 require 'controllers/DefaultController.php';
 require 'controllers/MemberController.php';
 require 'controllers/StatisticsController.php';
-
+require 'controllers/CartController.php';
 
 $model = isset($_GET['model']) ? $_GET['model'] : 'default';
 $action = isset($_GET['action']) ? $_GET['action'] : 'index';
@@ -35,7 +35,7 @@ if (!isset($_SESSION['user_id']) && !$is_public_route) {
 }
 
 if (isset($_SESSION['role_id']) && $_SESSION['role_id'] == 3) {
-    if ($model !== 'default' && $model !== 'auth' && $model!== 'member' && $model!== 'book' && $model!== 'loan' && $model!== 'fine' && $model!== 'reservation') {
+    if ($model !== 'default' && $model !== 'auth' && $model!== 'member') {
         header('Location: index.php?model=default&action=index');
         exit();
     }
@@ -87,6 +87,9 @@ switch ($model) {
     case 'member':
         $controller = new MemberController();
         break;
+    case 'cart':
+        $controller = new CartController();
+         break;
     default:
         $controller = new DefaultController();
         break;
@@ -154,14 +157,21 @@ switch ($action) {
     case 'loadmore':
         $controller->loadmore();
         break;
-    case 'fines':
-        $controller->fines($id);
-         break;
-    case 'pay':
-        $controller->pay();
+    case 'checkout':
+         $controller->checkout();
         break;
-    case 'member_create':
-        $controller->member_create();
+    case 'handle_reservation':
+        $controller->handle_reservation();
+        break;
+    case 'delete_book':
+        $controller->delete_book($id);
+        break;
+    case 'update_status':
+        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] == 3) {
+            header('Location: index.php?model=default&action=index');
+            exit();
+        }
+        $controller->update_status($status = null, $returnDate = null);
         break;
     default:
         $controller->index();
