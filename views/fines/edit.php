@@ -71,6 +71,14 @@
                                 value="<?= $fine['status'] === 'paid' ? 'Đã hoàn thành' : 'Chưa hoàn thành'; ?>" readonly>
                         </div>
 
+                        <?php if ($fine['status'] !== 'paid') : ?>
+                            <form action="index.php?model=fine&action=approve&id=<?= $fine['fine_id'] ?>" method="POST">
+                                <div class="d-flex justify-content-start">
+                                    <button type="submit" class="btn btn-success">Xét duyệt</button>
+                                </div>
+                            </form>
+                        <?php endif; ?>
+
                         <div class="mb-3">
                             <label for="returned_date" class="form-label">Ngày hoàn thành:</label>
                             <input class="form-control" type="date" id="returned_date" name="returned_date" value="<?= htmlspecialchars($fine['returned_date']); ?>" required
@@ -79,7 +87,7 @@
 
                 </div> <!--chân thẻ body-->
                 <div class="card-footer d-flex justify-content-between">
-                            <a href="index.php?model=book_condition&action=index" class="btn btn-secondary">
+                            <a href="index.php?model=fine&action=index" class="btn btn-secondary">
                                 <i class="fa-solid fa-arrow-left"></i> Quay lại
                             </a>
                             <button type="submit" class="btn btn-success">

@@ -62,6 +62,15 @@ class Controller {
     public function loadmore(){
 
     }
+    public function fines($id){
+
+    }
+    public function pay(){
+
+    }
+    public function member_create(){
+
+    }
 
 }
 ?>

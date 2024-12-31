@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS fine (
     issued_date DATE NOT NULL,
     due_date DATE NOT NULL,
     returned_date DATE,
-    status ENUM('paid', 'unpaid') DEFAULT 'unpaid',
+    status ENUM('paid', 'pending', 'unpaid') DEFAULT 'unpaid',
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -190,15 +190,24 @@ CREATE TABLE IF NOT EXISTS book_condition (
 
 CREATE TABLE IF NOT EXISTS reservation (
     reservation_id INT PRIMARY KEY AUTO_INCREMENT,
-    book_id INT,
     user_id INT,
     reservation_date DATE NOT NULL,
     expiry_date DATE NOT NULL,
     fulfilled_date DATE,
-    status ENUM('pending', 'fulfilled', 'cancelled', 'expired') DEFAULT 'pending',
+    status ENUM('pending', 'confirmed','fulfilled', 'cancelled', 'expired') DEFAULT 'pending',
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (book_id) REFERENCES book(book_id),
     FOREIGN KEY (user_id) REFERENCES user(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS reservation_detail (
+    reservation_id INT,
+    book_id INT,
+    quantity INT DEFAULT 1,
+    PRIMARY KEY (reservation_id, book_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (reservation_id) REFERENCES reservation(reservation_id),
+    FOREIGN KEY (book_id) REFERENCES book(book_id)
 );
