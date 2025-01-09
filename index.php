@@ -1,5 +1,6 @@
 <?php
 session_start();
+require 'vendor/autoload.php';
 require 'controllers/abstract/Controller.php';
 require 'controllers/AuthorController.php';
 require 'controllers/AuthController.php';
@@ -173,6 +174,8 @@ switch ($action) {
         }
         $controller->update_status($id);
         break;
+    case 'export':
+        $controller->export();
     default:
         $controller->index();
         break;

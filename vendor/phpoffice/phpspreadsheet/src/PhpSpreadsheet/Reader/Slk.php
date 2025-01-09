@@ -145,6 +145,7 @@ class Slk extends BaseReader
     {
         // Create new Spreadsheet
         $spreadsheet = new Spreadsheet();
+        $spreadsheet->setValueBinder($this->valueBinder);
 
         // Load into this instance
         return $this->loadIntoExisting($filename, $spreadsheet);
@@ -449,7 +450,7 @@ class Slk extends BaseReader
     private function processPColors(string $rowDatum, array &$formatArray): void
     {
         if (preg_match('/L([1-9]\\d*)/', $rowDatum, $matches)) {
-            $fontColor = $matches[1] % 8;
+            $fontColor = ((int) $matches[1]) % 8;
             $formatArray['font']['color']['argb'] = self::COLOR_ARRAY[$fontColor];
         }
     }

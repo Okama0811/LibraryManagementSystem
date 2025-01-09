@@ -533,13 +533,10 @@ class Html
         'yellowgreen' => '9acd32',
     ];
 
-    /** @var ?string */
     private ?string $face = null;
 
-    /** @var ?string */
     private ?string $size = null;
 
-    /** @var ?string */
     private ?string $color = null;
 
     private bool $bold = false;
@@ -564,6 +561,7 @@ class Html
         'u' => [self::class, 'startUnderlineTag'],
         'ins' => [self::class, 'startUnderlineTag'],
         'del' => [self::class, 'startStrikethruTag'],
+        's' => [self::class, 'startStrikethruTag'],
         'sup' => [self::class, 'startSuperscriptTag'],
         'sub' => [self::class, 'startSubscriptTag'],
     ];
@@ -578,6 +576,7 @@ class Html
         'u' => [self::class, 'endUnderlineTag'],
         'ins' => [self::class, 'endUnderlineTag'],
         'del' => [self::class, 'endStrikethruTag'],
+        's' => [self::class, 'endStrikethruTag'],
         'sup' => [self::class, 'endSuperscriptTag'],
         'sub' => [self::class, 'endSubscriptTag'],
         'br' => [self::class, 'breakTag'],
