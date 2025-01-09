@@ -65,14 +65,61 @@
                             <textarea name="notes" id="notes" class="form-control" rows="3"><?= htmlspecialchars($fine['notes']); ?></textarea>
                         </div>
 
+                        <?php if ($fine['status'] == 'pending') : ?>
+                            <div class="avatar-wrapper mb-3">
+                                <img id="image-preview" class="img-fluid img-thumbnail" 
+                                src="<?php echo !empty($picture['notes']) ? 'uploads/payments/' . $picture['notes'] : 'assets/images/default-avatar.png'; ?>" 
+                                alt="Avatar" style="width: 30%; height: 350px; object-fit: cover;">
+                            </div>
+                        <?php endif; ?>
+
                         <div class="mb-3">
                             <label for="status" class="form-label">Trạng thái:</label>
                             <input class="form-control" type="text" id="status" name="status" 
-                                value="<?= $fine['status'] === 'paid' ? 'Đã hoàn thành' : 'Chưa hoàn thành'; ?>" readonly>
+                            value="<?php 
+                                if ($fine['status'] === 'paid') {
+                                    echo 'Đã hoàn thành';
+                                } elseif ($fine['status'] === 'unpaid') {
+                                    echo 'Chưa hoàn thành';
+                                } elseif ($fine['status'] === 'pending') {
+                                    echo 'Chờ xét duyệt';
+                                } 
+                            ?>" readonly>
                         </div>
 
-                        <?php if ($fine['status'] !== 'paid') : ?>
-                            <form action="index.php?model=fine&action=approve&id=<?= $fine['fine_id'] ?>" method="POST">
+                        <?php if ($fine['status'] == 'pending') : ?>
+                            <form action="index.php?model=fine&action=edit&id=<?= $fine['fine_id'] ?>" method="POST">
+                                <div class="d-flex justify-content-start">
+                                    <button type="submit" class="btn btn-success">Xét duyệt</button>
+                                    <input type="hidden" name="status" value="paid">
+                                </div>
+                            </form>
+                        <?php endif; ?>
+
+                        <?php if ($fine['status'] == 'unpaid') : ?>
+                            <form action="index.php?model=fine&action=edit&id=<?= $fine['fine_id'] ?>" method="POST" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="payment_method" class="form-label">Phương thức thanh toán:</label>
+                                    <select class="form-select" id="payment_method" name="payment_method" onchange="toggleTransferInput(this.value)" required>
+                                        <option value="">-- Chọn phương thức thanh toán --</option>
+                                        <option value="Tiền mặt">Tiền mặt</option>
+                                        <option value="Chuyển khoản">Chuyển khoản</option>
+                                    </select>
+                                    <input type="hidden" name="status" value="paid">
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6" id="transfer_proof" style="display: none;">
+                                        <label for="proof_image" class="form-label">Tải lên ảnh chuyển khoản:</label>
+                                        <input type="file" class="form-control" id="proof_image" name="proof_image" accept="image/*">
+                                    </div>
+
+                                    <div class="col-md-6"    id="transfer_amount" style="display: none;">
+                                        <label for="proof_amount" class="form-label">Số tiền chuyển khoản:</label>
+                                        <input type="number" class="form-control" id="proof_amount" name="proof_amount"  value="<?= $payment['amount'] ?>" readonly>
+                                    </div>
+                                </div>
+
                                 <div class="d-flex justify-content-start">
                                     <button type="submit" class="btn btn-success">Xét duyệt</button>
                                 </div>
@@ -154,4 +201,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+function toggleTransferInput(paymentMethod) {
+    const transferProof = document.getElementById('transfer_proof');
+    const transferAmount = document.getElementById('transfer_amount');
+    
+    if (paymentMethod === 'Chuyển khoản') {
+        transferProof.style.display = 'block';
+        transferAmount.style.display = 'block';
+    } else if (paymentMethod === 'Tiền mặt') {
+        transferProof.style.display = 'none';
+        transferAmount.style.display = 'block';
+    } else {
+        transferProof.style.display = 'none';
+        transferAmount.style.display = 'none';
+    }
+}
 </script>

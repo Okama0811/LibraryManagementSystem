@@ -174,10 +174,17 @@ switch ($action) {
         }
         $controller->update_status($id);
         break;
+    case 'fines':
+        $controller->fines($id);
+        break;
+    case 'pay':
+        $controller->pay();
+        break;
     case 'export':
         $controller->export();
     default:
         $controller->index();
         break;
+        
 }
 ?>

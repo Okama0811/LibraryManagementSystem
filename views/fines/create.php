@@ -67,6 +67,11 @@
                             <textarea name="notes" id="notes" class="form-control" rows="3"></textarea>
                         </div>
 
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Số tiền phạt:</label>
+                            <input type="number" name="amount" id="amount" class="form-control" >
+                        </div>
+
                         <input type="hidden" name="returned_to" value="<?= htmlspecialchars($_SESSION['user_id']); ?>">
                         <input type="hidden" name="status" value="unpaid">
                 </div>

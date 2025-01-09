@@ -8,6 +8,7 @@ class Fine extends Model
     public $loan_id;
     public $user_id;
     public $returned_to;
+    public $confirmed_by;
     public $issued_date;
     public $due_date;
     public $returned_date;
@@ -30,6 +31,7 @@ class Fine extends Model
         l.loan_id,
         u.username AS user_name,
         r.username AS returned_to,
+        c.username AS confirmed_by,
         f.issued_date,
         f.due_date,
         f.returned_date,
@@ -38,6 +40,7 @@ class Fine extends Model
         FROM fine f
         LEFT JOIN user u ON f.user_id = u.user_id
         LEFT JOIN user r ON f.returned_to = r.user_id
+        LEFT JOIN user c ON f.confirmed_by = c.user_id
         LEFT JOIN loan l ON f.loan_id = l.loan_id";
 
     $stmt = $this->conn->prepare($sql);
@@ -52,6 +55,7 @@ class Fine extends Model
             f.loan_id,
             u.full_name AS user_name,
             r.full_name AS returned_to,
+            c.username AS confirmed_by,
             f.issued_date,
             f.due_date,
             f.returned_date,
@@ -60,6 +64,7 @@ class Fine extends Model
         FROM fine f
         LEFT JOIN user u ON f.user_id = u.user_id
         LEFT JOIN user r ON f.returned_to = r.user_id
+        LEFT JOIN user c ON f.confirmed_by = c.user_id
         WHERE f.fine_id = :id";
     
         $stmt = $this->conn->prepare($query);
@@ -93,6 +98,17 @@ class Fine extends Model
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getPaymentData($id){
+        $sql = "SELECT notes,amount
+        FROM fine_payment
+        WHERE fine_payment.fine_id = :id";
+
+       
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     public function getFinesByMemberId($id){
         $sql = "SELECT f.fine_id,
@@ -120,13 +136,20 @@ class Fine extends Model
 
     public function updateFineStatus($fineId, $data) {
         $sql = "UPDATE fine SET 
-                status = :status, 
+                status = :status,
+                notes = :notes,
                 returned_date = :returned_date 
-                WHERE fine_id = :fine_id";
+                WHERE fine_id = :fine_id;
+                
+                UPDATE fine_payment SET 
+                payment_method = :payment_method
+                WHERE fine_id = :fine_id;";
         
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':status', $data['status']);
+        $stmt->bindParam(':notes', $data['notes']);
         $stmt->bindParam(':returned_date', $data['returned_date']);
+        $stmt->bindParam(':payment_method', $data['payment_method']);
         $stmt->bindParam(':fine_id', $fineId);
     
         if (isset($data['returned_to'])) {
@@ -135,4 +158,9 @@ class Fine extends Model
     
         $stmt->execute();
 }
+
+        public function getLastInsertedId()
+        {
+            return $this->conn->lastInsertId(); 
+        }
 }

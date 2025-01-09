@@ -32,11 +32,11 @@ class Setup {
 
 try {
     $setup = new Setup();
-    $schemaFile = 'C:\XAMPP\htdocs\LibraryManagementSystem\database\migrations\schema.sql';
-    $dataFile = 'C:\XAMPP\htdocs\LibraryManagementSystem\database\seeders\data.sql';
-    $updateDataFile = 'C:\XAMPP\htdocs\LibraryManagementSystem\database\seeders\phuocdata.sql';
-    $updateFile = 'C:\XAMPP\htdocs\LibraryManagementSystem\database\migrations\update.sql';
-    $accountFile = 'C:\XAMPP\htdocs\LibraryManagementSystem\database\migrations\adminAccount.sql';
+    $schemaFile = 'D:\XAMPP\htdocs\LibraryManagementSystem\database\migrations\schema.sql';
+    $dataFile = 'D:\XAMPP\htdocs\LibraryManagementSystem\database\seeders\data.sql';
+    $updateDataFile = 'D:\XAMPP\htdocs\LibraryManagementSystem\database\seeders\phuocdata.sql';
+    $updateFile = 'D:\XAMPP\htdocs\LibraryManagementSystem\database\migrations\update.sql';
+    $accountFile = 'D:\XAMPP\htdocs\LibraryManagementSystem\database\migrations\adminAccount.sql';
     $setup->runSQLFromFile($schemaFile);
     $setup->runSQLFromFile($updateFile);
     $setup->runSQLFromFile($dataFile);
