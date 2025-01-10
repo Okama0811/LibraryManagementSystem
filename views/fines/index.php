@@ -17,9 +17,9 @@
         <div id="alert-message" class="alert alert-<?= $_SESSION['message_type']; ?> alert-dismissible fade show" role="alert">
             <?= $_SESSION['message']; ?>
         </div>
-        <?php
-        unset($_SESSION['message']);
-        unset($_SESSION['message_type']);
+        <!-- <?php
+        // unset($_SESSION['message']);
+        // unset($_SESSION['message_type']);
         ?>
         <script>
             setTimeout(function() {
@@ -32,7 +32,7 @@
                     }, 150); 
                 }
             }, 2000);
-        </script>
+        </script> -->
     <?php endif; ?>
     <!-- Phần content -->
     <div class="card shadow mb-4 ">

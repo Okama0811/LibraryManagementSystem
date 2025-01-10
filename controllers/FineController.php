@@ -2,21 +2,18 @@
 include_once 'models/Fine.php';
 include_once 'models/Loan.php';
 include_once 'models/User.php';
-include_once 'models/Fine_payment.php';
 
 class FineController extends Controller
 {
     private $fine;
     private $loan;
     private $user;
-    private $fine_payment;
 
     public function __construct()
     {
         $this->fine = new Fine();
         $this->loan = new Loan();
         $this->user = new User();
-        $this->fine_payment = new Fine_Payment();
     }
 
     public function index()
@@ -78,7 +75,7 @@ class FineController extends Controller
 
                     // Execute the query to insert the fine_payment record
                     if ($stmt->execute()) {
-                        $_SESSION['message'] = 'Thêm phiếu phạt  thành công!';
+                        $_SESSION['message'] = 'Tạo thông tin thanh toán thành công!';
                         $_SESSION['message_type'] = 'success';
                         header("Location: index.php?model=fine&action=index");
                         exit();
@@ -102,36 +99,69 @@ class FineController extends Controller
         include('views/layouts/base.php');
     }
 
-
     public function edit($id)
     {
         $fineData = $this->fine->readById($id);
-    
+
+        // echo '<pre>';
+        // var_dump($fineData);
+        // echo '</pre>';
+        // die();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                // Duyệt qua tất cả các trường dữ liệu trong form
+                    //     echo '<pre>';
+                    //     var_dump($_POST, $_FILES);
+                    // echo '</pre>';
+                    // die();
                 foreach ($_POST as $key => $value) {
                     if (property_exists($this->fine, $key)) {
                         // Loại bỏ các thẻ HTML và trim dữ liệu
                         $this->fine->$key = strip_tags(trim($value));
                     }
                 }
-    
-                // Kiểm tra xem có thay đổi trạng thái hay không
+                    //        echo '<pre>';
+                    // var_dump($_POST['status']);
+                    // echo '</pre>';
+                    // die();
                 if (isset($_POST['status']) && $_POST['status'] !== $fineData['status']) {
-                    // Nếu có thay đổi trạng thái, gọi hàm editStatus và cập nhật payment_date
-                    $this->editStatus($id);  // Tích hợp hàm editStatus
-    
-                    // Cập nhật payment_date khi trạng thái thay đổi
-                    if ($fineData['status'] === 'unpaid') {
-                        // Nếu là trạng thái 'unpaid', chỉ cập nhật payment method và payment date
-                        $this->fine->updatePaymentDate($id);
+                    $id =$fineData['fine_id'];
+                    $payment_method = $_POST['payment_method'] ?? '';
+                    $payment_date = date('Y-m-d');
+                    $amount = $_POST['amount'];
+                    $receive_by = $_POST['receive_by'] ?? NULL;
+                    $payment_notes = NULL;
+
+                    // var_dump($payment_method);
+                    // var_dump($payment_date);
+                    // var_dump($fineData['status']);
+
+                    if($fineData['status']=='pending')
+                    {
+                        $payment_method = 'Chuyển khoản';
+                        $payment_date = date('Y-m-d');
+                        $amount = $_POST['amount'];
+                        $receive_by = $_POST['receive_by'] ?? NULL;
+                        $payment_notes = $_POST['online_paid'] ?? NULL;
+                        // var_dump($payment_method);
+                        // var_dump($payment_date);
+                        // var_dump($receive_by);
+                        // var_dump($payment_notes);
+                        // die();
+                        $this->fine->updatePayment($id, $amount, $payment_date, $payment_method, $receive_by, $payment_notes);
+                        $this->editStatus($id);
                     }
-    
-                    $_SESSION['message'] = 'Cập nhật trạng thái và payment_date thành công!';
-                    $_SESSION['message_type'] = 'success';
-                    header("Location: index.php?model=fine&action=index");
-                    exit();
+                    else if ($payment_method === 'Chuyển khoản') {
+                        $payment_notes =  $_POST['proof_image'] ?? NULL;
+                    } else if ($payment_method === 'Tiền mặt') {
+                        $payment_notes = NULL;
+                    }
+                    //         echo '<pre>';
+                    // var_dump($payment_method);
+                    // echo '</pre>';
+                    // die();
+                    // Gọi các hàm xử lý sau khi hoàn thành
+                    $this->fine->updatePayment($id, $amount, $payment_date, $payment_method, $receive_by, $payment_notes);
+                    $this->editStatus($id);
                 } else {
                     // Nếu không có thay đổi trạng thái, gọi hàm update thông thường
                     if ($this->fine->update($id)) {
@@ -148,11 +178,12 @@ class FineController extends Controller
                 $_SESSION['message_type'] = 'danger';
             }
         }
-    
-        // Lấy dữ liệu các khoản vay (loans)
         $loans = $this->fine->getLoaned();
         $payment = $this->fine->getPaymentData($id);
-        // Gán dữ liệu phiếu phạt vào biến để truyền ra view
+        // echo '<pre>';
+        // var_dump($payment);
+        // echo '</pre>';
+        // die();
         $fine = $fineData;
         $content = 'views/fines/edit.php';
         include('views/layouts/base.php');
@@ -181,7 +212,8 @@ class FineController extends Controller
             try {
                 $data = [
                     'status' => 'paid',
-                    'returned_date' => date('Y-m-d')
+                    'returned_date' => date('Y-m-d'),
+                    'confirmed_by' => $_SESSION['user_id']
                 ];
 
                 $this->fine->updateFineStatus($id, $data);

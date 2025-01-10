@@ -139,28 +139,59 @@ class Fine extends Model
                 status = :status,
                 notes = :notes,
                 returned_date = :returned_date 
-                WHERE fine_id = :fine_id;
-                
-                UPDATE fine_payment SET 
-                payment_method = :payment_method
-                WHERE fine_id = :fine_id;";
+                WHERE fine_id = :fine_id";
         
+        // -- UPDATE fine_payment SET 
+        //         -- payment_method = :payment_method
+        //         -- WHERE fine_id = :fine_id;
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':status', $data['status']);
         $stmt->bindParam(':notes', $data['notes']);
         $stmt->bindParam(':returned_date', $data['returned_date']);
-        $stmt->bindParam(':payment_method', $data['payment_method']);
+        // $stmt->bindParam(':payment_method', $data['payment_method']);
         $stmt->bindParam(':fine_id', $fineId);
     
-        if (isset($data['returned_to'])) {
-            $stmt->bindParam(':returned_to', $data['returned_to']);
-        }
-    
         $stmt->execute();
+
+        if (isset($data['confirmed_by'])) {
+            $sqlConfirmed = "UPDATE fine SET 
+                                confirmed_by = :confirmed_by 
+                             WHERE fine_id = :fine_id;";
+            $stmtConfirmed = $this->conn->prepare($sqlConfirmed);
+            $stmtConfirmed->bindParam(':confirmed_by', $data['confirmed_by']);
+            $stmtConfirmed->bindParam(':fine_id', $fineId);
+            $stmtConfirmed->execute();
+        }
 }
 
-        public function getLastInsertedId()
-        {
-            return $this->conn->lastInsertId(); 
+    public function getLastInsertedId()
+    {
+        return $this->conn->lastInsertId(); 
+    }
+
+    public function updatePayment($id, $amount, $payment_date, $payment_method, $receive_by, $payment_notes) {
+        try {
+            $sql = "UPDATE fine_payment 
+                    SET amount = :amount, 
+                        payment_date = :payment_date, 
+                        payment_method = :payment_method, 
+                        receive_by = :receive_by, 
+                        notes = :notes 
+                    WHERE fine_id = :fine_id";
+    
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':fine_id', $id);
+            $stmt->bindParam(':amount', $amount);
+            $stmt->bindParam(':payment_date', $payment_date);
+            $stmt->bindParam(':payment_method', $payment_method);
+            $stmt->bindParam(':receive_by', $receive_by);
+            $stmt->bindParam(':notes', $payment_notes);
+            $stmt->execute();
+    
+            return true;
+        } catch (Exception $e) {
+            throw new Exception("Cập nhật thông tin thanh toán thất bại: " . $e->getMessage());
         }
+    }
+    
 }

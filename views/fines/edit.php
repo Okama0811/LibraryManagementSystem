@@ -57,18 +57,19 @@
 
                         <div class="mb-3">
                             <label for="due_date" class="form-label">Hạn thanh toán:</label>
-                            <input class="form-control" type="date" id="due_date" name="due_date" value="<?= htmlspecialchars($fine['due_date']); ?>" required>
+                            <input class="form-control" type="date" id="due_date" name="due_date" 
+                                value="<?= htmlspecialchars($fine['due_date']); ?>" <?= $fine['status'] === 'paid' ? 'readonly' : '' ?>>
                         </div>
-
                         <div class="mb-3">
                             <label for="notes" class="form-label">Ghi chú:</label>
-                            <textarea name="notes" id="notes" class="form-control" rows="3"><?= htmlspecialchars($fine['notes']); ?></textarea>
+                            <textarea name="notes" id="notes" class="form-control" rows="3" 
+                                    <?= $fine['status'] === 'paid' ? 'readonly' : '' ?>><?= htmlspecialchars($fine['notes']); ?></textarea>
                         </div>
 
                         <?php if ($fine['status'] == 'pending') : ?>
                             <div class="avatar-wrapper mb-3">
                                 <img id="image-preview" class="img-fluid img-thumbnail" 
-                                src="<?php echo !empty($picture['notes']) ? 'uploads/payments/' . $picture['notes'] : 'assets/images/default-avatar.png'; ?>" 
+                                src="<?php echo !empty($payment['notes']) ? 'uploads/payments/' . $payment['notes'] : 'assets/images/default-avatar.png'; ?>" 
                                 alt="Avatar" style="width: 30%; height: 350px; object-fit: cover;">
                             </div>
                         <?php endif; ?>
@@ -91,21 +92,24 @@
                             <form action="index.php?model=fine&action=edit&id=<?= $fine['fine_id'] ?>" method="POST">
                                 <div class="d-flex justify-content-start">
                                     <button type="submit" class="btn btn-success">Xét duyệt</button>
-                                    <input type="hidden" name="status" value="paid">
                                 </div>
+                                <input type="hidden" name="status" value="paid">
+                                <input type="hidden" name="receive_by" value="<?= htmlspecialchars($_SESSION['user_id']); ?>">
+                                <input type="hidden" name="online_paid" value="<?= $payment['notes'] ?>">
+                                <input type="hidden" name="payment_method" value="Chuyển khoản">
+                                <input type="hidden"  name="amount"  value="<?= $payment['amount'] ?>" >
                             </form>
-                        <?php endif; ?>
+                       <?php endif; ?>
 
                         <?php if ($fine['status'] == 'unpaid') : ?>
                             <form action="index.php?model=fine&action=edit&id=<?= $fine['fine_id'] ?>" method="POST" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label for="payment_method" class="form-label">Phương thức thanh toán:</label>
-                                    <select class="form-select" id="payment_method" name="payment_method" onchange="toggleTransferInput(this.value)" required>
+                                    <select class="form-control" id="payment_method" name="payment_method" onchange="toggleTransferInput(this.value)" required>
                                         <option value="">-- Chọn phương thức thanh toán --</option>
                                         <option value="Tiền mặt">Tiền mặt</option>
                                         <option value="Chuyển khoản">Chuyển khoản</option>
                                     </select>
-                                    <input type="hidden" name="status" value="paid">
                                 </div>
 
                                 <div class="row mb-3">
@@ -114,12 +118,13 @@
                                         <input type="file" class="form-control" id="proof_image" name="proof_image" accept="image/*">
                                     </div>
 
-                                    <div class="col-md-6"    id="transfer_amount" style="display: none;">
-                                        <label for="proof_amount" class="form-label">Số tiền chuyển khoản:</label>
-                                        <input type="number" class="form-control" id="proof_amount" name="proof_amount"  value="<?= $payment['amount'] ?>" readonly>
+                                    <div class="col-md-6"   id="transfer_amount" style="display: none;">
+                                        <label for="amount" class="form-label">Số tiền chuyển khoản:</label>
+                                        <input type="number" class="form-control" id="amount" name="amount"  value="<?= $payment['amount'] ?>" readonly>
                                     </div>
                                 </div>
-
+                                <input type="hidden" name="status" value="paid">
+                                <input type="hidden" name="receive_by" value="<?= htmlspecialchars($_SESSION['user_id']); ?>">
                                 <div class="d-flex justify-content-start">
                                     <button type="submit" class="btn btn-success">Xét duyệt</button>
                                 </div>
@@ -132,14 +137,21 @@
                             min="<?php echo date('Y-m-d'); ?>">
                         </div>
 
+                        <div class="mb-3">
+                            <label for="confirmed_by" class="form-label">Người xác nhận:</label>
+                            <input class="form-control" type="text" id="confirmed_by" name="confirmed_by" value="<?= htmlspecialchars($fine['confirmed_by']); ?>" readonly>
+                        </div>
+
+                        <input type="hidden" name="confirmed_by" value="<?= htmlspecialchars($_SESSION['user_id']); ?>">
+
                 </div> <!--chân thẻ body-->
                 <div class="card-footer d-flex justify-content-between">
                             <a href="index.php?model=fine&action=index" class="btn btn-secondary">
                                 <i class="fa-solid fa-arrow-left"></i> Quay lại
                             </a>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa-regular fa-floppy-disk"></i> Cập nhật
-                            </button>
+                            <?php if ($fine['status'] !== 'paid') : ?>
+                                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            <?php endif; ?>
                         </div>
                     </form>
             </div>
